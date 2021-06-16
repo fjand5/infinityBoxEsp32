@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.MoreFragment">
+
+    <TextView
+        android:id="@+id/brightbess_tw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="BRIGHTNESS"
+        app:layout_constraintBottom_toTopOf="@+id/brightbess_ico"
+        app:layout_constraintEnd_toEndOf="@+id/brightness_sbr"
+        app:layout_constraintStart_toStartOf="@+id/brightbess_ico"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <SeekBar
+        android:id="@+id/brightness_sbr"
+        android:layout_width="250dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/brightbess_ico"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@+id/brightbess_ico"
+        app:layout_constraintTop_toTopOf="@+id/brightbess_ico"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/brightbess_ico"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_brightness_high_24"
+
+        app:layout_constraintEnd_toStartOf="@+id/brightness_sbr"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/brightbess_tw"
+        tools:layout_editor_absoluteY="52dp" />
+
+    <TextView
+        android:id="@+id/speed_tw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="SPEED"
+        app:layout_constraintBottom_toTopOf="@+id/speed_sbr"
+        app:layout_constraintEnd_toEndOf="@+id/speed_sbr"
+        app:layout_constraintStart_toStartOf="@+id/speed_ico"
+        app:layout_constraintTop_toTopOf="@+id/brightbess_ico" />
+
+    <SeekBar
+        android:id="@+id/speed_sbr"
+        android:layout_width="250dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/speed_ico"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@+id/speed_ico"
+        app:layout_constraintTop_toTopOf="@+id/speed_ico"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/speed_ico"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_timer_24"
+
+        app:layout_constraintEnd_toStartOf="@+id/speed_sbr"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/speed_tw"
+        tools:layout_editor_absoluteY="52dp" />
+
+
+    <TextView
+        android:id="@+id/intensity_tw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="INTENSITY"
+        app:layout_constraintBottom_toTopOf="@+id/intensity_sbr"
+        app:layout_constraintEnd_toEndOf="@+id/intensity_sbr"
+        app:layout_constraintStart_toStartOf="@+id/intensity_ico"
+        app:layout_constraintTop_toTopOf="@+id/speed_ico" />
+
+    <SeekBar
+        android:id="@+id/intensity_sbr"
+        android:layout_width="250dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/intensity_ico"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@+id/intensity_ico"
+        app:layout_constraintTop_toTopOf="@+id/intensity_ico"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/intensity_ico"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_local_fire_department_24"
+
+        app:layout_constraintEnd_toStartOf="@+id/intensity_sbr"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/intensity_tw"
+        tools:layout_editor_absoluteY="52dp" />
+
+    <TextView
+        android:id="@+id/symmetry_tw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SYMMETRY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/intensity_sbr" />
+
+    <TextView
+        android:id="@+id/symmetry_tw2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PAUSE/RESUME"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/symmetry_spn" />
+
+    <Button
+        android:id="@+id/freeze_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PAUSE"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/symmetry_tw2" />
+
+    <Spinner
+        android:id="@+id/symmetry_spn"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/symmetry_ico"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/symmetry_ico"
+        app:layout_constraintTop_toBottomOf="@+id/symmetry_tw" />
+
+    <ImageView
+        android:id="@+id/symmetry_ico"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_flip_24"
+        app:layout_constraintEnd_toStartOf="@+id/symmetry_spn"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/symmetry_tw" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

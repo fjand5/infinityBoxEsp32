@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".ControlActivity">
+
+    <Button
+        android:id="@+id/timer_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/cardview_dark_background"
+        android:drawableTop="@drawable/ic_baseline_brightness_3_24"
+
+        android:paddingVertical="5dp"
+        android:text="Timer"
+        app:layout_constraintEnd_toStartOf="@+id/sync_btn"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/power_btn"
+        app:layout_constraintTop_toTopOf="@+id/power_btn" />
+
+    <Button
+        android:id="@+id/sync_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/cardview_dark_background"
+        android:drawableTop="@drawable/ic_baseline_sync_24"
+
+
+        android:paddingVertical="5dp"
+        android:text="Sync"
+        app:layout_constraintEnd_toStartOf="@+id/react_btn"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/timer_btn"
+        app:layout_constraintTop_toTopOf="@+id/timer_btn" />
+
+    <Button
+        android:id="@+id/power_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/cardview_dark_background"
+        android:drawableTop="@drawable/ic_baseline_power_settings_new_24"
+        android:paddingVertical="5dp"
+        android:text="POWER"
+        app:layout_constraintEnd_toStartOf="@+id/timer_btn"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/config_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/cardview_dark_background"
+        android:drawableTop="@drawable/ic_baseline_settings_24"
+        android:paddingVertical="5dp"
+        android:text="Config"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/react_btn"
+        app:layout_constraintTop_toTopOf="@+id/react_btn" />
+
+    <Button
+        android:id="@+id/react_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/cardview_dark_background"
+        android:drawableTop="@drawable/ic_baseline_music_note_24"
+
+
+        android:paddingVertical="5dp"
+        android:text="React"
+        app:layout_constraintEnd_toStartOf="@+id/config_btn"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/sync_btn"
+        app:layout_constraintTop_toTopOf="@+id/sync_btn" />
+
+    <Button
+        android:id="@+id/favorites_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/cardview_dark_background"
+        android:drawableTop="@drawable/ic_baseline_star_outline_24"
+
+        android:onClick="showFragment"
+        android:paddingVertical="5dp"
+        android:text="Favorites"
+        app:layout_constraintBottom_toBottomOf="@+id/more_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/more_btn" />
+
+    <Button
+        android:id="@+id/more_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/cardview_dark_background"
+        android:drawableTop="@drawable/ic_baseline_brightness_high_24"
+
+        android:onClick="showFragment"
+        android:paddingVertical="5dp"
+        android:text="More"
+        app:layout_constraintBottom_toBottomOf="@+id/colors_btn"
+        app:layout_constraintEnd_toStartOf="@+id/favorites_btn"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/colors_btn" />
+
+    <Button
+        android:id="@+id/patterns_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/cardview_dark_background"
+        android:drawableTop="@drawable/ic_baseline_tag_faces_24"
+        android:onClick="showFragment"
+        android:paddingVertical="5dp"
+
+        android:text="Patterns"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/colors_btn"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/colors_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/cardview_dark_background"
+        android:drawableTop="@drawable/ic_baseline_color_lens_24"
+        android:onClick="showFragment"
+
+        android:paddingVertical="5dp"
+        android:text="Colors"
+        app:layout_constraintBottom_toBottomOf="@+id/patterns_btn"
+        app:layout_constraintEnd_toStartOf="@+id/more_btn"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/patterns_btn" />
+
+    <FrameLayout
+        android:id="@+id/main_frm"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/patterns_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/power_btn">
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
