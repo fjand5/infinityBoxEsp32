@@ -14,6 +14,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -28,6 +31,11 @@ import java.util.TimerTask;
 public class ColorsFragment extends Fragment {
     ColorPickerView colorPickerView;
     View view;
+
+    RadioGroup colorSelected;
+    RadioButton color1Rdb;
+    RadioButton color2Rdb;
+    RadioButton color3Rdb;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +48,7 @@ public class ColorsFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_colors, container, false);
         mapView();
         mapEvent();
-//        init();
+        init();
         return view;
     }
 
@@ -50,14 +58,22 @@ public class ColorsFragment extends Fragment {
         colorPickerView.setColorListener(new ColorListener() {
             @Override
             public void onColorSelected(int color, boolean fromUser) {
+                if(!fromUser)
+                    return;
                 String hexColor = String.format("#%06X", (0xFFFFFF & color));
-                String cmd =
-                        "{\"cmd\":\"exe\",\"key\":\"color1_inp\",\"val\":\""+hexColor+"\"}";
+                String cmd = "";
+                if(color1Rdb.isChecked())
+                    cmd = "{\"cmd\":\"exe\",\"key\":\"color1_inp\",\"val\":\""+hexColor+"\"}";
+                if(color2Rdb.isChecked())
+                    cmd = "{\"cmd\":\"exe\",\"key\":\"color2_inp\",\"val\":\""+hexColor+"\"}";
+                if(color3Rdb.isChecked())
+                    cmd = "{\"cmd\":\"exe\",\"key\":\"color3_inp\",\"val\":\""+hexColor+"\"}";
                 if(runnable[0] !=null)
                     handler.removeCallbacks(runnable[0]);
+                String finalCmd = cmd;
                 runnable[0] = new Runnable() {
                     public void run() {
-                        ConnectionService.sendCommand(ConnectionService.SEND,cmd);
+                        ConnectionService.sendCommand(ConnectionService.SEND, finalCmd);
 
                     }
                 };
@@ -65,39 +81,52 @@ public class ColorsFragment extends Fragment {
                         , 250);
             }
         });
+        colorSelected.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                ConnectionService.sendCommand(ConnectionService.SEND,"{\"cmd\":\"gal\"}");
+            }
+        });
     }
 
     private void mapView() {
         colorPickerView = view.findViewById(R.id.colorPicker_pkr);
+
+        colorSelected = view.findViewById(R.id.color_select_rdg);
+        color1Rdb = view.findViewById(R.id.color1_select_rdb);
+        color2Rdb = view.findViewById(R.id.color2_select_rdb);
+        color3Rdb = view.findViewById(R.id.color3_select_rdb);
     }
-//    private void init() {
-//        BroadcastReceiver mRefreshReceiver;
-//        IntentFilter filter = new IntentFilter();
-//        filter.addAction("onMessage");
-//        mRefreshReceiver = new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//                String data = intent.getExtras().getString("data");
-//                String[] dataArr = data.split("\n");
-//                for (String elm:
-//                        dataArr) {
-//                    String[] keyVal = elm.split(":");
-//                    String key = keyVal[0];
-//                    String val = keyVal[1];
-//
-//                    if(key.equals("speed_sld")){
-//                        speedSbr.setProgress(Integer.parseInt(val));
-//                    }else if(key.equals("brightness_sld")){
-//                        brightnessSbr.setProgress(Integer.parseInt(val));
-//                    }else if(key.equals("intensity_sld")){
-//                        intensitySbr.setProgress(Integer.parseInt(val));
-//                    }
-//                }
-//
-//            }
-//        };
-//        LocalBroadcastManager.getInstance(view.getContext()).registerReceiver(mRefreshReceiver, filter);
-//        ConnectionService.sendCommand(ConnectionService.SEND,"{\"cmd\":\"gal\"}");
-//
-//    }
+    private void init() {
+        BroadcastReceiver mRefreshReceiver;
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("onMessage");
+        mRefreshReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String data = intent.getExtras().getString("data");
+                String[] dataArr = data.split("\n");
+                Log.d("htl",data);
+
+                for (String elm:
+                        dataArr) {
+                    String[] keyVal = elm.split(":");
+                    String key = keyVal[0];
+                    String val = keyVal[1];
+
+                    if(key.equals("color1_inp") && color1Rdb.isChecked()){
+                        colorPickerView.setInitialColor(Color.parseColor(val));
+                    }else if(key.equals("color2_inp")&& color2Rdb.isChecked()){
+                        colorPickerView.setInitialColor(Color.parseColor(val));
+                    }else if(key.equals("color3_inp")&& color3Rdb.isChecked()){
+                        colorPickerView.setInitialColor(Color.parseColor(val));
+                    }
+                }
+
+            }
+        };
+        LocalBroadcastManager.getInstance(view.getContext()).registerReceiver(mRefreshReceiver, filter);
+        ConnectionService.sendCommand(ConnectionService.SEND,"{\"cmd\":\"gal\"}");
+
+    }
 }

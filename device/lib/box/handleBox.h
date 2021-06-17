@@ -1,3 +1,4 @@
+#pragma once
 #include "box.h"
 TaskHandle_t boxTask;
 void boxHandle( void * pvParameters ){

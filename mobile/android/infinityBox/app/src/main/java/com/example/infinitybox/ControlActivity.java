@@ -28,6 +28,11 @@ public class ControlActivity extends AppCompatActivity {
 
     Button powerBtn;
     Boolean _isOn = false;
+
+    Button pauseBtn;
+    Boolean _isPause = false;
+
+
     Button reactBtn;
 
     @Override
@@ -70,6 +75,17 @@ public class ControlActivity extends AppCompatActivity {
 
                         }
                     }
+                    if(key.equals("timer_tgl")){
+                        if(val.equals("true")){
+                            _isPause=true;
+                            pauseBtn.setBackgroundColor(Color.GRAY);
+                        }
+                        else{
+                            _isPause=false;
+                            pauseBtn.setBackgroundColor(0xFF424242);
+
+                        }
+                    }
                 }
 
             }
@@ -89,6 +105,17 @@ public class ControlActivity extends AppCompatActivity {
 
             }
         });
+        pauseBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(_isPause)
+                    ConnectionService.sendCommand(ConnectionService.SEND,"{\"cmd\":\"exe\",\"key\":\"timer_tgl\",\"val\":\"false\"}");
+                else
+                    ConnectionService.sendCommand(ConnectionService.SEND,"{\"cmd\":\"exe\",\"key\":\"timer_tgl\",\"val\":\"true\"}");
+
+            }
+        });
+
         reactBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,7 +127,8 @@ public class ControlActivity extends AppCompatActivity {
 
     private void mapView() {
         powerBtn = findViewById(R.id.power_btn);
-    reactBtn = findViewById(R.id.react_btn);
+        reactBtn = findViewById(R.id.react_btn);
+        pauseBtn = findViewById(R.id.timer_btn);
     }
 
     public void showFragment(View view){

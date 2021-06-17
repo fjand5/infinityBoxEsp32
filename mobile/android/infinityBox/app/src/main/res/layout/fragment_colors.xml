@@ -12,35 +12,40 @@
         android:id="@+id/colorPicker_pkr"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/radioGroup"
+        app:layout_constraintBottom_toTopOf="@+id/color_select_rdg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"></com.skydoves.colorpickerview.ColorPickerView>
 
     <RadioGroup
-        android:id="@+id/radioGroup"
+        android:id="@+id/color_select_rdg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="154dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <RadioButton
-            android:id="@+id/radioButton3"
+            android:id="@+id/color1_select_rdb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="RadioButton" />
+            android:checked="true"
+            android:text="Color 1" />
 
         <RadioButton
-            android:id="@+id/radioButton2"
+            android:id="@+id/color2_select_rdb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="RadioButton" />
+            android:text="Color 2" />
+
 
         <RadioButton
-            android:id="@+id/radioButton"
+            android:id="@+id/color3_select_rdb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="RadioButton" />
+            android:text="Color 3" />
+
     </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
