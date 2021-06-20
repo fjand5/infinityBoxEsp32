@@ -50,6 +50,8 @@ public class ControlActivity extends AppCompatActivity {
         moreFragment = new MoreFragment();
         favoritesFragment = new FavoritesFragment();
 
+        showFragment(findViewById(R.id.colors_btn));
+
         BroadcastReceiver mRefreshReceiver;
         IntentFilter filter = new IntentFilter();
         filter.addAction("onMessage");
@@ -122,6 +124,7 @@ public class ControlActivity extends AppCompatActivity {
                 ConnectionService.sendCommand(ConnectionService.SEND,"{\"cmd\":\"exe\",\"key\":\"reactBright_btn\",\"val\":\"\"}");
             }
         });
+
 
     }
 

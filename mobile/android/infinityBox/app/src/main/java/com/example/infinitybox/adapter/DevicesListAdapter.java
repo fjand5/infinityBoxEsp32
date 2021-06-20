@@ -31,13 +31,15 @@ public class DevicesListAdapter extends ArrayAdapter<Device> {
         deviceIp.setText(getItem(position).getIp());
         return convertView;
     }
-    public static void updateDevicesList(ListView view){
+    public static void updateDevicesList(ListView view, String hostName){
 
         DevicesListAdapter devicesListAdapter = new DevicesListAdapter(
                 view.getContext(),
                 R.id.list_device_ltw,
                 LocalDataManager.getInstance().getDevices()
         );
+        if(hostName != null)
+            devicesListAdapter.add(new Device(hostName));
         view.setAdapter(devicesListAdapter);
 
     }

@@ -149,11 +149,12 @@ void setupWebserver() {
 
   // client truyền dữ liệu cho server
   onClientCommit = [](uint8_t num, String data){
+    
     DeserializationError err = deserializeJson(webDoc, data);
     if (!err){
         JsonObject obj = webDoc.as<JsonObject>();
         String cmd = obj["cmd"];
-
+        serializeJsonPretty(obj,Serial);
         if(cmd == "gut"){
           // String key = obj["key"];
           String res = String(millis());

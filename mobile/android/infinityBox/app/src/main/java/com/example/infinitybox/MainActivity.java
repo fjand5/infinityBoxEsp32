@@ -27,11 +27,17 @@ import com.example.infinitybox.local_data.Device;
 import com.example.infinitybox.local_data.LocalDataManager;
 import com.example.infinitybox.services.ConnectionService;
 
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.List;
 
 import static com.example.infinitybox.adapter.DevicesListAdapter.updateDevicesList;
 
 public class MainActivity extends AppCompatActivity {
+    private static final int MAX_UDP_DATAGRAM_LEN = 100;
+    private static final int UDP_SERVER_PORT = 7878;
+    ListenBroadcast listenBroadcast;
     ServiceConnection connectionService;
 
     ListView listDevices_ltw;
@@ -72,10 +78,27 @@ public class MainActivity extends AppCompatActivity {
         unbindService(connectionService);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        listenBroadcast.kill();
+        Log.d("htl","onPause");
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        listenBroadcast = new ListenBroadcast();
+        Log.d("htl","start");
+
+        listenBroadcast.start();
+    }
+
     void init(){
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("TIÊU ĐỀ ACTIVITY"); //Thiết lập tiêu đề nếu muốn
-        updateDevicesList(listDevices_ltw);
+        updateDevicesList(listDevices_ltw,null);
         Intent intent = new Intent(this, ConnectionService.class);
         connectionService =
                 new ServiceConnection() {
@@ -99,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         listDevices_ltw = findViewById(R.id.list_device_ltw);
     }
     void setEvent(){
-    listDevices_ltw.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listDevices_ltw.setOnItemClickListener(new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             ConnectionService.sendCommand(ConnectionService.DISCONNECT,null);
@@ -124,9 +147,48 @@ public class MainActivity extends AppCompatActivity {
             ConnectionService.sendCommand(ConnectionService.CONNECT,ip);
         }
     });
+
     }
 
 
+
+    private class ListenBroadcast extends Thread {
+        private boolean bKeepRunning = true;
+        public void run() {
+            byte[] lmessage = new byte[MAX_UDP_DATAGRAM_LEN];
+            DatagramPacket packet = new DatagramPacket(lmessage, lmessage.length);
+            DatagramSocket socket = null;
+            try {
+                socket = new DatagramSocket(UDP_SERVER_PORT);
+                Log.d("htl","new DatagramSocket");
+
+                while(bKeepRunning) {
+                    socket.receive(packet);
+                    String message = new String(lmessage, 0, packet.getLength());
+                    InetAddress ip = packet.getAddress();
+                    Log.d("htl",message + " " + ip.getHostAddress());
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateDevicesList(listDevices_ltw,ip.getHostAddress());
+
+                        }
+                    });
+                }
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+
+            if (socket != null) {
+                socket.close();
+            }
+        }
+
+        public void kill() {
+            bKeepRunning = false;
+        }
+    }
 
 
 }

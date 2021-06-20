@@ -106,7 +106,6 @@ public class ColorsFragment extends Fragment {
             public void onReceive(Context context, Intent intent) {
                 String data = intent.getExtras().getString("data");
                 String[] dataArr = data.split("\n");
-                Log.d("htl",data);
 
                 for (String elm:
                         dataArr) {

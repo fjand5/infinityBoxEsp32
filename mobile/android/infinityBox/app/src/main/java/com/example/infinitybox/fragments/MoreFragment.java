@@ -84,7 +84,6 @@ public class MoreFragment extends Fragment {
                 int progress = seekBar.getProgress();
                 String cmd =
                         "{\"cmd\":\"exe\",\"key\":\"brightness_sld\",\"val\":"+progress+"}";
-                Log.d("htl", cmd);
                 ConnectionService.sendCommand(
                         ConnectionService.SEND,cmd
                 );
@@ -107,7 +106,6 @@ public class MoreFragment extends Fragment {
                 int progress = seekBar.getProgress();
                 String cmd =
                         "{\"cmd\":\"exe\",\"key\":\"speed_sld\",\"val\":"+progress+"}";
-                Log.d("htl", cmd);
                 ConnectionService.sendCommand(
                         ConnectionService.SEND,cmd
                 );
@@ -130,7 +128,6 @@ public class MoreFragment extends Fragment {
                 int progress = seekBar.getProgress();
                 String cmd =
                         "{\"cmd\":\"exe\",\"key\":\"intensity_sld\",\"val\":"+progress+"}";
-                Log.d("htl", cmd);
                 ConnectionService.sendCommand(
                         ConnectionService.SEND,cmd
                 );

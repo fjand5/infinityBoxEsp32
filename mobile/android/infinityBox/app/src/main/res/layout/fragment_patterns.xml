@@ -1,14 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.PatternsFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="parttern fragment" />
 
-</FrameLayout>
+    <ImageView
+        android:id="@+id/previousMode_ico"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_skip_previous_24"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintEnd_toStartOf="@+id/currentMode_spn"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/nextMode_ico"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_skip_next_24"
+        app:layout_constraintHorizontal_weight="2"
+
+        app:layout_constraintBottom_toBottomOf="@+id/currentMode_spn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/currentMode_spn"
+        app:layout_constraintTop_toTopOf="@+id/currentMode_spn" />
+
+    <Spinner
+        android:id="@+id/currentMode_spn"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHorizontal_weight="6"
+
+        app:layout_constraintBottom_toBottomOf="@+id/previousMode_ico"
+        app:layout_constraintEnd_toStartOf="@+id/nextMode_ico"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/previousMode_ico"
+        app:layout_constraintTop_toTopOf="@+id/previousMode_ico" />
+</androidx.constraintlayout.widget.ConstraintLayout>

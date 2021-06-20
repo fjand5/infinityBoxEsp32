@@ -38,7 +38,14 @@ public:
         setSymmetry(SYM_TEST);
         start();
     }
-    
+    void changeMode(int mode){
+        _mode = mode;
+        _mode = _mode>55?0:_mode;
+        _mode = _mode<0?55:_mode;
+        for (int i = 0; i < getNumSegments(); i++){
+            setMode(i,_mode);
+        }
+    }
     void nextMode(){
         _mode++;
         if(_sym == SYM_VERTEX){

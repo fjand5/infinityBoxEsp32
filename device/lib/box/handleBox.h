@@ -12,6 +12,9 @@ void boxHandle( void * pvParameters ){
 void setTimer(uint32_t timer){
   box.setTimer(timer);
 }
+void changeMode(int mode){
+  box.changeMode(mode);
+}
 void nextMode(){
   box.nextMode();
 }
