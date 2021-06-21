@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.SeekBar;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -36,6 +37,11 @@ public class ColorsFragment extends Fragment {
     RadioButton color1Rdb;
     RadioButton color2Rdb;
     RadioButton color3Rdb;
+
+    SeekBar redSkb;
+    SeekBar greenSkb;
+    SeekBar blueSkb;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +93,109 @@ public class ColorsFragment extends Fragment {
                 ConnectionService.sendCommand(ConnectionService.SEND,"{\"cmd\":\"gal\"}");
             }
         });
+        redSkb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                int color = colorPickerView.getColor();
+                int red = redSkb.getProgress();
+                int green = Color.green(color);
+                int blue = Color.blue(color);
+                color = Color.rgb(red,green,blue);
+                String hexColor = String.format("#%06X", (0xFFFFFF & color));
+                String cmd = "";
+
+                if(color1Rdb.isChecked()){
+                    cmd = "{\"cmd\":\"exe\",\"key\":\"color1_inp\",\"val\":\""+hexColor+"\"}";
+                }
+                if(color2Rdb.isChecked()){
+                    cmd = "{\"cmd\":\"exe\",\"key\":\"color2_inp\",\"val\":\""+hexColor+"\"}";
+                }
+                if(color3Rdb.isChecked()){
+                    cmd = "{\"cmd\":\"exe\",\"key\":\"color3_inp\",\"val\":\""+hexColor+"\"}";
+                }
+                Log.d("htl",cmd);
+                ConnectionService.sendCommand(ConnectionService.SEND, cmd);
+            }
+        });
+        greenSkb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                int color = colorPickerView.getColor();
+                int red = Color.red(color);
+                int green = greenSkb.getProgress();
+                int blue = Color.blue(color);
+                color = Color.rgb(red,green,blue);
+                String hexColor = String.format("#%06X", (0xFFFFFF & color));
+                String cmd = "";
+
+                if(color1Rdb.isChecked()){
+                    cmd = "{\"cmd\":\"exe\",\"key\":\"color1_inp\",\"val\":\""+hexColor+"\"}";
+                }
+                if(color2Rdb.isChecked()){
+                    cmd = "{\"cmd\":\"exe\",\"key\":\"color2_inp\",\"val\":\""+hexColor+"\"}";
+                }
+                if(color3Rdb.isChecked()){
+                    cmd = "{\"cmd\":\"exe\",\"key\":\"color3_inp\",\"val\":\""+hexColor+"\"}";
+                }
+
+                ConnectionService.sendCommand(ConnectionService.SEND, cmd);
+
+            }
+        });
+        blueSkb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                int color = colorPickerView.getColor();
+                int red = Color.red(color);
+                int green = Color.green(color);
+                int blue = blueSkb.getProgress();
+                color = Color.rgb(red,green,blue);
+                String hexColor = String.format("#%06X", (0xFFFFFF & color));
+                String cmd = "";
+
+                if(color1Rdb.isChecked()){
+                    cmd = "{\"cmd\":\"exe\",\"key\":\"color1_inp\",\"val\":\""+hexColor+"\"}";
+                }
+                if(color2Rdb.isChecked()){
+                    cmd = "{\"cmd\":\"exe\",\"key\":\"color2_inp\",\"val\":\""+hexColor+"\"}";
+                }
+                if(color3Rdb.isChecked()){
+                    cmd = "{\"cmd\":\"exe\",\"key\":\"color3_inp\",\"val\":\""+hexColor+"\"}";
+                }
+
+                ConnectionService.sendCommand(ConnectionService.SEND, cmd);
+
+            }
+        });
     }
 
     private void mapView() {
@@ -96,6 +205,10 @@ public class ColorsFragment extends Fragment {
         color1Rdb = view.findViewById(R.id.color1_select_rdb);
         color2Rdb = view.findViewById(R.id.color2_select_rdb);
         color3Rdb = view.findViewById(R.id.color3_select_rdb);
+
+        redSkb = view.findViewById(R.id.red_skb);
+        greenSkb = view.findViewById(R.id.green_skb);
+        blueSkb = view.findViewById(R.id.blue_skb);
     }
     private void init() {
         BroadcastReceiver mRefreshReceiver;
@@ -113,13 +226,35 @@ public class ColorsFragment extends Fragment {
                     String key = keyVal[0];
                     String val = keyVal[1];
 
-                    if(key.equals("color1_inp") && color1Rdb.isChecked()){
-                        colorPickerView.setInitialColor(Color.parseColor(val));
-                    }else if(key.equals("color2_inp")&& color2Rdb.isChecked()){
-                        colorPickerView.setInitialColor(Color.parseColor(val));
-                    }else if(key.equals("color3_inp")&& color3Rdb.isChecked()){
-                        colorPickerView.setInitialColor(Color.parseColor(val));
+                    try{
+
+                        int color = Color.parseColor(val);
+                        int red = Color.red(color);
+                        int blue = Color.blue(color);
+                        int green = Color.green(color);
+                        if(key.equals("color1_inp") && color1Rdb.isChecked()){
+                            redSkb.setProgress(red);
+                            greenSkb.setProgress(green);
+                            blueSkb.setProgress(blue);
+
+                            colorPickerView.setInitialColor(color);
+                        }else if(key.equals("color2_inp")&& color2Rdb.isChecked()){
+                            redSkb.setProgress(red);
+                            greenSkb.setProgress(green);
+                            blueSkb.setProgress(blue);
+                            colorPickerView.setInitialColor(color);
+                        }else if(key.equals("color3_inp")&& color3Rdb.isChecked()){
+                            redSkb.setProgress(red);
+                            greenSkb.setProgress(green);
+                            blueSkb.setProgress(blue);
+                            colorPickerView.setInitialColor(color);
+                        }
+
+                    }catch (Exception e){
+
                     }
+
+
                 }
 
             }
