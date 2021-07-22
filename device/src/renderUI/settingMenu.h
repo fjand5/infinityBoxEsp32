@@ -22,6 +22,7 @@ void renderSettingMenu(){
     setValue("current_mode",String(box.getMode()));
 
   });
+  changeMode(getValue("current_mode").toInt());
   renderButton("setting Box","previous_mode","Previous Mode",R"({
     "newLine":true
   })",
@@ -55,6 +56,23 @@ void renderSettingMenu(){
       offBox();
     }
   }); 
+  renderToggle("setting Box","react_music","Music",R"({
+    "newLine":true
+  })",
+  [](String key, String val){
+    setValue(key,val);
+    if(val == "true"){
+      onReact();
+    }if(val == "false"){
+      offReact();
+    }
+  }); 
+  if(getValue("react_music") == "true"){
+    onReact();
+  }else{
+    offReact();
+  }
+
 
   
   renderButton("setting Box","next_segment","Next Segment",R"({
@@ -123,7 +141,7 @@ void renderSettingMenu(){
     changeBrightness(val.toInt());
     setValue("brightness_sld",val);
   });
-  changeSpeed(getValue("brightness_sld").toInt());
+  changeBrightness(getValue("brightness_sld").toInt());
 
 
 }

@@ -1,14 +1,8 @@
 #pragma once
 #include "box.h"
+#include "mic.h"
 TaskHandle_t boxTask;
-void boxHandle( void * pvParameters ){
-  box.settup();
-  for(;;){
-    box.beforeService();
-    box.service();
-    box.affterService();
-  } 
-}
+
 void setTimer(uint32_t timer){
   box.setTimer(timer);
 }
@@ -44,6 +38,25 @@ void onTimer(){
 }
 void offTimer(){
   box.offTimer();
+}
+void onReact(){
+  box.setReacMusic(true);
+}
+void offReact(){
+  box.setReacMusic(false);
+}
+void onChangeBeat(double val, double freq){
+  box.onChangeBeat(val, freq);
+}
+void boxHandle( void * pvParameters ){
+  setupMIC();
+  box.settup();
+  for(;;){
+    if(box.beforeService([](){
+      return getValByFreq(onChangeBeat);
+    })) box.service();
+    box.affterService();
+  } 
 }
 void setupBox() {
 
