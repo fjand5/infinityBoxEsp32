@@ -1,5 +1,6 @@
 #pragma once
 #include <WS2812FX.h>
+#include "soundEff.h"
 // Nhớ thiết lập lại max segment trong thư viện
 #define LED_PIN    23  // digital pin used to drive the LED strip
 #define LED_COUNT 288  // number of LEDs on the strip
@@ -120,6 +121,10 @@ public:
         }
     }
     void setReacMusic(bool val){
+        if(val)
+            for (int i = 0; i < getNumSegments(); i++){
+                setMode(i,FX_MODE_CUSTOM);
+            }
         _isReacMusic = val;
     }
     void changeSpeed(uint16_t spd){
@@ -128,6 +133,8 @@ public:
             _spd = map(spd,0,100,250,0);
         else if(curMode == FX_MODE_BREATH)
             _spd = map(spd,0,100,65535,0);
+        else if(curMode == FX_MODE_CUSTOM)
+            _spd = map(spd,0,100,100,0);
         else
             _spd = map(spd,0,100,5000,0);
         for (int i = 0; i < getNumSegments(); i++){
@@ -267,7 +274,8 @@ public:
 
 
         }
-        
+        if(_isReacMusic)
+            changeMode(FX_MODE_CUSTOM);
         for (int i = 0; i < getNumSegments(); i++){
             setMode(i, _mode);
         }
@@ -275,12 +283,12 @@ public:
         Serial.println(String("getNumSegments: ") + getNumSegments());
 
     }
-    void addPixelForBeat(uint32_t color =Color(255,0,0)){
-     for (int i = 0; i < getNumSegments(); i++){
-            WS2812FX::Segment* seg = getSegment(i);
-            setPixelColor(seg->start,color);
-        }
-    }
+    // void addPixelForBeat(uint32_t color =Color(255,0,0)){
+    //  for (int i = 0; i < getNumSegments(); i++){
+    //         WS2812FX::Segment* seg = getSegment(i);
+    //         setPixelColor(seg->start,color);
+    //     }
+    // }
     void onChangeBeat(double micVal , double freq){
         uint8_t curMode = getMode();
 
@@ -288,26 +296,8 @@ public:
             micVal = 100;
         if(micVal < 0)
             micVal = 0;
-        if(_isReacMusic){
-            if(curMode == FX_MODE_RANDOM_COLOR
-                || curMode == FX_MODE_BLINK
-                ){     
-                    for(int i = 0; i<micVal/10; i++)
-                        service();
-                }else if(curMode == FX_MODE_CUSTOM
-                ){     
-                    if(micVal > 20){
-                        if(freq > 10 && freq<= 30)
-                            addPixelForBeat(getColors(0)[0]);
-                            
-                        else if(freq > 30 && freq<= 60)
-                            addPixelForBeat(getColors(0)[1]);
-                        else 
-                            addPixelForBeat(getColors(0)[2]);
-                    }
-                        
-                }
-
+        if(_isReacMusic && curMode == FX_MODE_CUSTOM){
+            onBeat(this,micVal,freq);   
         }
     }
     bool beforeService(double (*micValFunc)()){
@@ -321,29 +311,34 @@ public:
 
         if(_isReacMusic){
             double micVal = micValFunc();
-            if(micVal > 100)
-                micVal = 100;
-            if(micVal < 0)
-                micVal = 0;
-            uint8_t curMode = getMode();
-            if(curMode == FX_MODE_STATIC
-            || curMode == FX_MODE_COLOR_WIPE
-            || curMode == FX_MODE_COLOR_WIPE_INV
-            || curMode == FX_MODE_COLOR_WIPE_REV
-            || curMode == FX_MODE_COLOR_WIPE_REV_INV
-            || curMode == FX_MODE_COLOR_WIPE_RANDOM
-            || curMode == FX_MODE_BREATH){
-                changeBrightness(micVal,true);
-            }
-            else if
-            (curMode == FX_MODE_RANDOM_COLOR
-            || curMode == FX_MODE_BLINK){     
-                return false;
-            }else{
-                changeSpeed(micVal);
-
-            }
         }
+        //     if(micVal > 100)
+        //         micVal = 100;
+        //     if(micVal < 0)
+        //         micVal = 0;
+        //     uint8_t curMode = getMode();
+        //     if(curMode == FX_MODE_STATIC
+        //     || curMode == FX_MODE_COLOR_WIPE
+        //     || curMode == FX_MODE_COLOR_WIPE_INV
+        //     || curMode == FX_MODE_COLOR_WIPE_REV
+        //     || curMode == FX_MODE_COLOR_WIPE_REV_INV
+        //     || curMode == FX_MODE_COLOR_WIPE_RANDOM
+        //     || curMode == FX_MODE_BREATH){
+        //         changeBrightness(micVal,true);
+        //     }
+        //     else if
+        //     (curMode == FX_MODE_RANDOM_COLOR
+        //     || curMode == FX_MODE_BLINK){     
+        //         return false;
+        //     }
+        //     else if
+        //     (curMode == FX_MODE_CUSTOM){     
+        //         return true;
+        //     }else{
+        //         changeSpeed(micVal);
+
+        //     }
+        // }
         return true;
     }    
     void affterService(){
@@ -394,18 +389,5 @@ Box box = Box(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 
 uint16_t musicEffect(void) {
-  WS2812FX::Segment* seg = box.getSegment(); // get the current segment
-//   WS2812FX::Segment_runtime* segrt = box.getSegmentRuntime();
-  int seglen = seg->stop - seg->start + 1;
-  int * tmp = new int[seglen - 1];
-  for (int i = 0; i < seglen - 1; i++) {
-    tmp[i] = box.getPixelColor(seg->start + i);
-  }
-  box.setPixelColor(seg->start, 0);
-  for (int i = 1; i < seglen; i++) {
-    box.setPixelColor(seg->start + i, tmp[i - 1]);
-  }
-  delete[] tmp;
-  //  box.setPixelColor(seg->start + segrt->counter_mode_call%LED_COUNT, seg->colors[0]);
-  return 0; // return the delay until the next animation step (in msec)
+  return soundEffHandle(&box);
 }

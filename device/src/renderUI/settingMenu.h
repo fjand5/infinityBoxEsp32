@@ -56,22 +56,6 @@ void renderSettingMenu(){
       offBox();
     }
   }); 
-  renderToggle("setting Box","react_music","Music",R"({
-    "newLine":true
-  })",
-  [](String key, String val){
-    setValue(key,val);
-    if(val == "true"){
-      onReact();
-    }if(val == "false"){
-      offReact();
-    }
-  }); 
-  if(getValue("react_music") == "true"){
-    onReact();
-  }else{
-    offReact();
-  }
 
 
   
