@@ -1,10 +1,37 @@
 #pragma once
 #define SE_OVERFLOW_BEGIN         0
 #define SE_OVERFLOW_MID           1
+#define SE_STAR_BEAT         2
+#define SE_VU_METER        3
 #include <WS2812FX.h>
-uint8_t soundEffectMode = SE_OVERFLOW_MID;
+uint8_t soundEffectMode = SE_VU_METER;
 void setSoundEffectMode(uint8_t eff){
     soundEffectMode = eff;
+}
+void addVueMetter(WS2812FX * leds, double val){
+    for (int i = 0; i < leds->getNumSegments(); i++){
+        WS2812FX::Segment* seg = leds->getSegment(i);
+        int seglen = seg->stop - seg->start + 1;
+        double count = val*seglen/100;
+        for (uint16_t i = 0; i < count; i++){
+            if(double(i)*100.0/seglen < 33)
+                leds->setPixelColor(seg->start + i, seg->colors[0]);
+            else if(double(i)*100.0/seglen < 66)
+                leds->setPixelColor(seg->start + i, seg->colors[1]);
+            else
+                leds->setPixelColor(seg->start + i, seg->colors[2]);
+        }
+    }
+}
+void addColorRandom(WS2812FX * leds, uint16_t count = 1){
+    for (int i = 0; i < leds->getNumSegments(); i++){
+        WS2812FX::Segment* seg = leds->getSegment(i);
+        int seglen = seg->stop - seg->start + 1;
+        for (uint16_t i = 0; i < count%3; i++){
+            uint32_t color = leds->Color(leds->random8(),leds->random8(),leds->random8());
+            leds->setPixelColor(seg->start + leds->random16(seglen), color);
+        }
+    }
 }
 void addColorBegin(WS2812FX * leds, uint8_t colorPosition){
     for (int i = 0; i < leds->getNumSegments(); i++){
@@ -25,6 +52,24 @@ void addColorMid(WS2812FX * leds, uint8_t colorPosition){
         leds->setPixelColor(seg->start + seglen/2 - 1,seg->colors[colorPosition]);
     }
 }
+uint16_t reduceLeds(WS2812FX * leds){
+    WS2812FX::Segment* seg = leds->getSegment(); // get the current segment
+    int seglen = seg->stop - seg->start + 1;
+    for (int i = seglen - 1; i >=0; i--){
+        if(leds->getPixelColor(seg->start + i) != 0 ){
+            leds->setPixelColor(seg->start + i, 0);
+            return seg->speed;
+        }
+       
+    }
+    return seg->speed;
+
+}
+uint16_t startBeatEffect(WS2812FX * leds){
+  WS2812FX::Segment* seg = leds->getSegment(); // get the current segment
+    leds->fade_out(0);
+    return seg->speed;
+}
 uint16_t overflowingEffectBegin(WS2812FX * leds){
   WS2812FX::Segment* seg = leds->getSegment(); // get the current segment
   WS2812FX::Segment_runtime* segrt = leds->getSegmentRuntime();
@@ -40,7 +85,7 @@ uint16_t overflowingEffectBegin(WS2812FX * leds){
     }
     delete[] tmp;
   }
-  return seg->speed/2; // return the delay until the next animation step (in msec)
+  return seg->speed/2; 
 }
 uint16_t overflowingEffectMid(WS2812FX * leds){
   WS2812FX::Segment* seg = leds->getSegment(); // get the current segment
@@ -65,13 +110,10 @@ uint16_t overflowingEffectMid(WS2812FX * leds){
         leds->setPixelColor(seg->start + i, tmp[seglen - i - 1]);
     }
     delete[] tmp;
-    // segrt->counter_mode_step++;
-    // if(segrt->counter_mode_step == seglen/2)
-    //     segrt->counter_mode_step = 0;
 
   }else{
   }
-  return seg->speed/2; // return the delay until the next animation step (in msec)
+  return seg->speed/2; 
 }
 
 // ===================================================== Handler =====================================================
@@ -80,10 +122,17 @@ uint16_t soundEffHandle(WS2812FX * leds){
         return overflowingEffectBegin(leds);
     }else if(soundEffectMode == SE_OVERFLOW_MID){
         return overflowingEffectMid(leds);
+    }else if(soundEffectMode == SE_STAR_BEAT){
+        return startBeatEffect(leds);
+    }else if(soundEffectMode == SE_VU_METER){
+        return reduceLeds(leds);
     }
 }
 void onBeat(WS2812FX * leds, double micVal , double freq){
-    if(micVal<20)
+    double noiseVal = 20;
+    if(soundEffectMode == SE_STAR_BEAT)
+        noiseVal = 10;
+    if(micVal<noiseVal)
         return;
     if(soundEffectMode == SE_OVERFLOW_BEGIN){
         if(freq > 10 && freq<= 40)
@@ -100,5 +149,9 @@ void onBeat(WS2812FX * leds, double micVal , double freq){
         else 
             addColorMid(leds, 2);
 
+    }else if(soundEffectMode == SE_STAR_BEAT){
+        addColorRandom(leds, micVal);
+    }else if(soundEffectMode == SE_VU_METER){
+        addVueMetter(leds, micVal);
     }
 }
