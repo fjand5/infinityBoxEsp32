@@ -44,7 +44,7 @@ public:
     }
     void changeMode(int mode){
         _mode = mode;
-        _mode = _mode>getModeCount()?0:_mode;
+        _mode = _mode>=getModeCount()?0:_mode;
         _mode = _mode<0?getModeCount():_mode;
         for (int i = 0; i < getNumSegments(); i++){
             setMode(i,_mode);
@@ -52,69 +52,69 @@ public:
     }
     void nextMode(){
         _mode++;
-        if(_sym == SYM_VERTEX){
-            while(
-                _mode == FX_MODE_STATIC
-                || _mode == FX_MODE_BLINK
-                || _mode == FX_MODE_BREATH
-                || _mode == FX_MODE_COLOR_WIPE_REV_INV
-                || _mode == FX_MODE_RAINBOW
-                || _mode == FX_MODE_FADE
-                || _mode == FX_MODE_FADE
-                || _mode == FX_MODE_SPARKLE                 
-                || _mode == FX_MODE_FLASH_SPARKLE           
-                || _mode == FX_MODE_HYPER_SPARKLE           
-                || _mode == FX_MODE_STROBE                  
-                || _mode == FX_MODE_STROBE_RAINBOW          
-                || _mode == FX_MODE_MULTI_STROBE            
-                || _mode == FX_MODE_BLINK_RAINBOW           
-                || _mode == FX_MODE_CHASE_WHITE             
-                || _mode == FX_MODE_CHASE_COLOR             
-                || _mode == FX_MODE_CHASE_FLASH  
-                || _mode == FX_MODE_CHASE_FLASH_RANDOM      
-                || _mode == FX_MODE_FIRE_FLICKER        
-                || _mode == FX_MODE_FIRE_FLICKER_SOFT   
-                || _mode == FX_MODE_FIRE_FLICKER_INTENSE
-                || _mode == FX_MODE_CIRCUS_COMBUSTUS         
-                ){
-                _mode++;
-            }
-        }
-        _mode = _mode>getModeCount()?0:_mode;
+        // if(_sym == SYM_VERTEX){
+        //     while(
+        //         _mode == FX_MODE_STATIC
+        //         || _mode == FX_MODE_BLINK
+        //         || _mode == FX_MODE_BREATH
+        //         || _mode == FX_MODE_COLOR_WIPE_REV_INV
+        //         || _mode == FX_MODE_RAINBOW
+        //         || _mode == FX_MODE_FADE
+        //         || _mode == FX_MODE_FADE
+        //         || _mode == FX_MODE_SPARKLE                 
+        //         || _mode == FX_MODE_FLASH_SPARKLE           
+        //         || _mode == FX_MODE_HYPER_SPARKLE           
+        //         || _mode == FX_MODE_STROBE                  
+        //         || _mode == FX_MODE_STROBE_RAINBOW          
+        //         || _mode == FX_MODE_MULTI_STROBE            
+        //         || _mode == FX_MODE_BLINK_RAINBOW           
+        //         || _mode == FX_MODE_CHASE_WHITE             
+        //         || _mode == FX_MODE_CHASE_COLOR             
+        //         || _mode == FX_MODE_CHASE_FLASH  
+        //         || _mode == FX_MODE_CHASE_FLASH_RANDOM      
+        //         || _mode == FX_MODE_FIRE_FLICKER        
+        //         || _mode == FX_MODE_FIRE_FLICKER_SOFT   
+        //         || _mode == FX_MODE_FIRE_FLICKER_INTENSE
+        //         || _mode == FX_MODE_CIRCUS_COMBUSTUS         
+        //         ){
+        //         _mode++;
+        //     }
+        // }
+        _mode = _mode>=getModeCount()?0:_mode;
         for (int i = 0; i < getNumSegments(); i++){
             setMode(i,_mode);
         }
     }
     void previousMode(){
         _mode--;
-        if(_sym == SYM_VERTEX){
-            while(
-                _mode == FX_MODE_STATIC
-                || _mode == FX_MODE_BLINK
-                || _mode == FX_MODE_BREATH
-                || _mode == FX_MODE_COLOR_WIPE_REV_INV
-                || _mode == FX_MODE_RAINBOW
-                || _mode == FX_MODE_FADE
-                || _mode == FX_MODE_FADE
-                || _mode == FX_MODE_SPARKLE                 
-                || _mode == FX_MODE_FLASH_SPARKLE           
-                || _mode == FX_MODE_HYPER_SPARKLE           
-                || _mode == FX_MODE_STROBE                  
-                || _mode == FX_MODE_STROBE_RAINBOW          
-                || _mode == FX_MODE_MULTI_STROBE            
-                || _mode == FX_MODE_BLINK_RAINBOW           
-                || _mode == FX_MODE_CHASE_WHITE             
-                || _mode == FX_MODE_CHASE_COLOR             
-                || _mode == FX_MODE_CHASE_FLASH  
-                || _mode == FX_MODE_CHASE_FLASH_RANDOM      
-                || _mode == FX_MODE_FIRE_FLICKER        
-                || _mode == FX_MODE_FIRE_FLICKER_SOFT   
-                || _mode == FX_MODE_FIRE_FLICKER_INTENSE
-                || _mode == FX_MODE_CIRCUS_COMBUSTUS         
-                ){
-                _mode--;
-            }
-        }
+        // if(_sym == SYM_VERTEX){
+        //     while(
+        //         _mode == FX_MODE_STATIC
+        //         || _mode == FX_MODE_BLINK
+        //         || _mode == FX_MODE_BREATH
+        //         || _mode == FX_MODE_COLOR_WIPE_REV_INV
+        //         || _mode == FX_MODE_RAINBOW
+        //         || _mode == FX_MODE_FADE
+        //         || _mode == FX_MODE_FADE
+        //         || _mode == FX_MODE_SPARKLE                 
+        //         || _mode == FX_MODE_FLASH_SPARKLE           
+        //         || _mode == FX_MODE_HYPER_SPARKLE           
+        //         || _mode == FX_MODE_STROBE                  
+        //         || _mode == FX_MODE_STROBE_RAINBOW          
+        //         || _mode == FX_MODE_MULTI_STROBE            
+        //         || _mode == FX_MODE_BLINK_RAINBOW           
+        //         || _mode == FX_MODE_CHASE_WHITE             
+        //         || _mode == FX_MODE_CHASE_COLOR             
+        //         || _mode == FX_MODE_CHASE_FLASH  
+        //         || _mode == FX_MODE_CHASE_FLASH_RANDOM      
+        //         || _mode == FX_MODE_FIRE_FLICKER        
+        //         || _mode == FX_MODE_FIRE_FLICKER_SOFT   
+        //         || _mode == FX_MODE_FIRE_FLICKER_INTENSE
+        //         || _mode == FX_MODE_CIRCUS_COMBUSTUS         
+        //         ){
+        //         _mode--;
+        //     }
+        // }
         _mode = _mode<0?getModeCount():_mode;
         for (int i = 0; i < getNumSegments(); i++){
             setMode(i,_mode);
@@ -133,6 +133,8 @@ public:
             _spd = map(spd,0,100,250,0);
         else if(curMode == FX_MODE_BREATH)
             _spd = map(spd,0,100,65535,0);
+        else if(curMode == FX_MODE_CUSTOM)
+            _spd = map(spd,0,100,100,0);
         else if(curMode == FX_MODE_CUSTOM)
             _spd = map(spd,0,100,100,0);
         else

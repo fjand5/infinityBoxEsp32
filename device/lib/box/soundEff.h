@@ -1,12 +1,37 @@
 #pragma once
-#define SE_OVERFLOW_BEGIN         0
-#define SE_OVERFLOW_MID           1
-#define SE_STAR_BEAT         2
-#define SE_VU_METER        3
+#define SE_OVERFLOW_BEGIN           0
+#define SE_OVERFLOW_MID             1
+#define SE_STAR_BEAT                2
+#define SE_SEGMENT_BEAT             3
+#define SE_VU_METER                 4
+#define SE_SHINES_ON                5
 #include <WS2812FX.h>
-uint8_t soundEffectMode = SE_VU_METER;
+uint8_t soundEffectMode = SE_SHINES_ON;
 void setSoundEffectMode(uint8_t eff){
     soundEffectMode = eff;
+}
+void shinesToFull(WS2812FX * leds, double val){
+    if(val < 25)
+      return;
+    for (int i = 0; i < leds->getNumSegments(); i++){
+        WS2812FX::Segment* seg = leds->getSegment(i);
+        WS2812FX::Segment_runtime* segrt = leds->getSegmentRuntime(i);
+        int seglen = seg->stop - seg->start + 1;
+        double tmp =val*seglen/100;
+        segrt->aux_param3 = tmp;
+    }
+}
+void addSegmentRandom(WS2812FX * leds, double val){
+    for (uint16_t j = 0; j < val/10; j++){
+    WS2812FX::Segment* seg = leds->getSegment(leds->random8(leds->getNumSegments())); // get the current segment
+    int seglen = seg->stop - seg->start + 1;
+        for (int i = 0; i < seglen;  i++){
+            // uint32_t color = leds->Color(leds->random8(),leds->random8(),leds->random8());
+            uint32_t color = seg->colors[leds->random8(3)];
+
+            leds->setPixelColor(seg->start + i, color);
+        }
+    }
 }
 void addVueMetter(WS2812FX * leds, double val){
     for (int i = 0; i < leds->getNumSegments(); i++){
@@ -27,7 +52,7 @@ void addColorRandom(WS2812FX * leds, uint16_t count = 1){
     for (int i = 0; i < leds->getNumSegments(); i++){
         WS2812FX::Segment* seg = leds->getSegment(i);
         int seglen = seg->stop - seg->start + 1;
-        for (uint16_t i = 0; i < count%3; i++){
+        for (uint16_t j = 0; j < count%3; j++){
             uint32_t color = leds->Color(leds->random8(),leds->random8(),leds->random8());
             leds->setPixelColor(seg->start + leds->random16(seglen), color);
         }
@@ -65,7 +90,7 @@ uint16_t reduceLeds(WS2812FX * leds){
     return seg->speed;
 
 }
-uint16_t startBeatEffect(WS2812FX * leds){
+uint16_t fadeAllLeds(WS2812FX * leds){
   WS2812FX::Segment* seg = leds->getSegment(); // get the current segment
     leds->fade_out(0);
     return seg->speed;
@@ -115,17 +140,44 @@ uint16_t overflowingEffectMid(WS2812FX * leds){
   }
   return seg->speed/2; 
 }
+uint16_t patrol(WS2812FX * leds){
+  WS2812FX::Segment* seg = leds->getSegment(); // get the current segment
+  WS2812FX::Segment_runtime* segrt = leds->getSegmentRuntime();
+  int seglen = seg->stop - seg->start + 1;
+  uint16_t colorIndex = segrt->aux_param;
 
+
+  uint32_t counter = segrt->counter_mode_call;    
+  uint16_t curPosition = counter  % (seglen);
+  if(curPosition == 0){
+    segrt->aux_param = leds->random8(3);
+  }
+  leds->setPixelColor(seg->start + curPosition , seg->colors[colorIndex]);
+  int32_t tmp = segrt->aux_param3;
+  tmp -= tmp/3;
+  tmp = tmp < 0 ? 0: tmp;
+  segrt->aux_param3 = tmp;
+  if(segrt->aux_param3< seglen*2/3
+    && segrt->aux_param3>= 3
+  ){
+  }else{
+    leds->fade_out(0);
+  }
+
+  return seg->speed; 
+}
 // ===================================================== Handler =====================================================
 uint16_t soundEffHandle(WS2812FX * leds){
     if(soundEffectMode == SE_OVERFLOW_BEGIN){
         return overflowingEffectBegin(leds);
     }else if(soundEffectMode == SE_OVERFLOW_MID){
         return overflowingEffectMid(leds);
-    }else if(soundEffectMode == SE_STAR_BEAT){
-        return startBeatEffect(leds);
+    }else if(soundEffectMode == SE_STAR_BEAT || soundEffectMode == SE_SEGMENT_BEAT){
+        return fadeAllLeds(leds);
     }else if(soundEffectMode == SE_VU_METER){
         return reduceLeds(leds);
+    }else if(soundEffectMode == SE_SHINES_ON){
+        return patrol(leds);
     }
 }
 void onBeat(WS2812FX * leds, double micVal , double freq){
@@ -153,5 +205,9 @@ void onBeat(WS2812FX * leds, double micVal , double freq){
         addColorRandom(leds, micVal);
     }else if(soundEffectMode == SE_VU_METER){
         addVueMetter(leds, micVal);
+    }else if(soundEffectMode == SE_SEGMENT_BEAT){
+        addSegmentRandom(leds, micVal);
+    }else if(soundEffectMode == SE_SHINES_ON){
+        shinesToFull(leds, micVal);
     }
 }

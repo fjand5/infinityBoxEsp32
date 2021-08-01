@@ -57,6 +57,19 @@ void renderMusic(){
     setValue("cur_music_mode","3");
       setSoundEffectMode(SE_VU_METER);
   });   
+  
+  renderButton("Music","music_mode_4","Segment beat",R"({
+  })",
+  [](String key, String val){
+    setValue("cur_music_mode","4");
+      setSoundEffectMode(SE_SEGMENT_BEAT);
+  });    
+  renderButton("Music","music_mode_5","Shines On",R"({
+  })",
+  [](String key, String val){
+    setValue("cur_music_mode","5");
+    setSoundEffectMode(SE_SHINES_ON);
+  });    
 
   
 }
