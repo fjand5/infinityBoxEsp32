@@ -42,6 +42,7 @@ public:
         setSymmetry(SYM_VERTEX);
         start();
     }
+
     void changeMode(int mode){
         _mode = mode;
         _mode = _mode>=getModeCount()?0:_mode;
@@ -49,37 +50,10 @@ public:
         for (int i = 0; i < getNumSegments(); i++){
             setMode(i,_mode);
         }
+        changeSpeed(_spd);
     }
     void nextMode(){
         _mode++;
-        // if(_sym == SYM_VERTEX){
-        //     while(
-        //         _mode == FX_MODE_STATIC
-        //         || _mode == FX_MODE_BLINK
-        //         || _mode == FX_MODE_BREATH
-        //         || _mode == FX_MODE_COLOR_WIPE_REV_INV
-        //         || _mode == FX_MODE_RAINBOW
-        //         || _mode == FX_MODE_FADE
-        //         || _mode == FX_MODE_FADE
-        //         || _mode == FX_MODE_SPARKLE                 
-        //         || _mode == FX_MODE_FLASH_SPARKLE           
-        //         || _mode == FX_MODE_HYPER_SPARKLE           
-        //         || _mode == FX_MODE_STROBE                  
-        //         || _mode == FX_MODE_STROBE_RAINBOW          
-        //         || _mode == FX_MODE_MULTI_STROBE            
-        //         || _mode == FX_MODE_BLINK_RAINBOW           
-        //         || _mode == FX_MODE_CHASE_WHITE             
-        //         || _mode == FX_MODE_CHASE_COLOR             
-        //         || _mode == FX_MODE_CHASE_FLASH  
-        //         || _mode == FX_MODE_CHASE_FLASH_RANDOM      
-        //         || _mode == FX_MODE_FIRE_FLICKER        
-        //         || _mode == FX_MODE_FIRE_FLICKER_SOFT   
-        //         || _mode == FX_MODE_FIRE_FLICKER_INTENSE
-        //         || _mode == FX_MODE_CIRCUS_COMBUSTUS         
-        //         ){
-        //         _mode++;
-        //     }
-        // }
         _mode = _mode>=getModeCount()?0:_mode;
         for (int i = 0; i < getNumSegments(); i++){
             setMode(i,_mode);
@@ -87,44 +61,22 @@ public:
     }
     void previousMode(){
         _mode--;
-        // if(_sym == SYM_VERTEX){
-        //     while(
-        //         _mode == FX_MODE_STATIC
-        //         || _mode == FX_MODE_BLINK
-        //         || _mode == FX_MODE_BREATH
-        //         || _mode == FX_MODE_COLOR_WIPE_REV_INV
-        //         || _mode == FX_MODE_RAINBOW
-        //         || _mode == FX_MODE_FADE
-        //         || _mode == FX_MODE_FADE
-        //         || _mode == FX_MODE_SPARKLE                 
-        //         || _mode == FX_MODE_FLASH_SPARKLE           
-        //         || _mode == FX_MODE_HYPER_SPARKLE           
-        //         || _mode == FX_MODE_STROBE                  
-        //         || _mode == FX_MODE_STROBE_RAINBOW          
-        //         || _mode == FX_MODE_MULTI_STROBE            
-        //         || _mode == FX_MODE_BLINK_RAINBOW           
-        //         || _mode == FX_MODE_CHASE_WHITE             
-        //         || _mode == FX_MODE_CHASE_COLOR             
-        //         || _mode == FX_MODE_CHASE_FLASH  
-        //         || _mode == FX_MODE_CHASE_FLASH_RANDOM      
-        //         || _mode == FX_MODE_FIRE_FLICKER        
-        //         || _mode == FX_MODE_FIRE_FLICKER_SOFT   
-        //         || _mode == FX_MODE_FIRE_FLICKER_INTENSE
-        //         || _mode == FX_MODE_CIRCUS_COMBUSTUS         
-        //         ){
-        //         _mode--;
-        //     }
-        // }
         _mode = _mode<0?getModeCount():_mode;
         for (int i = 0; i < getNumSegments(); i++){
             setMode(i,_mode);
         }
     }
     void setReacMusic(bool val){
-        if(val)
+        if(val){
             for (int i = 0; i < getNumSegments(); i++){
                 setMode(i,FX_MODE_CUSTOM);
             }
+            changeSpeed(_spd);
+
+        }
+        else{
+            changeMode(_mode);
+        }
         _isReacMusic = val;
     }
     void changeSpeed(uint16_t spd){
@@ -278,19 +230,13 @@ public:
         }
         if(_isReacMusic)
             changeMode(FX_MODE_CUSTOM);
-        for (int i = 0; i < getNumSegments(); i++){
-            setMode(i, _mode);
-        }
-        Serial.println(String("_mode: ") + _mode + "; modeBox: " + getMode());
-        Serial.println(String("getNumSegments: ") + getNumSegments());
+        else
+            changeMode(_mode);
+        // for (int i = 0; i < getNumSegments(); i++){
+        //     setMode(i, _mode);
+        // }
 
     }
-    // void addPixelForBeat(uint32_t color =Color(255,0,0)){
-    //  for (int i = 0; i < getNumSegments(); i++){
-    //         WS2812FX::Segment* seg = getSegment(i);
-    //         setPixelColor(seg->start,color);
-    //     }
-    // }
     void onChangeBeat(double micVal , double freq){
         uint8_t curMode = getMode();
 
@@ -314,33 +260,6 @@ public:
         if(_isReacMusic){
             double micVal = micValFunc();
         }
-        //     if(micVal > 100)
-        //         micVal = 100;
-        //     if(micVal < 0)
-        //         micVal = 0;
-        //     uint8_t curMode = getMode();
-        //     if(curMode == FX_MODE_STATIC
-        //     || curMode == FX_MODE_COLOR_WIPE
-        //     || curMode == FX_MODE_COLOR_WIPE_INV
-        //     || curMode == FX_MODE_COLOR_WIPE_REV
-        //     || curMode == FX_MODE_COLOR_WIPE_REV_INV
-        //     || curMode == FX_MODE_COLOR_WIPE_RANDOM
-        //     || curMode == FX_MODE_BREATH){
-        //         changeBrightness(micVal,true);
-        //     }
-        //     else if
-        //     (curMode == FX_MODE_RANDOM_COLOR
-        //     || curMode == FX_MODE_BLINK){     
-        //         return false;
-        //     }
-        //     else if
-        //     (curMode == FX_MODE_CUSTOM){     
-        //         return true;
-        //     }else{
-        //         changeSpeed(micVal);
-
-        //     }
-        // }
         return true;
     }    
     void affterService(){

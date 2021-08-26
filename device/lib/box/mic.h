@@ -1,10 +1,11 @@
+#pragma once
 #include "driver/i2s.h"
 #include "arduinoFFT.h"
 
-const uint16_t SAMPLES = 512;
+const uint16_t SAMPLES = 256;
 double vReal[SAMPLES];
 double vImag[SAMPLES];
-
+double micGain = 1.0;
 double mapf(double x, double in_min, double in_max, double out_min, double out_max)
 {
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
@@ -96,7 +97,7 @@ double getValByFreq(void(*onChangeMax)(double val, double freq) = NULL){
   }  
   if(maxValByFreq<100000000.0)
     maxValByFreq=0;
-  maxValByFreq = mapf(maxValByFreq,0.0, 4000000000.0,0.0,double(SAMPLES));
+  maxValByFreq = mapf(maxValByFreq,0.0, 5000000000.0/micGain,0.0,double(SAMPLES));
   if(maxValByFreq > ret){
     ret=maxValByFreq;
     if(onChangeMax != NULL)
@@ -104,4 +105,10 @@ double getValByFreq(void(*onChangeMax)(double val, double freq) = NULL){
 
   }
   return mapf(ret,0.0,double(SAMPLES),0.0,100.0);
+}
+void setMicGain(double gain){
+  micGain = gain;
+}
+double getMicGain(){
+  return micGain;
 }
