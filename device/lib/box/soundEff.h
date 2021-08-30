@@ -10,6 +10,8 @@
 #define SE_RUN_SPEED                6
 #define SE_LAZY                     7
 #define SE_RAINBOW                  10
+#define SE_RAINBOW_RUN              11
+#define SE_VU_METER_COLUMN          12
 
 #include <WS2812FX.h>
 #include "./listEffect/lazy.h"
@@ -21,6 +23,8 @@
 #include "./listEffect/vuMeter.h"
 #include "./listEffect/segmentBeat.h"
 #include "./listEffect/rainbow.h"
+#include "./listEffect/rainbowRun.h"
+#include "./listEffect/vuMeterColumn.h"
 
 uint8_t soundEffectMode = SE_LAZY;
 void setSoundEffectMode(uint8_t eff, WS2812FX * leds){
@@ -52,6 +56,10 @@ void setSoundEffectMode(uint8_t eff, WS2812FX * leds){
         lazyInit(leds);
     }else if(soundEffectMode == SE_RAINBOW){
         rainbowInit(leds);
+    }else if(soundEffectMode == SE_RAINBOW_RUN){
+        rainbowRunInit(leds);
+    }else if(soundEffectMode == SE_VU_METER_COLUMN){
+        vuMeterColumnInit(leds);
     }
 }
 // ===================================================== Handler =====================================================
@@ -74,6 +82,12 @@ uint16_t soundEffHandle(WS2812FX * leds){
         return lazyHandler(leds);
     }else if(soundEffectMode == SE_RAINBOW){
         return rainbowHandler(leds);
+    }else if(soundEffectMode == SE_RAINBOW_RUN){
+        return rainbowRunHandler(leds);
+    }else if(soundEffectMode == SE_VU_METER_COLUMN){
+        return vuMeterColumnHandler(leds);
+        
+        
     }
 }
 void onBeat(WS2812FX * leds, double micVal , double freq){
@@ -95,5 +109,9 @@ void onBeat(WS2812FX * leds, double micVal , double freq){
         lazyOnBeat(leds, micVal, freq);
     }else if(soundEffectMode == SE_RAINBOW){
         rainbowOnBeat(leds, micVal, freq);
+    }else if(soundEffectMode == SE_RAINBOW_RUN){
+        rainbowRunOnBeat(leds, micVal, freq);
+    }else if(soundEffectMode == SE_VU_METER_COLUMN){
+        vuMeterColumnOnBeat(leds, micVal, freq);
     }
 }

@@ -131,6 +131,22 @@ void renderMusic(){
     setSoundEffectMode(SE_RAINBOW, &box);
   });    
 
+  renderButton("Music","music_mode_11","RainBow Run",R"({
+  })",
+  [](String key, String val){
+    setValue("cur_music_mode",String(SE_RAINBOW_RUN));
+    setSoundEffectMode(SE_RAINBOW_RUN, &box);
+  });    
+
+  renderButton("Music","music_mode_12","Vu Metter Column",R"({
+  })",
+  [](String key, String val){
+    setValue("cur_music_mode",String(SE_VU_METER_COLUMN));
+    setSoundEffectMode(SE_VU_METER_COLUMN, &box);
+  });    
+
+
+
 
   
 }

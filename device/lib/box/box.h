@@ -71,8 +71,6 @@ public:
             for (int i = 0; i < getNumSegments(); i++){
                 setMode(i,FX_MODE_CUSTOM);
             }
-            changeSpeed(_spd);
-
         }
         else{
             changeMode(_mode);

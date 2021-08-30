@@ -27,14 +27,17 @@ uint16_t rainbowHandler(WS2812FX * leds){
   if(segrt->counter_mode_step == 0){
     seg->speed = RAINBOW_SPEED;
   }
-  
-  for (int i = 0; i < seglen; i++) {
-    leds->setPixelColor(seg->start + i, 0);
-  }  
   for (int i = 0; i < seglen/2 ; i++) {			
-    double huePercent = 65535.0*segrt->counter_mode_step/100.0;
-    int hue = huePercent*i/halfLength;
-    uint32_t color = leds->gamma32(leds->ColorHSV(hue)); 
+    uint32_t color = 0;	
+    if(segrt->counter_mode_step>0){
+      double huePercent = 65535.0*segrt->counter_mode_step/100.0;
+      int hue = huePercent*i/halfLength;
+      color = leds->gamma32(leds->ColorHSV(hue)); 
+    }else{
+      color = leds->getPixelColor(seg->start + i);
+      color = leds->color_blend(0, color,  200);
+
+    }
     leds->setPixelColor(seg->start + i,color);
     leds->setPixelColor(seg->start + seglen - 1 - i,color);
   }  
