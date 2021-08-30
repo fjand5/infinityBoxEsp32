@@ -1,19 +1,34 @@
 #include <WS2812FX.h>
 
+#include "./utils.h"
+#define RUN_SPEED_SPEED  45
+#define RUN_SPEED_SPEED_FAST  20
+void runSpeedInit(WS2812FX * leds){
+    for (int i = 0; i < leds->getNumSegments(); i++){
+        WS2812FX::Segment* seg = leds->getSegment(i);
+        seg->speed = RUN_SPEED_SPEED;
+    }
+}
+
+
 void runSpeedOnBeat(WS2812FX * leds, double val, double freq){
+    for (int i = 0; i < leds->getNumSegments(); i++){
+        WS2812FX::Segment* seg = leds->getSegment(i);
+        seg->speed = RUN_SPEED_SPEED_FAST;
+    }
     for (int i = 0; i < leds->getNumSegments(); i++){
         WS2812FX::Segment* seg = leds->getSegment(i);
         WS2812FX::Segment_runtime* segrt = leds->getSegmentRuntime(i);
         int seglen = seg->stop - seg->start + 1;
-				double count = val*seglen/1500;
-				for (int j = 0; j < count; j++)
-				{
-					if(leds->getPixelColor(seg->start) != 0 )
-							leds->service();
-					uint32_t color = seg->colors[leds->random8(3)];
-					leds->setPixelColor(seg->start, leds->color_blend(segrt->counter_mode_step , color, 175));
-					segrt->counter_mode_step = color;
-				}
+		int hue = (segrt->counter_mode_call%seglen) * (65536L*val/100.0) / seglen;
+		uint32_t color = leds->gamma32(leds->ColorHSV(hue)); 
+		leds->setPixelColor(seg->start, color);
+    }
+	leds->service();
+	
+    for (int i = 0; i < leds->getNumSegments(); i++){
+        WS2812FX::Segment* seg = leds->getSegment(i);
+        seg->speed = RUN_SPEED_SPEED;
     }
 }
 

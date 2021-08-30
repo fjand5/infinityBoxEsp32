@@ -81,6 +81,7 @@ public:
     }
     void changeSpeed(uint16_t spd){
         uint8_t curMode = getMode();
+        
         if(curMode == FX_MODE_RANDOM_COLOR)
             _spd = map(spd,0,100,250,0);
         else if(curMode == FX_MODE_BREATH)
@@ -91,6 +92,9 @@ public:
             _spd = map(spd,0,100,100,0);
         else
             _spd = map(spd,0,100,5000,0);
+
+        if(curMode == FX_MODE_CUSTOM)
+            return;
         for (int i = 0; i < getNumSegments(); i++){
             setSpeed(i,_spd);
         }

@@ -2,8 +2,9 @@
 #include "../lib/webserver/config.h"
 #include "../lib/box/handleBox.h"
 #include "../lib/box/soundEff.h"
-
 #include "../lib/box/mic.h"
+#include "../lib/box/box.h"
+
 void renderMusic(){
   renderSlider("Music","micGain_sld","Gain",R"({
     "newLine":true,
@@ -16,11 +17,23 @@ void renderMusic(){
   });
   setMicGain(getValue("micGain_sld").toDouble());
 
+  renderSlider("Music","takeBeat_sld","Fix Beat",R"({
+    "newLine":true,
+    "min":0,
+    "max":100
+  })",
+  [](String key, String val){
+    setTakeBeat(val.toDouble());
+    setValue("takeBeat_sld",val);
+  });
+  setTakeBeat(getValue("takeBeat_sld").toDouble());
+
   renderToggle("Music","react_music","Music",R"({
     "newLine":true
   })",
   [](String key, String val){
     setValue(key,val);
+    setSoundEffectMode(getValue("cur_music_mode").toInt(), &box);
     if(val == "true"){
       onReact();
     }if(val == "false"){
@@ -38,64 +51,86 @@ void renderMusic(){
   })",
   [](String key, String val){
     setValue("cur_music_mode",val);
-    setSoundEffectMode(val.toInt());
+    setSoundEffectMode(val.toInt(), &box);
   }); 
-    setSoundEffectMode(getValue("cur_music_mode").toInt());
+    setSoundEffectMode(getValue("cur_music_mode").toInt(), &box);
   
   renderButton("Music","music_mode_0","Overflow from begin",R"({
   })",
   [](String key, String val){
     setValue("cur_music_mode",String(SE_OVERFLOW_BEGIN));
-      setSoundEffectMode(SE_OVERFLOW_BEGIN);
+      setSoundEffectMode(SE_OVERFLOW_BEGIN, &box);
   });   
   
   renderButton("Music","music_mode_1","Overflow from center",R"({
   })",
   [](String key, String val){
     setValue("cur_music_mode",String(SE_OVERFLOW_MID));
-      setSoundEffectMode(SE_OVERFLOW_MID);
+      setSoundEffectMode(SE_OVERFLOW_MID, &box);
   });   
   
   renderButton("Music","music_mode_2","Star Beat",R"({
   })",
   [](String key, String val){
-    setValue("cur_music_mode",String(SE_STAR_BEAT));
-      setSoundEffectMode(SE_STAR_BEAT);
+    setValue("cur_music_mode",String(SE_STAR_BEAT_1));
+      setSoundEffectMode(SE_STAR_BEAT_1, &box);
   });   
   
   renderButton("Music","music_mode_3","VU Metter",R"({
   })",
   [](String key, String val){
     setValue("cur_music_mode",String(SE_VU_METER));
-      setSoundEffectMode(SE_VU_METER);
+      setSoundEffectMode(SE_VU_METER, &box);
   });   
   
   renderButton("Music","music_mode_4","Segment beat",R"({
   })",
   [](String key, String val){
     setValue("cur_music_mode",String(SE_SEGMENT_BEAT));
-      setSoundEffectMode(SE_SEGMENT_BEAT);
+      setSoundEffectMode(SE_SEGMENT_BEAT, &box);
   });    
   renderButton("Music","music_mode_5","Shines On",R"({
     newLine: True
   })",
   [](String key, String val){
     setValue("cur_music_mode",String(SE_SHINES_ON));
-    setSoundEffectMode(SE_SHINES_ON);
+    setSoundEffectMode(SE_SHINES_ON, &box);
   });    
   renderButton("Music","music_mode_6","Run Speed",R"({
   })",
   [](String key, String val){
     setValue("cur_music_mode",String(SE_RUN_SPEED));
-    setSoundEffectMode(SE_RUN_SPEED);
+    setSoundEffectMode(SE_RUN_SPEED, &box);
   });    
   
   renderButton("Music","music_mode_7","LAZY",R"({
   })",
   [](String key, String val){
     setValue("cur_music_mode",String(SE_LAZY));
-    setSoundEffectMode(SE_LAZY);
+    setSoundEffectMode(SE_LAZY, &box);
   });    
+  
+  renderButton("Music","music_mode_8","Overflow from begin 2",R"({
+  })",
+  [](String key, String val){
+    setValue("cur_music_mode",String(SE_OVERFLOW_BEGIN2));
+    setSoundEffectMode(SE_OVERFLOW_BEGIN2, &box);
+  });    
+
+  renderButton("Music","music_mode_9","Star Beat 2",R"({
+  })",
+  [](String key, String val){
+    setValue("cur_music_mode",String(SE_STAR_BEAT_2));
+    setSoundEffectMode(SE_STAR_BEAT_2, &box);
+  });    
+
+  renderButton("Music","music_mode_10","RainBow",R"({
+  })",
+  [](String key, String val){
+    setValue("cur_music_mode",String(SE_RAINBOW));
+    setSoundEffectMode(SE_RAINBOW, &box);
+  });    
+
 
   
 }

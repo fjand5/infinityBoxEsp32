@@ -1,13 +1,23 @@
 #include <WS2812FX.h>
 
+
+#define SHINES_ON_SPEED  40
+
+void shinesOnInit(WS2812FX * leds){
+    for (int i = 0; i < leds->getNumSegments(); i++){
+        WS2812FX::Segment* seg = leds->getSegment(i);
+        seg->speed = SHINES_ON_SPEED;
+    }
+}
+
 void shinesOnOnBeat(WS2812FX * leds, double val, double freq){
-    if(val < 25)
-      return;
+    // if(val < 25)
+    //   return;
     for (int i = 0; i < leds->getNumSegments(); i++){
         WS2812FX::Segment* seg = leds->getSegment(i);
         WS2812FX::Segment_runtime* segrt = leds->getSegmentRuntime(i);
         int seglen = seg->stop - seg->start + 1;
-        double tmp =val*seglen/100;
+        double tmp =val*seglen/150;
         segrt->aux_param3 = tmp;
     }
 }
@@ -29,7 +39,7 @@ uint16_t shinesOnHandler(WS2812FX * leds){
 			numOfNotOffLed++;
 	}
 	double percentOff = numOfNotOffLed/seglen;
-  leds->setPixelColor(seg->start + curPosition , leds->color_blend(seg->colors[colorIndex], leds->ColorHSV(percentOff*65535), 64) );
+  leds->setPixelColor(seg->start + curPosition - 1 , leds->color_blend(seg->colors[colorIndex], leds->ColorHSV(percentOff*65535), 64) );
   int32_t tmp = segrt->aux_param3;
   tmp -= tmp/3;
   tmp = tmp < 0 ? 0: tmp;

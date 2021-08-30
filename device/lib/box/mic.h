@@ -6,6 +6,7 @@ const uint16_t SAMPLES = 256;
 double vReal[SAMPLES];
 double vImag[SAMPLES];
 double micGain = 1.0;
+double takeBeat = 50.0;
 double mapf(double x, double in_min, double in_max, double out_min, double out_max)
 {
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
@@ -79,13 +80,15 @@ void calcData(){
 double getValByFreq(void(*onChangeMax)(double val, double freq) = NULL){
   static double ret = 1;
   if(ret>SAMPLES*3/4)
-    ret -=32;
+    ret -=32*takeBeat/100;
   else if(ret>SAMPLES/2)
-    ret -=16;
+    ret -=16*takeBeat/100;
   else
-    ret -=8;
+    ret -=8*takeBeat/100;
   if(ret < 0)
     ret = 0;
+  // Serial.println(ret);
+
   calcData();
   double maxValByFreq = 0;
   double _freq = 0;
@@ -112,3 +115,10 @@ void setMicGain(double gain){
 double getMicGain(){
   return micGain;
 }
+void setTakeBeat(double beat){
+  takeBeat = beat;
+}
+double getTakeBeat(){
+  return takeBeat;
+}
+
