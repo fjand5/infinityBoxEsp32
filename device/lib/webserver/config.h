@@ -95,7 +95,15 @@ void setValue(String key, String value, bool save = true) {
 // Khởi tạo
 void setupConfig() {
   if (!SPIFFS.begin()) {
-    return;
+    SPIFFS.format();
+     if (!SPIFFS.begin()) {
+        return;
+        Serial.println("SPIFFS mounted ");
+      }else{
+        Serial.println("Can't mount SPIFFS");
+      }
+  }else{
+      Serial.println("SPIFFS mounted ");
   }
 
   File cfg_file = SPIFFS.open(CONFIG_FILE, "r");
