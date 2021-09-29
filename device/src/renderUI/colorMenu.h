@@ -27,7 +27,7 @@ void renderColorMenu(){
     setValue("color1_inp",val);
     box.setColor1(stringToColor(val));
   }); 
-    box.setColor1(stringToColor(getValue("color1_inp")));
+    box.setColor1(stringToColor(getValue("color1_inp","#ff0000")));
   
 // color 2
   renderInputText("Color","color2_inp","Set color 2",R"({
@@ -37,7 +37,7 @@ void renderColorMenu(){
     setValue("color2_inp",val);
     box.setColor2(stringToColor(val));
   }); 
-    box.setColor2(stringToColor(getValue("color2_inp")));
+    box.setColor2(stringToColor(getValue("color2_inp","#00ff00")));
   
   // color 3
   renderInputText("Color","color3_inp","Set color 3",R"({
@@ -47,6 +47,6 @@ void renderColorMenu(){
     setValue("color3_inp",val);
     box.setColor3(stringToColor(val));
   }); 
-    box.setColor3(stringToColor(getValue("color3_inp")));
+    box.setColor3(stringToColor(getValue("color3_inp","#0000ff")));
   
 }
