@@ -1,7 +1,7 @@
 #pragma once
 #include <WS2812FX.h>
 #include "soundEff.h"
-// Nhớ thiết lập lại max segment trong thư viện
+// Nhớ thiết lập lại max segment trong thư viện (đã dùng extra_scripts để tự sửa)
 #define LED_PIN    23  // digital pin used to drive the LED strip
 #define LED_COUNT 288  // number of LEDs on the strip
 

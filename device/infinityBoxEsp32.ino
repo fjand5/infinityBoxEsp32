@@ -10,6 +10,9 @@ void setup() {
   setupMServer();
   setupBox();
   setupRender();
+  Serial.print("setup running on core ");
+  Serial.println(xPortGetCoreID());
+  vTaskDelete(NULL);
 }
 
 void loop() {

@@ -49,12 +49,15 @@ void onChangeBeat(double val, double freq){
   box.onChangeBeat(val, freq);
 }
 void boxHandle( void * pvParameters ){
+  Serial.print("boxHandle running on core ");
+  Serial.println(xPortGetCoreID());
   setupMIC();
   box.settup();
   for(;;){
     if(box.beforeService([](){
       return getValByFreq(onChangeBeat);
-    })) box.service();
+    })) 
+    box.service();
     box.affterService();
   } 
 }
@@ -70,7 +73,7 @@ void setupBox() {
                     "boxHandle",     /* name of task. */
                     30000,       /* Stack size of task */
                     NULL,        /* parameter of the task */
-                    2,           /* priority of the task */
+                    configMAX_PRIORITIES,           /* priority of the task */
                     &boxTask,      /* Task handle to keep track of created task */
                     1);          /* pin task to core 0 */  
 }
