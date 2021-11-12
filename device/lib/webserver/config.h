@@ -5,7 +5,6 @@
 #include <map>
 #include <list>
 
-long verContHost = 1;
 void setValue(String key, String value, bool save);
 std::map<String, String> ConfigContent;
 typedef void (*configChangeCallback)(String, String);
@@ -44,14 +43,36 @@ String getValue(String key, String def = "", bool setDefaultTokey = true)
     return ConfigContent[key];
   else
   {
-    if (setDefaultTokey){
+    if (setDefaultTokey)
+    {
       setValue(key, def, true);
-
     }
     return def;
   }
 }
+char* getValueByCStr(String key, String def = "", bool setDefaultTokey = true)
+{
+  char *ret;
 
+  if (checkKey(key)){
+    String tmp =  ConfigContent[key];
+    ret = new char[tmp.length() + 1];
+    strcpy(ret, tmp.c_str());
+    return ret;
+
+  }
+  else
+  {
+    if (setDefaultTokey)
+    {
+      setValue(key, def, true);
+    }
+    String tmp =  def;
+    ret = new char[tmp.length() + 1];
+    strcpy(ret, tmp.c_str());
+    return ret;
+  }
+}
 // Lấy toàn bộ file content
 String getValuesByString()
 {
@@ -82,7 +103,16 @@ String getValuesByJson()
 void setValue(String key, String value, bool save = true)
 {
   ConfigContent[key] = value;
-  verContHost++;
+  
+  for (auto onConfigChange = onConfigChanges.begin();
+       onConfigChange != onConfigChanges.end();
+       ++onConfigChange)
+  {
+    if ((*onConfigChange) != NULL)
+    {
+      (*onConfigChange)(key, value);
+    }
+  }
   // nếu không yêu cầu lưu vào flash
   if (!save)
     return;
@@ -102,15 +132,6 @@ void setValue(String key, String value, bool save = true)
   }
 
   cfg_file.close();
-  for (auto onConfigChange = onConfigChanges.begin();
-       onConfigChange != onConfigChanges.end();
-       ++onConfigChange)
-  {
-    if ((*onConfigChange) != NULL)
-    {
-      (*onConfigChange)(key, value);
-    }
-  }
 }
 
 // Khởi tạo
@@ -118,15 +139,17 @@ void setupConfig()
 {
   if (!SPIFFS.begin())
   {
+    Serial.println("Can't mount SPIFFS, Try format");
+
     SPIFFS.format();
     if (!SPIFFS.begin())
     {
-      return;
       Serial.println("SPIFFS mounted ");
     }
     else
     {
       Serial.println("Can't mount SPIFFS");
+      return;
     }
   }
   else

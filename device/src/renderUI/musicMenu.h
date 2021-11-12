@@ -17,7 +17,6 @@ void renderMusic()
                  setMicGain(val.toDouble());
                  setValue("micGain_sld", val);
                });
-  setMicGain(getValue("micGain_sld", "2").toDouble());
 
   renderSlider("Music", "takeBeat_sld", "Fix Beat", R"({
     "newLine":true,
@@ -29,7 +28,6 @@ void renderMusic()
                  setTakeBeat(val.toDouble());
                  setValue("takeBeat_sld", val);
                });
-  setTakeBeat(getValue("takeBeat_sld", "50").toDouble());
 
   renderToggle("Music", "react_music", "Music", R"({
     "newLine":true
@@ -49,15 +47,6 @@ void renderMusic()
                    changeSpeed(getValue("speed_sld", "80").toInt());
                  }
                });
-  if(!checkKey("react_music")) setValue("react_music", "false");
-  if (getValue("react_music", "false") == "true")
-  {
-    onReact();
-  }
-  else
-  {
-    offReact();
-  }
 
   renderInputText("Music", "cur_music_mode", "Current Mode", R"({
   })",
@@ -66,7 +55,6 @@ void renderMusic()
                     setValue("cur_music_mode", val);
                     setSoundEffectMode(val.toInt(), &box);
                   });
-  setSoundEffectMode(getValue("cur_music_mode", "1").toInt(), &box);
 
   renderButton("Music", "music_mode_0", "Overflow from begin", R"({
   })",
