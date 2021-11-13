@@ -12,6 +12,8 @@
         "xlocale": "cpp",
         "xstring": "cpp",
         "xutility": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "*.tcc": "cpp",
+        "istream": "cpp"
     }
 }

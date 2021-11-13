@@ -9,6 +9,7 @@
 // Nhớ thiết lập lại max segment trong thư viện (đã dùng extra_scripts để tự sửa)
 #define LED_PIN 23    // digital pin used to drive the LED strip
 #define LED_COUNT 288 // number of LEDs on the strip
+#define LED_COUNT_ONE_SEG 288/24
 
 #define SYM_TEST 0
 #define SYM_VERTEX 1
@@ -91,6 +92,7 @@ bool checkIsIgnoreMode(int mode)
 class Box : public WS2812FX
 {
 private:
+    bool _isConfigMode = false;
     int _mode = 3;
     int _sym = 1;
     int _spd = 500;
@@ -351,6 +353,66 @@ public:
     int currentSegmentShow()
     {
         return _curActiveSegment;
+    }
+
+    bool isConfigMode(){
+        return _isConfigMode;
+    }
+    void beginConfigMode(){
+        _isConfigMode = true;
+        resetSegments();
+        setSegment();
+        setMode(FX_MODE_COLOR_WIPE);
+    }
+    void currentConfigSegment(int num, bool rev){
+        if( !_isConfigMode )
+            return;
+        resetSegments();
+        clear();
+        setSegment(0,
+         LED_COUNT_ONE_SEG * num,
+         LED_COUNT_ONE_SEG * (num+1) - 1,
+          FX_MODE_COLOR_WIPE, DEFAULT_COLOR, DEFAULT_SPEED, rev);
+    }
+    void currentConfigFace(String faceName){
+        if( !_isConfigMode )
+            return;
+        resetSegments();
+        clear();
+
+        int seg_1 = getValue(faceName + "_1").toInt();
+        bool seg_1_env = getValue(faceName + "_1_rev") == "true";
+        int seg_2 = getValue(faceName + "_2").toInt();
+        bool seg_2_env = getValue(faceName + "_2_rev") == "true";
+        int seg_3 = getValue(faceName + "_3").toInt();
+        bool seg_3_env = getValue(faceName + "_3_rev") == "true";
+        int seg_4 = getValue(faceName + "_4").toInt();
+        bool seg_4_env = getValue(faceName + "_4_rev") == "true";
+
+        setSegment(0,
+         LED_COUNT_ONE_SEG * seg_1,
+         LED_COUNT_ONE_SEG * (seg_1+1) - 1,
+          FX_MODE_COLOR_WIPE, DEFAULT_COLOR, DEFAULT_SPEED, seg_1_env);
+        setSegment(1,
+         LED_COUNT_ONE_SEG * seg_2,
+         LED_COUNT_ONE_SEG * (seg_2+1) - 1,
+          FX_MODE_COLOR_WIPE, DEFAULT_COLOR, DEFAULT_SPEED, seg_2_env);
+        setSegment(2,
+         LED_COUNT_ONE_SEG * seg_3,
+         LED_COUNT_ONE_SEG * (seg_3+1) - 1,
+          FX_MODE_COLOR_WIPE, DEFAULT_COLOR, DEFAULT_SPEED, seg_3_env);
+        setSegment(3,
+         LED_COUNT_ONE_SEG * seg_4,
+         LED_COUNT_ONE_SEG * (seg_4+1) - 1,
+          FX_MODE_COLOR_WIPE, DEFAULT_COLOR, DEFAULT_SPEED, seg_4_env);
+    }
+    void endConfigMode(){
+        if( !_isConfigMode )
+            return;
+        _isConfigMode = false;
+        resetSegments();
+        setSymmetry(SYM_VERTEX);
+        setMode(_mode);
     }
     private:
     void setSymmetry(int sym)

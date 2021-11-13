@@ -30,7 +30,7 @@ void setupMServer()
       "webserverHandle", /* name of task. */
       50000,             /* Stack size of task */
       NULL,              /* parameter of the task */
-      1,                 /* priority of the task */
+      0,                 /* priority of the task */
       NULL,    /* Task handle to keep track of created task */
       0);                /* pin task to core 0 */
 }

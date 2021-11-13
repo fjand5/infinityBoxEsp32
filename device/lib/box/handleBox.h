@@ -122,7 +122,7 @@ void setupBox()
   box.setColor1(stringToColor(getValue("color1_inp", "#ff0000")));
   box.setColor2(stringToColor(getValue("color2_inp", "#00ff00")));
   box.setColor3(stringToColor(getValue("color3_inp", "#0000ff")));
-
+resumeBox();
   xTaskCreatePinnedToCore(
       boxHandle,            /* Task function. */
       "boxHandle",          /* name of task. */
