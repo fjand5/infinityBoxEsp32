@@ -12,7 +12,7 @@
 #include "dist.h"
 #include "utils.h"
 
-DynamicJsonDocument webDoc(512);
+DynamicJsonDocument webDoc(1024);
 void (*onClientCommit)(uint8_t num, String);
 WebServer server(80);
 WebSocketsServer webSocket = WebSocketsServer(81);

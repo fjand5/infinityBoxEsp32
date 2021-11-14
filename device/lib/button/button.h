@@ -46,10 +46,6 @@ void buttonHandle(void *pvParameters)
 
     int brightness = 0;  // how bright the LED is
     int fadeAmount = 10; // how many points to fade the LED by
-    button.begin();
-    button.onPressed(buttonPressed);
-    button.onPressedFor(3000, onPressedForDuration);
-    button.onSequence(2, 500, onSequenceMatched);
     while (1)
     {
         vTaskDelay(50 / portTICK_PERIOD_MS);
@@ -80,6 +76,10 @@ void setupButton()
 {
     ledcSetup(LEDC_CHANNEL_0, LEDC_BASE_FREQ, LEDC_TIMER_8_BIT);
     ledcAttachPin(LED_BUTTON_PIN, LEDC_CHANNEL_0);
+    button.begin();
+    button.onPressed(buttonPressed);
+    button.onPressedFor(3000, onPressedForDuration);
+    button.onSequence(2, 1000, onSequenceMatched);
     xTaskCreatePinnedToCore(
         buttonHandle,         /* Task function. */
         "buttonHandle",       /* name of task. */

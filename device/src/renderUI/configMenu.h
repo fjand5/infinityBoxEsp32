@@ -6,8 +6,11 @@ void renderConfigMenu()
   renderButton("Config Box", "begin_config", "Begin", R"({
   })",
                [](String key, String val)
-               {
+               {                 
+                 setValue("timer_tgl", "false");
+                 offTimer();
                  box.beginConfigMode();
+
                });
   renderButton("Config Box", "done_config", "Done", R"({
     "newLine":true
@@ -97,7 +100,7 @@ void renderConfigMenu()
                  int segNum = getValue("seg_font_4", "0").toInt();
                  box.currentConfigSegment(segNum, isRev);
                });
-  renderButton("Config Box", "done_config_face_font", "View Face", R"({
+  renderButton("Config Box", "done_config_face_font", "View Font Face", R"({
     "newLine":true
   })",
                [](String key, String val)
@@ -185,7 +188,7 @@ void renderConfigMenu()
                  int segNum = getValue("seg_back_4", "0").toInt();
                  box.currentConfigSegment(segNum, isRev);
                });
-    renderButton("Config Box", "done_config_face_back", "View Face", R"({
+    renderButton("Config Box", "done_config_face_back", "View Back Face", R"({
     "newLine":true
   })",
                [](String key, String val)
@@ -274,7 +277,7 @@ void renderConfigMenu()
                  int segNum = getValue("seg_top_4", "0").toInt();
                  box.currentConfigSegment(segNum, isRev);
                });
-    renderButton("Config Box", "done_config_face_top", "View Face", R"({
+    renderButton("Config Box", "done_config_face_top", "View Top Face", R"({
     "newLine":true
   })",
                [](String key, String val)
@@ -362,7 +365,7 @@ void renderConfigMenu()
                  int segNum = getValue("seg_bottom_4", "0").toInt();
                  box.currentConfigSegment(segNum, isRev);
                });
-    renderButton("Config Box", "done_config_face_bottom", "View Face", R"({
+    renderButton("Config Box", "done_config_face_bottom", "View Bottom Face", R"({
     "newLine":true
   })",
                [](String key, String val)
@@ -450,7 +453,7 @@ void renderConfigMenu()
                  int segNum = getValue("seg_left_4", "0").toInt();
                  box.currentConfigSegment(segNum, isRev);
                });
-    renderButton("Config Box", "done_config_face_left", "View Face", R"({
+    renderButton("Config Box", "done_config_face_left", "View Left Face", R"({
     "newLine":true
   })",
                [](String key, String val)
@@ -538,7 +541,7 @@ void renderConfigMenu()
                  int segNum = getValue("seg_right_4", "0").toInt();
                  box.currentConfigSegment(segNum, isRev);
                });
-    renderButton("Config Box", "done_config_face_right", "View Face", R"({
+    renderButton("Config Box", "done_config_face_right", "View Right Face", R"({
     "newLine":true
   })",
                [](String key, String val)

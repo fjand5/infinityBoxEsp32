@@ -8,15 +8,19 @@
 
 // Nhớ thiết lập lại max segment trong thư viện (đã dùng extra_scripts để tự sửa)
 #define LED_PIN 23    // digital pin used to drive the LED strip
+#define LED_NUM_OF_SEG 24
 #define LED_COUNT 288 // number of LEDs on the strip
-#define LED_COUNT_ONE_SEG 288/24
+#define LED_COUNT_ONE_SEG 288/LED_NUM_OF_SEG
 
 #define SYM_TEST 0
 #define SYM_VERTEX 1
 #define SYM_NO_SYM 2
 #define SYM_SURFACE 3
 uint16_t musicEffect();
-
+struct CoupleSeg {
+    int first;
+    int senconds;
+};
 bool checkIsIgnoreMode(int mode)
 {
     // if (mode == FX_MODE_STATIC)
@@ -92,6 +96,7 @@ bool checkIsIgnoreMode(int mode)
 class Box : public WS2812FX
 {
 private:
+    CoupleSeg coupleSeg [LED_NUM_OF_SEG/2];
     bool _isConfigMode = false;
     int _mode = 3;
     int _sym = 1;
@@ -147,8 +152,8 @@ public:
         {
             setMode(i, _mode);
         }
-
         changeSpeed(getValue(String("speed_mode_")+_mode).toInt(), false);
+
     }
     void nextMode()
     {
@@ -205,9 +210,8 @@ public:
         _spd = spd;
         if (curMode == FX_MODE_CUSTOM)
             return;
-        setValue(String("speed_mode_") + curMode, String(spd), save);
-        setValue("speed_sld", String(spd), save);
-        setValue("speed_inp", String(spd), save);
+        setValue(String("speed_mode_") + curMode, String(_spd), save);
+        setValue("speed_inp", String(_spd), save);
         for (int i = 0; i < getNumSegments(); i++)
         {
             setSpeed(i, _spd);
@@ -217,12 +221,18 @@ public:
     {
         _timer = timer;
     }
+    bool isTimerOn()
+    {
+        return _runTimer;
+    }
     void onTimer()
     {
+        setValue("timer_tgl", "true");
         _runTimer = true;
     }
     void offTimer()
     {
+        setValue("timer_tgl", "false");
         _runTimer = false;
     }
     void changeBrightness(uint16_t bgh, bool gama = false)
@@ -414,6 +424,9 @@ public:
         setSymmetry(SYM_VERTEX);
         setMode(_mode);
     }
+    // CoupleSeg getColumn(int num){
+    //     return coupleSeg[num];
+    // }
     private:
     void setSymmetry(int sym)
     {
@@ -454,43 +467,191 @@ public:
         }
         else if (sym == SYM_VERTEX)
         {
+            int tmp, index = 0;
+            bool isRev = false;
+            uint8_t opt;
             resetSegments();
+            tmp = getValue("seg_font_1","15").toInt();
+            opt = getValue("seg_font_1_rev","true") == "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp+1) - 1, _mode, _colors, _spd, 
+            opt);
+            coupleSeg[index/2].first = index;
+            index++;
+            tmp = getValue("seg_top_4","16").toInt();
+            opt = getValue("seg_top_4_rev","true") != "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, _mode, _colors, _spd,  
+            opt);
+            coupleSeg[(index + 1)/2].senconds = index;
+            index++;
 
-            setSegment(0, 12 * 0, 12 * 1 - 1, _mode, _colors, _spd, false);
-            setSegment(1, 12 * 8, 12 * 9 - 1, _mode, _colors, _spd, false);
+            tmp = getValue("seg_font_2","14").toInt();
+            opt = getValue("seg_font_2_rev","true") != "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp+1) - 1, _mode, _colors, _spd, 
+            opt);
+            coupleSeg[index/2].first = index;
+            index++;
+            tmp = getValue("seg_left_2","1").toInt();
+            opt = getValue("seg_left_2_rev","true") == "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, _mode, _colors, _spd,  
+            opt);
+            coupleSeg[(index + 1)/2].senconds = index;
+            index++;
 
-            setSegment(2, 12 * 3, 12 * 4 - 1, _mode, _colors, _spd, true);
-            setSegment(3, 12 * 7, 12 * 8 - 1, _mode, _colors, _spd, true);
+            tmp = getValue("seg_font_3","13").toInt();
+            opt = getValue("seg_font_3_rev","true") == "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp+1) - 1, _mode, _colors, _spd, 
+            opt);
+            coupleSeg[index/2].first = index;
+            index++;
+            tmp = getValue("seg_bottom_3","9").toInt();
+            opt = getValue("seg_bottom_3_rev","true") != "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, _mode, _colors, _spd,  
+            opt);
+            coupleSeg[(index + 1)/2].senconds = index;
+            index++;
 
-            setSegment(4, 12 * 11, 12 * 12 - 1, _mode, _colors, _spd, true);
-            setSegment(5, 12 * 4, 12 * 5 - 1, _mode, _colors, _spd, false);
+            tmp = getValue("seg_font_4","12").toInt();
+            opt = getValue("seg_font_4_rev","true") != "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp+1) - 1, _mode, _colors, _spd, 
+            opt);
+            coupleSeg[index/2].first = index;
+            index++;
+            tmp = getValue("seg_right_1","23").toInt();
+            opt = getValue("seg_right_1_rev","true") == "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, _mode, _colors, _spd,  
+            opt);
+            coupleSeg[(index + 1)/2].senconds = index;
+            index++;
 
-            setSegment(6, 12 * 2, 12 * 3 - 1, _mode, _colors, _spd, false);
-            setSegment(7, 12 * 17, 12 * 18 - 1, _mode, _colors, _spd, false);
+            tmp = getValue("seg_back_1","4").toInt();
+            opt = getValue("seg_back_1_rev","true") != "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp+1) - 1, _mode, _colors, _spd, 
+            opt);
+            coupleSeg[index/2].first = index;
+            index++;
+            tmp = getValue("seg_left_4","3").toInt();
+            opt = getValue("seg_left_4_rev","true") == "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, _mode, _colors, _spd,  
+            opt);
+            coupleSeg[(index + 1)/2].senconds = index;
+            index++;
 
-            setSegment(8, 12 * 18, 12 * 19 - 1, _mode, _colors, _spd, true);
-            setSegment(9, 12 * 5, 12 * 6 - 1, _mode, _colors, _spd, true);
+            tmp = getValue("seg_back_2","5").toInt();
+            opt = getValue("seg_back_2_rev","true") == "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp+1) - 1, _mode, _colors, _spd, 
+            opt);
+            coupleSeg[index/2].first = index;
+            index++;
+            tmp = getValue("seg_top_2","3").toInt();
+            opt = getValue("seg_top_2_rev","true") != "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, _mode, _colors, _spd,  
+            opt);
+            coupleSeg[(index + 1)/2].senconds = index;
+            index++;
 
-            setSegment(10, 12 * 21, 12 * 22 - 1, _mode, _colors, _spd, false);
-            setSegment(11, 12 * 6, 12 * 7 - 1, _mode, _colors, _spd, false);
+            tmp = getValue("seg_back_3","6").toInt();
+            opt = getValue("seg_back_3_rev","true") != "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp+1) - 1, _mode, _colors, _spd, 
+            opt);
+            coupleSeg[index/2].first = index;
+            index++;
+            tmp = getValue("seg_right_3","3").toInt();
+            opt = getValue("seg_right_3_rev","true") == "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, _mode, _colors, _spd,  
+            opt);
+            coupleSeg[(index + 1)/2].senconds = index;
+            index++;
 
-            setSegment(12, 12 * 19, 12 * 20 - 1, _mode, _colors, _spd, false);
-            setSegment(13, 12 * 20, 12 * 21 - 1, _mode, _colors, _spd, true);
+            tmp = getValue("seg_back_4","7").toInt();
+            opt = getValue("seg_back_4_rev","true") == "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp+1) - 1, _mode, _colors, _spd, 
+            opt);
+            coupleSeg[index/2].first = index;
+            index++;
+            tmp = getValue("seg_bottom_1","11").toInt();
+            opt = getValue("seg_bottom_1_rev","true") != "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, _mode, _colors, _spd,  
+            opt);
+            coupleSeg[(index + 1)/2].senconds = index;
+            index++;
 
-            setSegment(14, 12 * 12, 12 * 13 - 1, _mode, _colors, _spd, true);
-            setSegment(15, 12 * 23, 12 * 24 - 1, _mode, _colors, _spd, false);
+            tmp = getValue("seg_top_3","17").toInt();
+            opt = getValue("seg_top_3_rev","true") != "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp+1) - 1, _mode, _colors, _spd, 
+            opt);
+            coupleSeg[index/2].first = index;
+            index++;
+            tmp = getValue("seg_left_3","2").toInt();
+            opt = getValue("seg_left_3_rev","true") == "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, _mode, _colors, _spd,  
+            opt);
+            coupleSeg[(index + 1)/2].senconds = index;
+            index++;
 
-            setSegment(16, 12 * 15, 12 * 16 - 1, _mode, _colors, _spd, false);
-            setSegment(17, 12 * 16, 12 * 17 - 1, _mode, _colors, _spd, true);
+            tmp = getValue("seg_top_1","19").toInt();
+            opt = getValue("seg_top_1_rev","true") == "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp+1) - 1, _mode, _colors, _spd, 
+            opt);
+            coupleSeg[index/2].first = index;
+            index++;
+            tmp = getValue("seg_right_4","2").toInt();
+            opt = getValue("seg_right_4_rev","true") != "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, _mode, _colors, _spd,  
+            opt);
+            coupleSeg[(index + 1)/2].senconds = index;
+            index++;
 
-            setSegment(18, 12 * 10, 12 * 11 - 1, _mode, _colors, _spd, false);
-            setSegment(19, 12 * 22, 12 * 23 - 1, _mode, _colors, _spd, true);
+            tmp = getValue("seg_bottom_4","8").toInt();
+            opt = getValue("seg_bottom_4_rev","true") == "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp+1) - 1, _mode, _colors, _spd, 
+            opt);
+            coupleSeg[index/2].first = index;
+            index++;
+            tmp = getValue("seg_left_1","0").toInt();
+            opt = getValue("seg_left_1_rev","true") != "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, _mode, _colors, _spd,  
+            opt);
+            coupleSeg[(index + 1)/2].senconds = index;
+            index++;
 
-            setSegment(20, 12 * 13, 12 * 14 - 1, _mode, _colors, _spd, false);
-            setSegment(21, 12 * 9, 12 * 10 - 1, _mode, _colors, _spd, true);
+            tmp = getValue("seg_bottom_2","10").toInt();
+            opt = getValue("seg_bottom_2_rev","true") == "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp+1) - 1, _mode, _colors, _spd, 
+            opt);
+            coupleSeg[index/2].first = index;
+            index++;
+            tmp = getValue("seg_right_2","22").toInt();
+            opt = getValue("seg_right_2_rev","true") != "true";
+            opt = opt<<7;
+            setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, _mode, _colors, _spd,  
+            opt);
+            coupleSeg[(index + 1)/2].senconds = index;
+            index++;
 
-            setSegment(22, 12 * 1, 12 * 2 - 1, _mode, _colors, _spd, true);
-            setSegment(23, 12 * 14, 12 * 15 - 1, _mode, _colors, _spd, true);
+            
         }
         else if (sym == SYM_SURFACE)
         {

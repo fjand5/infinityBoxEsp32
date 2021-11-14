@@ -38,7 +38,11 @@ void renderMusic()
                  if (val == "true")
                  {
                    setSoundEffectMode(getValue("cur_music_mode", "12").toInt(), &box);
+
+                   setValue("timer_tgl", "false");
+                   offTimer();
                    onReact();
+                   setSoundEffectMode(SE_OVERFLOW_BEGIN, &box);
                  }
                  if (val == "false")
                  {

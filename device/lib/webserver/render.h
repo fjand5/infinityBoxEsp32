@@ -2,7 +2,7 @@
 #include <Arduino.h>
 #include "./event.h"
 #include "./json/ArduinoJson.h"
-DynamicJsonDocument docRender(8192);
+DynamicJsonDocument docRender(20000);
 JsonObject objRender = docRender.to<JsonObject>();
 void renderComponent(String compt, String tab, String key, String name, String option){
   DynamicJsonDocument subDoc(256);

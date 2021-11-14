@@ -9,15 +9,17 @@ void webserverHandle(void *pvParameters)
   uint32_t timer = millis();
   for (;;)
   {
-    delay(50);
+    delay(10);
     loopWebserver();
     if (millis() - timer > 3000)
     {
       udp.beginPacket("255.255.255.255", 7878);
-      delay(50);
+      delay(10);
       udp.println(String("MAC: ") + WiFi.macAddress());
-      delay(50);
+      delay(10);
       udp.endPacket();
+      delay(10);
+
       timer = millis();
     }
   }

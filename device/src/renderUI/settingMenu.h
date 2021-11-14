@@ -9,18 +9,18 @@ void renderSettingMenu()
                [](String key, String val)
                {
                  previousMode();
+                 offTimer();
                  setValue("current_mode", String(box.getMode()));
                  setValue("timer_tgl", "false");
-                 offTimer();
                });
   renderInputText("setting Box", "current_mode", "Current Mode", R"({
   })",
                   [](String key, String val)
                   {
                     changeMode(val.toInt());
+                    offTimer();
                     setValue("current_mode", String(box.getMode()));
                     setValue("timer_tgl", "false");
-                    offTimer();
                   });
   renderButton("setting Box", "next_mode", "Next Mode", R"({
     "newLine":true
@@ -28,9 +28,9 @@ void renderSettingMenu()
                [](String key, String val)
                {
                  nextMode();
+                 offTimer();
                  setValue("current_mode", String(box.getMode()));
                  setValue("timer_tgl", "false");
-                 offTimer();
                });
 
   renderToggle("setting Box", "pause_tgl", "Pause/Resume", R"({
@@ -38,7 +38,6 @@ void renderSettingMenu()
   })",
                [](String key, String val)
                {
-                 setValue(key, val);
                  if (val == "true")
                  {
                    resumeBox();
@@ -47,13 +46,13 @@ void renderSettingMenu()
                  {
                    pauseBox();
                  }
+                 setValue(key, val);
                });
   renderToggle("setting Box", "on_off_tgl", "Off/On", R"({
     "newLine":true
   })",
                [](String key, String val)
                {
-                 setValue(key, val);
                  if (val == "true")
                  {
                    onBox();
@@ -62,6 +61,7 @@ void renderSettingMenu()
                  {
                    offBox();
                  }
+                 setValue(key, val);
                });
   // renderButton("setting Box", "next_segment", "Next Segment", R"({
   //   "newLine":true
@@ -106,7 +106,6 @@ void renderSettingMenu()
                     if (v < 0)
                       v = 0;
                     changeSpeed(v);
-                    setValue("speed_sld", val);
                     setValue("speed_inp", val);
                   });
   renderSlider("setting Box", "timer_sld", "thời gian chuyển", R"({
@@ -125,7 +124,6 @@ void renderSettingMenu()
   })",
                [](String key, String val)
                {
-                 setValue(key, val);
                  if (val == "true")
                  {
                    onTimer();
@@ -134,6 +132,7 @@ void renderSettingMenu()
                  {
                    offTimer();
                  }
+                 setValue(key, val);
                });
 
   renderSlider("setting Box", "brightness_sld", "độ sáng", R"({
