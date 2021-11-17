@@ -18,7 +18,7 @@ void setOnConfigChange(void (*func)(String key, String value))
 // Mỗi dòng là một phần tử (một cặp key value) (key):(value)\n
 void loadFileIntoConfig(String content)
 {
-  Serial.println(content);
+  log_d("%s",content.c_str());
   configContent_sem = xSemaphoreCreateBinary();
   while (content.indexOf("\n") >= 0)
   {
@@ -144,8 +144,8 @@ void setValue(String key, String value, bool save = true)
       (*onConfigChange)(key, value);
     }
   }
-  // nếu không yêu cầu lưu vào flash
-  if (!save)
+  // nếu không yêu cầu lưu vào flash hoặc giá trị như cũ
+  if (!save || getValue(key) == value)
     return;
   saveConfigFile();
 }
@@ -184,22 +184,22 @@ void setupConfig()
   spiffs_sem = xSemaphoreCreateBinary();
   if (!SPIFFS.begin())
   {
-    Serial.println("Can't mount SPIFFS, Try format");
+    log_d("Can't mount SPIFFS, Try format");
     SPIFFS.format();
     if (!SPIFFS.begin())
     {
-      Serial.println("Can't mount SPIFFS");
+      log_d("Can't mount SPIFFS");
     }
     else
     {
-      Serial.println("SPIFFS mounted");
+      log_d("SPIFFS mounted");
       xSemaphoreGive(spiffs_sem);
       return;
     }
   }
   else
   {
-    Serial.println("SPIFFS mounted ");
+    log_d("SPIFFS mounted ");
     xSemaphoreGive(spiffs_sem);
   }
   if (xSemaphoreTake(spiffs_sem, portMAX_DELAY) == pdTRUE)

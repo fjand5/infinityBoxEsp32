@@ -4,29 +4,24 @@
 WiFiUDP udp;
 void webserverHandle(void *pvParameters)
 {
-  Serial.print("webserverHandle running on core ");
-  Serial.println(xPortGetCoreID());
+  // log_d("webserverHandle running on core: %d ",xPortGetCoreID());
+  
+  setupWebserver();
   uint32_t timer = millis();
   for (;;)
   {
-    delay(10);
     loopWebserver();
     if (millis() - timer > 3000)
     {
       udp.beginPacket("255.255.255.255", 7878);
-      delay(10);
       udp.println(String("MAC: ") + WiFi.macAddress());
-      delay(10);
       udp.endPacket();
-      delay(10);
-
       timer = millis();
     }
   }
 }
 void setupMServer()
 {
-  setupWebserver();
   xTaskCreatePinnedToCore(
       webserverHandle,   /* Task function. */
       "webserverHandle", /* name of task. */

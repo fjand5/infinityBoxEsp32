@@ -76,31 +76,29 @@ void renderSystem()
     }))",
                [](String key, String val)
                {
-                 Serial.println("Thử kết nối");
+                 log_d("Thử kết nối");
                  uint32_t preTime = millis();
                  if (checkKey("sta_id") && checkKey("sta_pass"))
                  {
-                   Serial.println("Dang Thử kết nối");
+                   log_d("Dang Thử kết nối");
                    setValue("sta_ip", "");
                    WiFi.begin(getValue("sta_id").c_str(), getValue("sta_pass").c_str());
                    while (WiFi.status() != WL_CONNECTED && (millis() - preTime) < 30000)
                    {
                      delay(100);
-                     Serial.print(".");
+                     log_d(".");
                    }
                    if (WiFi.status() == WL_CONNECTED)
                    {
-                     Serial.println("");
-                     Serial.println("WiFi connected");
-                     Serial.println("IP address: ");
-                     Serial.println(WiFi.localIP());
+                     log_d("WiFi connected");
+                     log_d("IP address: %s",WiFi.localIP().toString().c_str());
                      setValue("sta_ip", IpAddress2String(WiFi.localIP()));
                      isConnect = true;
                    }
                  }
                  else
                  {
-                   Serial.println("Not found station info!!");
+                   log_d("Not found station info!!");
                  }
                });
 
@@ -143,7 +141,7 @@ void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info)
     while (WiFi.status() != WL_CONNECTED && millis() < 30000)
     {
       delay(500);
-      Serial.print(".");
+      log_d(".");
     }
   }
 }
@@ -156,28 +154,31 @@ void setupWebserver()
   while (WiFi.status() != WL_CONNECTED && millis() < 30000)
   {
     delay(500);
-    Serial.print(".");
+    log_d(".");
   }
   if (WiFi.status() == WL_CONNECTED)
   {
-    Serial.println("");
-    Serial.println("WiFi connected");
-    Serial.println("IP address: ");
-    Serial.println(WiFi.localIP());
+    log_d("WiFi connected");
+    log_d("IP address: %s",WiFi.localIP().toString().c_str());
     setValue("sta_ip", IpAddress2String(WiFi.localIP()));
     WiFi.onEvent(WiFiStationDisconnected, SYSTEM_EVENT_STA_DISCONNECTED);
 
     isConnect = true;
   }
-  if (checkKey("ap_id") && checkKey("ap_pass"))
-  {
-
-    WiFi.softAP(getValueByCStr("ap_id", "vocauiu2"), getValueByCStr("ap_pass", "12345678"));
-  }
-  else
-  {
-    WiFi.softAP(APSSID, APPSK);
-  }
+  // if (checkKey("ap_id") && checkKey("ap_pass"))
+  // {
+    // SPEX_xxx
+    uint8_t tmp[6];
+    char ap_id[18];
+    ap_id[17]=0;
+    WiFi.macAddress(tmp);
+    sprintf(ap_id, "SPEX_%X%X%X%X%X%X", tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5]);
+    WiFi.softAP(getValueByCStr("ap_id", ap_id), getValueByCStr("ap_pass", "12345678"));
+  // }
+  // else
+  // {
+  //   WiFi.softAP(APSSID, APPSK);
+  // }
 
   // client truyền dữ liệu cho server
   onClientCommit = [](uint8_t num, String data)
@@ -204,6 +205,8 @@ void setupWebserver()
       {
         webSocket.sendTXT(num, getValuesByString().c_str());
       }
+      
+
       if (cmd == "exe")
       {
         String key = obj["key"];
@@ -265,7 +268,6 @@ void setupWebserver()
                     {
                       addComonHeader();
                       server.send(200, "text/plain", "");
-                      Serial.println("isAccessNotFound = true;");
                     });
 
   const char *headerkeys[] = {"Version-Content-Client"};
@@ -281,7 +283,6 @@ void setupWebserver()
 void loopWebserver()
 {
   webSocket.loop();
-  delay(10);
   server.handleClient();
 
 }

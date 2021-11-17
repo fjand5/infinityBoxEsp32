@@ -29,46 +29,38 @@ void changeBrightness(uint16_t bgh)
 }
 void pauseBox()
 {
-  Serial.println(__func__);
   box.pause();
 }
 void resumeBox()
 {
-  Serial.println(__func__);
   box.resume();
 }
 void onBox()
 {
-  Serial.println(__func__);
   box.onBox();
 }
 void offBox()
 {
-  Serial.println(__func__);
   box.offBox();
 }
 void onTimer()
 {
-  Serial.println(__func__);
   box.onTimer();
 }
 void offTimer()
 {
-  Serial.println(__func__);
   box.offTimer();
 }
 
 bool lastTimerState;
 void onReact()
 {
-  Serial.println(__func__);
-  lastTimerState= box.isTimerOn();
+  lastTimerState = box.isTimerOn();
   box.setReacMusic(true);
 }
 void offReact()
 {
-  Serial.println(__func__);
-  lastTimerState ? box.onTimer(): box.offTimer();
+  lastTimerState ? box.onTimer() : box.offTimer();
   box.setReacMusic(false);
 }
 void onChangeBeat(double val, double freq)
@@ -83,10 +75,35 @@ void rmtShow()
 }
 void boxHandle(void *pvParameters)
 {
-  Serial.print("boxHandle running on core ");
-  Serial.println(xPortGetCoreID());
-  Serial.println("box setup done");
+  log_d("boxHandle running on core: %d", xPortGetCoreID());
 
+  setupMIC();
+
+  rmt_tx_int(RMT_CHANNEL, box.getPin());
+  box.setCustomShow(rmtShow);
+  box.settup();
+
+  box.setColor1(stringToColor(getValue("color1_inp", "#ff0000")));
+  box.setColor2(stringToColor(getValue("color2_inp", "#00ff00")));
+  box.setColor3(stringToColor(getValue("color3_inp", "#0000ff")));
+
+  resumeBox();
+  setValue("pause_tgl", "true");
+  getValue("on_off_tgl", "false") == "true" ? onBox() : offBox();
+  setTimer(getValue("timer_sld", "5").toInt() * 1000);
+  getValue("timer_tgl", "false") == "true" ? onTimer() : offTimer();
+  changeBrightness(getValue("brightness_sld", "50").toInt());
+  if (getValue("react_music", "false") == "true")
+  {
+
+    onReact();
+    setSoundEffectMode(SE_VU_METER_COLUMN, &box);
+  }
+  else
+  {
+    offReact();
+    changeMode(getValue("current_mode", "12").toInt());
+  }
   // uint32_t preTime = millis();
   for (;;)
   {
@@ -101,34 +118,6 @@ void boxHandle(void *pvParameters)
 }
 void setupBox()
 {
-  setupMIC();
-
-  rmt_tx_int(RMT_CHANNEL, box.getPin());
-  box.setCustomShow(rmtShow);
-  box.settup();
-  
-  box.setColor1(stringToColor(getValue("color1_inp", "#ff0000")));
-  box.setColor2(stringToColor(getValue("color2_inp", "#00ff00")));
-  box.setColor3(stringToColor(getValue("color3_inp", "#0000ff")));
-  
-  resumeBox();
-  setValue("pause_tgl", "true");
-  getValue("on_off_tgl", "false") == "true" ? onBox() : offBox();
-  setTimer(getValue("timer_sld", "5").toInt() * 1000);
-  getValue("timer_tgl", "false") == "true" ? onTimer() : offTimer();
-  changeBrightness(getValue("brightness_sld", "50").toInt());
-  if (getValue("react_music", "false") == "true")
-  {
-    
-    onReact();
-    setSoundEffectMode(SE_VU_METER_COLUMN, &box);
-  }
-  else
-  {
-    offReact();
-    changeMode(getValue("current_mode", "12").toInt());
-  }
-
 
   xTaskCreatePinnedToCore(
       boxHandle,            /* Task function. */

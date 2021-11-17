@@ -8,9 +8,12 @@
 #include "Arduino.h"
 #include "../webserver/config.h"
 #include "../box/handleBox.h"
+#define DOUBLE_CLICK_DURATION 300
 EasyButton button(BUTTON_PIN);
-void buttonPressed()
+uint32_t lastClickTime = 0;
+void onClick()
 {
+    log_d(" running");
     if (getValue("on_off_tgl") != "true")
     {
         setValue("on_off_tgl", "true");
@@ -18,18 +21,20 @@ void buttonPressed()
     }
     else
     {
-
         nextMode();
         setValue("current_mode", String(box.getMode()));
     }
 }
-void onPressedForDuration()
+void onPressed()
 {
+    log_d(" running");
     setValue("on_off_tgl", "false");
     offBox();
 }
-void onSequenceMatched()
+void doubleClick()
 {
+    log_d(" running");
+    lastClickTime = 0;
     if (getValue("timer_tgl") == "true")
     {
         setValue("timer_tgl", "false");
@@ -50,6 +55,11 @@ void buttonHandle(void *pvParameters)
     {
         vTaskDelay(50 / portTICK_PERIOD_MS);
         button.read();
+        if (lastClickTime != 0 && millis() - lastClickTime > DOUBLE_CLICK_DURATION)
+        {
+            lastClickTime=0;
+            onClick();
+        }
         if (getValue("on_off_tgl") != "true")
         {
             ledcWrite(LEDC_CHANNEL_0, 0);
@@ -77,9 +87,10 @@ void setupButton()
     ledcSetup(LEDC_CHANNEL_0, LEDC_BASE_FREQ, LEDC_TIMER_8_BIT);
     ledcAttachPin(LED_BUTTON_PIN, LEDC_CHANNEL_0);
     button.begin();
-    button.onPressed(buttonPressed);
-    button.onPressedFor(3000, onPressedForDuration);
-    button.onSequence(2, 1000, onSequenceMatched);
+    button.onPressed([]()
+                     { lastClickTime = millis(); });
+    button.onPressedFor(3000, onPressed);
+    button.onSequence(2, DOUBLE_CLICK_DURATION, doubleClick);
     xTaskCreatePinnedToCore(
         buttonHandle,         /* Task function. */
         "buttonHandle",       /* name of task. */

@@ -8,6 +8,7 @@ void addEvent(String key, EventFunc func){
     events.insert(std::pair< String, EventFunc >(key,func));
 }
 void execEvent(String key, String val){
+    
     for (auto const& event : events)
     {
         if (event.first == key && event.second != NULL){
@@ -15,4 +16,5 @@ void execEvent(String key, String val){
         }
 
     }
+    
 }

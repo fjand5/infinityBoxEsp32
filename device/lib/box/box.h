@@ -21,6 +21,9 @@ struct CoupleSeg {
     int first;
     int senconds;
 };
+// int defaulSpeed(int mode){
+//     if(mode == )
+// }
 bool checkIsIgnoreMode(int mode)
 {
     // if (mode == FX_MODE_STATIC)
@@ -126,10 +129,10 @@ public:
           };
     void settup()
     {
-        setCustomMode(musicEffect);
-        init();
-        setBrightness(_bgh);
         setSymmetry(SYM_VERTEX);
+        setCustomMode(musicEffect);
+        setBrightness(_bgh);
+        init();
         start();
     }
     void changeMode(int mode)

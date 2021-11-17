@@ -21,6 +21,7 @@ void renderSettingMenu()
                     offTimer();
                     setValue("current_mode", String(box.getMode()));
                     setValue("timer_tgl", "false");
+
                   });
   renderButton("setting Box", "next_mode", "Next Mode", R"({
     "newLine":true

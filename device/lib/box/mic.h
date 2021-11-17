@@ -32,7 +32,6 @@ void calcData(){
     vImag[i] = 0;
   }
   samplingTime = micros() - samplingTime;
-  //  Serial.println(String(" samplingTime ") + (samplingTime)); // 3.6ms
   double samplingFrequency = 1000000.00*double(SAMPLES)/double(samplingTime);
   arduinoFFT FFT = arduinoFFT(vReal, vImag, SAMPLES, samplingFrequency);
   FFT.DCRemoval();
@@ -50,7 +49,6 @@ double getValByFreq(void(*onChangeMax)(double val, double freq) = NULL){
     ret -=8*takeBeat/100;
   if(ret < 0)
     ret = 0;
-  // Serial.println(ret);
 
   calcData();
   double maxValByFreq = 0;
@@ -113,15 +111,15 @@ void setupMIC() {
   // This function must be called before any I2S driver read/write operations.
   err = i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
   if (err != ESP_OK) {
-    Serial.printf("Failed installing driver: %d\n", err);
+    log_d("Failed installing driver: %d", err);
     while (true);
   }
   err = i2s_set_pin(I2S_NUM_0, &pin_config);
   if (err != ESP_OK) {
-    Serial.printf("Failed setting pin: %d\n", err);
+    log_d("Failed setting pin: %d", err);
     while (true);
   }
-  Serial.println("I2S driver installed.");
+  log_d("I2S driver installed.");
   setMicGain(getValue("micGain_sld", "2").toDouble());
   setTakeBeat(getValue("takeBeat_sld", "50").toDouble());
 }

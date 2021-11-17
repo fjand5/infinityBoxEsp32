@@ -9,16 +9,38 @@ void vuMeterColumnInit(WS2812FX *leds)
 
     for (int i = 0; i < leds->getNumSegments(); i++)
     {
-        WS2812FX::Segment *seg = leds->getSegment(i);
+        WS2812FX::Segment *_seg = leds->getSegment(i);
         WS2812FX::Segment_runtime *segrt = leds->getSegmentRuntime(i);
         segrt->aux_param = checkIsColumn(i);
-        segrt->aux_param3 = needRev(i);
-        seg->speed = VU_METTER_COLUMN_SPEED;
-        for (int j = seg->start; j <= seg->stop; j++)
+        segrt->aux_param3 = 0;
+        _seg->speed = VU_METTER_COLUMN_SPEED;
+        for (int j = _seg->start; j <= _seg->stop; j++)
         {
             leds->setPixelColor(j, 0);
         }
     }
+    WS2812FX::Segment *_seg;
+    bool isRev;
+    
+    _seg = leds->getSegment(6);
+    isRev = IS_REVERSE;
+    leds->getSegmentRuntime(6)->aux_param3=~isRev;
+
+    _seg = leds->getSegment(9);
+    isRev = IS_REVERSE;
+    leds->getSegmentRuntime(9)->aux_param3=~isRev;
+
+    _seg = leds->getSegment(12);
+    isRev = IS_REVERSE;
+    leds->getSegmentRuntime(12)->aux_param3=~isRev;
+
+    _seg = leds->getSegment(13);
+    isRev = IS_REVERSE;
+    leds->getSegmentRuntime(13)->aux_param3=~isRev;
+
+    // _seg = leds->getSegment(7);
+    // isRev = IS_REVERSE;
+    // leds->getSegmentRuntime(7)->aux_param3=isRev;
 }
 
 void vuMeterColumnOnBeat(WS2812FX *leds, double val, double freq)
@@ -31,10 +53,7 @@ void vuMeterColumnOnBeat(WS2812FX *leds, double val, double freq)
             continue;
         int seglen = _seg->stop - _seg->start + 1;
         double count = val * seglen / 100;
-        bool summaryRev = IS_REVERSE;
         if (segrt->aux_param3)
-            summaryRev = ~summaryRev;
-        if (summaryRev)
             for (uint16_t i = 0; i < count; i++)
             {
                 uint32_t color;
@@ -77,11 +96,7 @@ uint16_t vuMeterColumnHandler(WS2812FX *leds)
 
     int seglen = _seg->stop - _seg->start + 1;
     int maxPos = 0;
-    bool summaryRev = IS_REVERSE;
     if (segrt->aux_param3)
-        summaryRev = ~summaryRev;
-
-    if (summaryRev)
     {
         for (int i = seglen - 1; i >= 0; i--)
         {
@@ -120,20 +135,9 @@ uint16_t vuMeterColumnHandler(WS2812FX *leds)
 
     return _seg->speed;
 }
-bool needRev(uint16_t seg)
-{
-    if ((seg == 2) || (seg == 3)
-
-        || (seg == 8) || (seg == 9)
-        )
-        return true;
-    else
-        return false;
-}
 bool checkIsColumn(uint16_t seg)
 {
     if ((seg == 0) || (seg == 1)
-
         || (seg == 4) || (seg == 5)
 
         || (seg == 10) || (seg == 11)

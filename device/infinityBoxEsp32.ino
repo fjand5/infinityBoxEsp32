@@ -7,15 +7,15 @@
 #include "lib/button/button.h"
 
 void setup() {
-  Serial.begin(115200);
+  // Serial.begin(115200);
   delay(100);
   setupConfig();
   setupBox();
   setupButton();
   setupMServer();
+  
   setupRender();
-  Serial.print("setup running on core ");
-  Serial.println(xPortGetCoreID());
+  log_d("setup running on core: %d",xPortGetCoreID());
   vTaskDelete(NULL);
 }
 
