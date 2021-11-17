@@ -15,7 +15,6 @@ void renderMusic()
                [](String key, String val)
                {
                  setMicGain(val.toDouble());
-                 setValue("micGain_sld", val);
                });
 
   renderSlider("Music", "takeBeat_sld", "Fix Beat", R"({
@@ -26,7 +25,6 @@ void renderMusic()
                [](String key, String val)
                {
                  setTakeBeat(val.toDouble());
-                 setValue("takeBeat_sld", val);
                });
 
   renderToggle("Music", "react_music", "Music", R"({
@@ -34,15 +32,12 @@ void renderMusic()
   })",
                [](String key, String val)
                {
-                 setValue(key, val);
                  if (val == "true")
                  {
-                   setSoundEffectMode(getValue("cur_music_mode", "12").toInt(), &box);
-
-                   setValue("timer_tgl", "false");
                    offTimer();
                    onReact();
-                   setSoundEffectMode(SE_OVERFLOW_BEGIN, &box);
+                   if (!checkKey("cur_music_mode"))
+                     setSoundEffectMode(SE_VU_METER_COLUMN, &box);
                  }
                  if (val == "false")
                  {
@@ -56,7 +51,6 @@ void renderMusic()
   })",
                   [](String key, String val)
                   {
-                    setValue("cur_music_mode", val);
                     setSoundEffectMode(val.toInt(), &box);
                   });
 
@@ -64,7 +58,6 @@ void renderMusic()
   })",
                [](String key, String val)
                {
-                 setValue("cur_music_mode", String(SE_OVERFLOW_BEGIN));
                  setSoundEffectMode(SE_OVERFLOW_BEGIN, &box);
                });
 
@@ -72,7 +65,6 @@ void renderMusic()
   })",
                [](String key, String val)
                {
-                 setValue("cur_music_mode", String(SE_OVERFLOW_MID));
                  setSoundEffectMode(SE_OVERFLOW_MID, &box);
                });
 
@@ -80,7 +72,6 @@ void renderMusic()
   })",
                [](String key, String val)
                {
-                 setValue("cur_music_mode", String(SE_STAR_BEAT_1));
                  setSoundEffectMode(SE_STAR_BEAT_1, &box);
                });
 
@@ -88,7 +79,6 @@ void renderMusic()
   })",
                [](String key, String val)
                {
-                 setValue("cur_music_mode", String(SE_VU_METER));
                  setSoundEffectMode(SE_VU_METER, &box);
                });
 
@@ -96,7 +86,6 @@ void renderMusic()
   })",
                [](String key, String val)
                {
-                 setValue("cur_music_mode", String(SE_SEGMENT_BEAT));
                  setSoundEffectMode(SE_SEGMENT_BEAT, &box);
                });
   renderButton("Music", "music_mode_5", "Shines On", R"({
@@ -104,14 +93,12 @@ void renderMusic()
   })",
                [](String key, String val)
                {
-                 setValue("cur_music_mode", String(SE_SHINES_ON));
                  setSoundEffectMode(SE_SHINES_ON, &box);
                });
   renderButton("Music", "music_mode_6", "Run Speed", R"({
   })",
                [](String key, String val)
                {
-                 setValue("cur_music_mode", String(SE_RUN_SPEED));
                  setSoundEffectMode(SE_RUN_SPEED, &box);
                });
 
@@ -119,7 +106,6 @@ void renderMusic()
   })",
                [](String key, String val)
                {
-                 setValue("cur_music_mode", String(SE_LAZY));
                  setSoundEffectMode(SE_LAZY, &box);
                });
 
@@ -127,7 +113,6 @@ void renderMusic()
   })",
                [](String key, String val)
                {
-                 setValue("cur_music_mode", String(SE_OVERFLOW_BEGIN2));
                  setSoundEffectMode(SE_OVERFLOW_BEGIN2, &box);
                });
 
@@ -135,7 +120,6 @@ void renderMusic()
   })",
                [](String key, String val)
                {
-                 setValue("cur_music_mode", String(SE_STAR_BEAT_2));
                  setSoundEffectMode(SE_STAR_BEAT_2, &box);
                });
 
@@ -143,7 +127,6 @@ void renderMusic()
   })",
                [](String key, String val)
                {
-                 setValue("cur_music_mode", String(SE_RAINBOW));
                  setSoundEffectMode(SE_RAINBOW, &box);
                });
 
@@ -151,7 +134,6 @@ void renderMusic()
   })",
                [](String key, String val)
                {
-                 setValue("cur_music_mode", String(SE_RAINBOW_RUN));
                  setSoundEffectMode(SE_RAINBOW_RUN, &box);
                });
 
@@ -159,7 +141,6 @@ void renderMusic()
   })",
                [](String key, String val)
                {
-                 setValue("cur_music_mode", String(SE_VU_METER_COLUMN));
                  setSoundEffectMode(SE_VU_METER_COLUMN, &box);
                });
 }

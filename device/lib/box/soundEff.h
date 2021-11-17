@@ -61,6 +61,7 @@ void setSoundEffectMode(uint8_t eff, WS2812FX * leds){
     }else if(soundEffectMode == SE_VU_METER_COLUMN){
         vuMeterColumnInit(leds);
     }
+    setValue("cur_music_mode", String(eff));
 }
 // ===================================================== Handler =====================================================
 uint16_t soundEffHandle(WS2812FX * leds){

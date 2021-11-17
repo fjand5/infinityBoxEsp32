@@ -77,7 +77,6 @@ void boxHandle(void *pvParameters)
 {
   log_d("boxHandle running on core: %d", xPortGetCoreID());
 
-  setupMIC();
 
   rmt_tx_int(RMT_CHANNEL, box.getPin());
   box.setCustomShow(rmtShow);
@@ -89,7 +88,7 @@ void boxHandle(void *pvParameters)
 
   resumeBox();
   setValue("pause_tgl", "true");
-  getValue("on_off_tgl", "false") == "true" ? onBox() : offBox();
+  getValue("on_off_tgl", "true") == "true" ? onBox() : offBox();
   setTimer(getValue("timer_sld", "5").toInt() * 1000);
   getValue("timer_tgl", "false") == "true" ? onTimer() : offTimer();
   changeBrightness(getValue("brightness_sld", "50").toInt());
@@ -118,6 +117,7 @@ void boxHandle(void *pvParameters)
 }
 void setupBox()
 {
+  setupMIC();
 
   xTaskCreatePinnedToCore(
       boxHandle,            /* Task function. */

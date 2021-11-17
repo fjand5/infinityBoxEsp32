@@ -10,8 +10,6 @@ void renderSettingMenu()
                {
                  previousMode();
                  offTimer();
-                 setValue("current_mode", String(box.getMode()));
-                 setValue("timer_tgl", "false");
                });
   renderInputText("setting Box", "current_mode", "Current Mode", R"({
   })",
@@ -19,8 +17,6 @@ void renderSettingMenu()
                   {
                     changeMode(val.toInt());
                     offTimer();
-                    setValue("current_mode", String(box.getMode()));
-                    setValue("timer_tgl", "false");
 
                   });
   renderButton("setting Box", "next_mode", "Next Mode", R"({
@@ -30,8 +26,6 @@ void renderSettingMenu()
                {
                  nextMode();
                  offTimer();
-                 setValue("current_mode", String(box.getMode()));
-                 setValue("timer_tgl", "false");
                });
 
   renderToggle("setting Box", "pause_tgl", "Pause/Resume", R"({
@@ -107,7 +101,6 @@ void renderSettingMenu()
                     if (v < 0)
                       v = 0;
                     changeSpeed(v);
-                    setValue("speed_inp", val);
                   });
   renderSlider("setting Box", "timer_sld", "thời gian chuyển", R"({
     "newLine":true,
@@ -116,8 +109,7 @@ void renderSettingMenu()
   })",
                [](String key, String val)
                {
-                 setTimer(val.toInt() * 1000);
-                 setValue("timer_sld", val);
+                 setTimer(val.toInt());
                });
 
   renderToggle("setting Box", "timer_tgl", "Off/On timer", R"({
@@ -133,7 +125,6 @@ void renderSettingMenu()
                  {
                    offTimer();
                  }
-                 setValue(key, val);
                });
 
   renderSlider("setting Box", "brightness_sld", "độ sáng", R"({
@@ -144,6 +135,5 @@ void renderSettingMenu()
                [](String key, String val)
                {
                  changeBrightness(val.toInt());
-                 setValue("brightness_sld", val);
                });
 }
