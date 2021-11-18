@@ -18,7 +18,7 @@ void setOnConfigChange(void (*func)(String key, String value))
 // Mỗi dòng là một phần tử (một cặp key value) (key):(value)\n
 void loadFileIntoConfig(String content)
 {
-  log_d("%s",content.c_str());
+  log_d("%s", content.c_str());
   configContent_sem = xSemaphoreCreateBinary();
   while (content.indexOf("\n") >= 0)
   {
@@ -129,6 +129,8 @@ String getValuesByJson()
 // Gán giá trị cho key
 void setValue(String key, String value, bool save = true)
 {
+  if (key.indexOf(":") >= 0 || key.indexOf("\n") >= 0 || value.indexOf(":") >= 0 || value.indexOf("\n") >= 0)
+    return;
   if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
   {
     ConfigContent[key] = value;
