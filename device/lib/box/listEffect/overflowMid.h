@@ -1,5 +1,5 @@
 #include <WS2812FX.h>
-#define OVER_FLOW_MID_SPEED  50
+#define OVER_FLOW_MID_SPEED  60
 void overflowMidInit(WS2812FX * leds){
     for (int i = 0; i < leds->getNumSegments(); i++){
         WS2812FX::Segment* seg = leds->getSegment(i);
@@ -14,8 +14,8 @@ void overflowMidOnBeat(WS2812FX * leds, double val, double freq){
         WS2812FX::Segment_runtime* segrt = leds->getSegmentRuntime(i);
 
         if(leds->getPixelColor(seg->stop) != 0){
-            seg->speed = 25;
-            leds->fade_out(0);
+            seg->speed = OVER_FLOW_MID_SPEED/2;
+            blendRange(leds, seg->start,seg->stop,0, freq*255/100);
         }else{
             seg->speed = OVER_FLOW_MID_SPEED;
         }

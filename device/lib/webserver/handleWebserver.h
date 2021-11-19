@@ -7,20 +7,20 @@ void webserverHandle(void *pvParameters)
   // log_d("webserverHandle running on core: %d ",xPortGetCoreID());
   
   setupWebserver();
-  uint32_t timer = millis();
-  for (;;)
+  // uint32_t timer = millis();
+  while (1)
   {
     loopWebserver();
-    if (millis() - timer > 3000 
-    &&  webSocket.connectedClients() == 0
-    )
-    {
-      udp.beginPacket("255.255.255.255", 7878);
-      udp.println(String("MAC: ") + WiFi.macAddress());
-      udp.endPacket();
-      log_d("beginPacket");
-      timer = millis();
-    }
+    // if (millis() - timer > 3000 
+    // &&  webSocket.connectedClients() == 0
+    // )
+    // {
+    //   udp.beginPacket("255.255.255.255", 7878);
+    //   udp.println(String("MAC: ") + WiFi.macAddress());
+    //   udp.endPacket();
+    //   log_d("beginPacket");
+    //   timer = millis();
+    // }
   }
 }
 void setupMServer()

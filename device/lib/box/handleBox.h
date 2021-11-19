@@ -89,7 +89,7 @@ void boxHandle(void *pvParameters)
   resumeBox();
   setValue("pause_tgl", "true");
   getValue("on_off_tgl", "true") == "true" ? onBox() : offBox();
-  setTimer(getValue("timer_sld", "5").toInt() * 1000);
+  setTimer(getValue("timer_sld", "5").toInt());
   getValue("timer_tgl", "false") == "true" ? onTimer() : offTimer();
   changeBrightness(getValue("brightness_sld", "50").toInt());
   if (getValue("react_music", "false") == "true")

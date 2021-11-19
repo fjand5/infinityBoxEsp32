@@ -12,6 +12,7 @@
 #define SE_RAINBOW                  10
 #define SE_RAINBOW_RUN              11
 #define SE_VU_METER_COLUMN          12
+#define SE_EXPAINSION               13
 
 #include <WS2812FX.h>
 #include "./listEffect/lazy.h"
@@ -25,8 +26,9 @@
 #include "./listEffect/rainbow.h"
 #include "./listEffect/rainbowRun.h"
 #include "./listEffect/vuMeterColumn.h"
+#include "./listEffect/expansion.h"
 
-uint8_t soundEffectMode = SE_LAZY;
+uint8_t soundEffectMode = SE_EXPAINSION;
 void setSoundEffectMode(uint8_t eff, WS2812FX * leds){
     soundEffectMode = eff;
     if(soundEffectMode == SE_OVERFLOW_BEGIN){
@@ -60,6 +62,8 @@ void setSoundEffectMode(uint8_t eff, WS2812FX * leds){
         rainbowRunInit(leds);
     }else if(soundEffectMode == SE_VU_METER_COLUMN){
         vuMeterColumnInit(leds);
+    }else if(soundEffectMode == SE_VU_METER_COLUMN){
+        expansionInit(leds);
     }
     setValue("cur_music_mode", String(eff));
 }
@@ -87,8 +91,8 @@ uint16_t soundEffHandle(WS2812FX * leds){
         return rainbowRunHandler(leds);
     }else if(soundEffectMode == SE_VU_METER_COLUMN){
         return vuMeterColumnHandler(leds);
-        
-        
+    }else if(soundEffectMode == SE_EXPAINSION){
+        return expansionHandler(leds);
     }
 }
 void onBeat(WS2812FX * leds, double micVal , double freq){
@@ -114,5 +118,7 @@ void onBeat(WS2812FX * leds, double micVal , double freq){
         rainbowRunOnBeat(leds, micVal, freq);
     }else if(soundEffectMode == SE_VU_METER_COLUMN){
         vuMeterColumnOnBeat(leds, micVal, freq);
+    }else if(soundEffectMode == SE_EXPAINSION){
+        expansionOnBeat(leds, micVal, freq);
     }
 }

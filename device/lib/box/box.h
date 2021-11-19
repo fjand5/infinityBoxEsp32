@@ -199,6 +199,7 @@ public:
         }
         setValue("current_mode", String(_mode));
         changeSpeed(getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt(), false);
+        log_d("current mode: %d = %s", _mode, getModeName(_mode));
     }
     void nextMode()
     {
@@ -524,7 +525,6 @@ private:
         else if (sym == SYM_VERTEX)
         {
             int tmp, index = 0;
-            bool isRev = false;
             uint8_t opt;
             resetSegments();
             tmp = getValue("seg_font_1", "15").toInt();
@@ -705,7 +705,6 @@ private:
             setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, _mode, _colors, _spd,
                        opt);
             coupleSeg[(index + 1) / 2].senconds = index;
-            index++;
         }
         else if (sym == SYM_SURFACE)
         {
