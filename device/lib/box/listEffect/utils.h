@@ -7,8 +7,12 @@ float step(float e, float x) { return x < e ? 0.0 : 1.0; }
 
 float fract(float x) { return x - int(x); }
 
+// h: 0->1
+// s: 0->1
+// v: 0->255
 void rgb2hsv(uint32_t rgbColor, float *hsv)
 {
+
   float r = float((rgbColor >> 16) & 0xff);
   float g = float((rgbColor >> 8) & 0xff);
   float b = float((rgbColor >> 0) & 0xff);
@@ -55,10 +59,44 @@ uint32_t wheelColor(WS2812FX *leds, byte WheelPos)
 
 void blendRange(WS2812FX *leds, int start, int stop, uint32_t color, uint8_t ratio = 128)
 {
+  for (int i = start; i <= stop; i++)
+  {
+    uint32_t _color = leds->getPixelColor(i);
+    _color = leds->color_blend(_color, color, ratio);
+    leds->setPixelColor(i, _color);
+  }
+}
+int countZeroPixel(WS2812FX *leds, int start, int stop)
+{
+  int ret = 0;
   for (int j = start; j <= stop; j++)
   {
-    color = leds->getPixelColor(j);
-    color = leds->color_blend(color, 0, ratio);
-    leds->setPixelColor(j, color);
+    if (leds->getPixelColor(j) == 0)
+    {
+      ret++;
+    };
+  }
+  return ret;
+}
+void setPixelInSegment(WS2812FX *leds, WS2812FX::Segment *_seg, int index, uint32_t color)
+{
+  int len = _seg->stop - _seg->start + 1;
+  index = index % len;
+  if (IS_REVERSE)
+  {
+    leds->setPixelColor(_seg->stop - index, color);
+  }
+  else
+  {
+    leds->setPixelColor(_seg->start + index, color);
+  }
+}
+void clearPixelInSegment(WS2812FX *leds, WS2812FX::Segment *_seg)
+{
+  int len = _seg->stop - _seg->start + 1;
+
+  for (int i = 0; i < len; i++)
+  {
+    leds->setPixelColor(_seg->start + i, 0);
   }
 }

@@ -1,4 +1,5 @@
 #include <WS2812FX.h>
+#include "../utils.h"
 
 #define STAR_BEAT_SPEED  10
 
@@ -6,6 +7,8 @@
 #define STAR_BEAT_MODE_2  1
 int starBeatMode = STAR_BEAT_MODE_1;
 void starBeatInit(WS2812FX * leds, int mode = STAR_BEAT_MODE_1){
+  setSymmetry(leds, SYM_VERTEX);
+
     for (int i = 0; i < leds->getNumSegments(); i++){
         WS2812FX::Segment* seg = leds->getSegment(i);
         seg->speed = STAR_BEAT_SPEED;

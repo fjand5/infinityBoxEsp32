@@ -1,7 +1,10 @@
 #include <WS2812FX.h>
 #include "./utils.h"
-#define VU_METTER_SPEED  40
+#include "../utils.h"
+#define VU_METTER_SPEED  500
 void vuMeterInit(WS2812FX * leds){
+  setSymmetry(leds, SYM_VERTEX);
+
     for (int i = 0; i < leds->getNumSegments(); i++){
         WS2812FX::Segment* seg = leds->getSegment(i);
         seg->speed = VU_METTER_SPEED;

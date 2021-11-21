@@ -1,9 +1,12 @@
 #include <WS2812FX.h>
 #include "./utils.h"
+#include "../utils.h"
 
 #define SEGMENT_BEAT_SPEED  5
 
 void segmentBeatInit(WS2812FX * leds){
+  setSymmetry(leds, SYM_VERTEX);
+
     for (int i = 0; i < leds->getNumSegments(); i++){
         WS2812FX::Segment* seg = leds->getSegment(i);
         seg->speed = SEGMENT_BEAT_SPEED;

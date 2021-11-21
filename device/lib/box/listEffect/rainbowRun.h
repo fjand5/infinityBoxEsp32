@@ -1,8 +1,11 @@
 #include <WS2812FX.h>
 #include "./utils.h"
+#include "../utils.h"
 #define RAINBOW_RUN_SPEED  100
 
 void rainbowRunInit(WS2812FX * leds){
+  setSymmetry(leds, SYM_VERTEX);
+
     for (int i = 0; i < leds->getNumSegments(); i++){
         WS2812FX::Segment* seg = leds->getSegment(i);
         seg->speed = RAINBOW_RUN_SPEED;

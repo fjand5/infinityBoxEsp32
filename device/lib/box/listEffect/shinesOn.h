@@ -1,54 +1,80 @@
 #include <WS2812FX.h>
+#include "../utils.h"
+#include "./utils.h"
 
+#define SHINES_ON_COUNT_LED_MIN 6
+#define SHINES_ON_COUNT_LED_MAX 24
 
-#define SHINES_ON_SPEED  40
+#define SHINES_ON_SPEED 250
 
-void shinesOnInit(WS2812FX * leds){
-    for (int i = 0; i < leds->getNumSegments(); i++){
-        WS2812FX::Segment* seg = leds->getSegment(i);
-        seg->speed = SHINES_ON_SPEED;
-    }
-}
+#define TRIFADE_BLACK (uint8_t) B10000000 // same as REVERSE macro
 
-void shinesOnOnBeat(WS2812FX * leds, double val, double freq){
-    // if(val < 25)
-    //   return;
-    for (int i = 0; i < leds->getNumSegments(); i++){
-        WS2812FX::Segment* seg = leds->getSegment(i);
-        WS2812FX::Segment_runtime* segrt = leds->getSegmentRuntime(i);
-        int seglen = seg->stop - seg->start + 1;
-        double tmp =val*seglen/150;
-        segrt->aux_param3 = tmp;
-    }
-}
+void shinesOnInit(WS2812FX *leds)
+{
 
-uint16_t shinesOnHandler(WS2812FX * leds){
-  WS2812FX::Segment* seg = leds->getSegment(); // get the current segment
-  WS2812FX::Segment_runtime* segrt = leds->getSegmentRuntime();
-  int seglen = seg->stop - seg->start + 1;
-  uint16_t colorIndex = segrt->aux_param;
-
-  uint32_t counter = segrt->counter_mode_call;    
-  uint16_t curPosition = counter  % (seglen);
-  if(curPosition == 0){
-    segrt->aux_param = leds->random8(3);
+  setSymmetry(leds, SYM_SURFACE);
+  leds->clear();
+  for (int i = 0; i < leds->getNumSegments(); i++)
+  {
+    WS2812FX::Segment *seg = leds->getSegment(i);
+    // leds->setPixelColor(seg->start, seg->colors[0]);
+    seg->speed = SHINES_ON_SPEED;
   }
-	uint16_t numOfNotOffLed = 0;
-	for (int i = 0; i <  seglen; i++) {
-		if(leds->getPixelColor(seg->start+i) != 0)
-			numOfNotOffLed++;
-	}
-	double percentOff = numOfNotOffLed/seglen;
-  leds->setPixelColor(seg->start + curPosition - 1 , leds->color_blend(seg->colors[colorIndex], leds->ColorHSV(percentOff*65535), 64) );
-  int32_t tmp = segrt->aux_param3;
-  tmp -= tmp/3;
-  tmp = tmp < 0 ? 0: tmp;
-  segrt->aux_param3 = tmp;
-  if(segrt->aux_param3 >= 3
-  ){
+}
+
+void shinesOnOnBeat(WS2812FX *leds, double val, double freq)
+{
+  if (val < 5)
+    return;
+  for (int i = 0; i < leds->getNumSegments(); i++)
+  {
+    WS2812FX::Segment *seg = leds->getSegment(i); // get the current segment
+    WS2812FX::Segment_runtime *segrt = leds->getSegmentRuntime(i);
+    segrt->counter_mode_step = val * SHINES_ON_COUNT_LED_MAX / 100;
+    segrt->counter_mode_step = constrain(segrt->counter_mode_step, SHINES_ON_COUNT_LED_MIN, SHINES_ON_COUNT_LED_MAX);
+    val = constrain(val, 0, 50);
+    seg->speed = 0;
+  }
+}
+
+uint16_t shinesOnHandler(WS2812FX *leds)
+{
+
+  WS2812FX::Segment *_seg = leds->getSegment(); // get the current segment
+  WS2812FX::Segment_runtime *_segrt = leds->getSegmentRuntime();
+  int midValue = _segrt->counter_mode_step / 2;
+  float hsv[3];
+  rgb2hsv(_seg->colors[0], hsv);
+  // for (int i = 0; i < SHINES_ON_COUNT_LED_MAX - SHINES_ON_COUNT_LED_MIN; i++)
+  // {
+    // blendRange(leds, _seg->start, _seg->stop, 0);
+    clearPixelInSegment(leds, _seg);
+  // }
+
+  for (int i = 0; i < _segrt->counter_mode_step; i++)
+  {
+    uint32_t _color;
+    hsv[1] = hsv[1] + (float(midValue - i)) / (float)midValue;
+    hsv2rgb(hsv[0], hsv[1], hsv[2], &_color);
+    setPixelInSegment(leds, _seg, _segrt->counter_mode_call + i, _color);
+  }
+
+  int len = _seg->stop - _seg->start + 1;
+  rgb2hsv(_seg->colors[1], hsv);
+  for (int i = 0; i < _segrt->counter_mode_step; i++)
+  {
+
+    uint32_t _color;
+    hsv[1] = hsv[1] + (float(midValue - i)) / (float)midValue;
+    hsv2rgb(hsv[0], hsv[1], hsv[2], &_color);
+
+    setPixelInSegment(leds, _seg, _segrt->counter_mode_call + len / 2 + i, _color);
+  }
+  if (_seg->speed < SHINES_ON_SPEED)
+  {
+    _seg->speed += SHINES_ON_SPEED / 10;
   }else{
-    leds->fade_out(0);
+    _segrt->counter_mode_step = SHINES_ON_COUNT_LED_MIN;
   }
-
-  return seg->speed; 
+  return _seg->speed;
 }

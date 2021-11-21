@@ -1,9 +1,12 @@
 #include <WS2812FX.h>
 
 #include "./utils.h"
+#include "../utils.h"
 #define RUN_SPEED_SPEED  45
 #define RUN_SPEED_SPEED_FAST  20
 void runSpeedInit(WS2812FX * leds){
+  setSymmetry(leds, SYM_VERTEX);
+
     for (int i = 0; i < leds->getNumSegments(); i++){
         WS2812FX::Segment* seg = leds->getSegment(i);
         seg->speed = RUN_SPEED_SPEED;

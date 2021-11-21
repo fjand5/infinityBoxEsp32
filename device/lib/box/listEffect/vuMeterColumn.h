@@ -1,11 +1,14 @@
 #include <WS2812FX.h>
 #include "./utils.h"
+#include "../utils.h"
+
 #include "../../webserver/config.h"
 #define VU_METTER_COLUMN_SPEED 40
 bool checkIsColumn(uint16_t seg);
 bool needRev(uint16_t seg);
 void vuMeterColumnInit(WS2812FX *leds)
 {
+  setSymmetry(leds, SYM_VERTEX);
 
     for (int i = 0; i < leds->getNumSegments(); i++)
     {

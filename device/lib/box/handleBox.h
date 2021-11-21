@@ -2,6 +2,7 @@
 #include "box.h"
 #include "mic.h"
 #include "../helper.h"
+#include "./utils.h"
 
 void setTimer(uint32_t timer)
 {
@@ -77,7 +78,6 @@ void boxHandle(void *pvParameters)
 {
   log_d("boxHandle running on core: %d", xPortGetCoreID());
 
-
   rmt_tx_int(RMT_CHANNEL, box.getPin());
   box.setCustomShow(rmtShow);
   box.settup();
@@ -94,15 +94,19 @@ void boxHandle(void *pvParameters)
   changeBrightness(getValue("brightness_sld", "50").toInt());
   if (getValue("react_music", "false") == "true")
   {
-
     onReact();
     setSoundEffectMode(SE_VU_METER_COLUMN, &box);
+    setSymmetry(&box,SYM_VERTEX);
   }
   else
   {
     offReact();
     changeMode(getValue("current_mode", "12").toInt());
   }
+  
+    onReact();
+    setSoundEffectMode(SE_SHINES_ON, &box);
+    setSymmetry(&box,SYM_SURFACE);
   // uint32_t preTime = millis();
   for (;;)
   {

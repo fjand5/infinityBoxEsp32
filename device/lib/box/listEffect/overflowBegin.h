@@ -1,5 +1,7 @@
 #include <WS2812FX.h>
 #include "./utils.h"
+#include "../utils.h"
+
 #define OVER_FLOW_BEGIN_SPEED 70
 
 #define OVER_FLOW_BEGIN_0 0
@@ -7,6 +9,8 @@
 int overflowMode = OVER_FLOW_BEGIN_0;
 void overflowBeginInit(WS2812FX *leds, int mode = OVER_FLOW_BEGIN_0)
 {
+  setSymmetry(leds, SYM_VERTEX);
+
     for (int i = 0; i < leds->getNumSegments(); i++)
     {
         WS2812FX::Segment *seg = leds->getSegment(i);

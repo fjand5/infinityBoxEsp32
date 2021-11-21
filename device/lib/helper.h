@@ -1,7 +1,7 @@
 #pragma once
 #include "Arduino.h"
-#include "box/box.h"
-uint32_t stringToColor(String val){
+
+uint32_t stringToColor( String val){
     // #ffaabb
     if(!val.startsWith("#")
       || val.length()!=7
@@ -13,7 +13,6 @@ uint32_t stringToColor(String val){
     int redInt = strtol(redStr.c_str(),NULL,16);
     int greenInt = strtol(greenStr.c_str(),NULL,16);
     int blueInt = strtol(blueStr.c_str(),NULL,16);
-    color = box.Color(redInt, greenInt, blueInt);
+    color = ((uint32_t)redInt << 16) | ((uint32_t)blueInt << 8) | greenInt;
     return color;
-
 }
