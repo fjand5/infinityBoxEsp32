@@ -2,15 +2,15 @@
 #include "../utils.h"
 #include "./utils.h"
 
-#define SHINES_ON_COUNT_LED_MIN 6.0
-#define SHINES_ON_COUNT_LED_MAX 40.0
+#define SHINES_ON_COUNT_LED_MIN 3.0
+#define SHINES_ON_COUNT_LED_MAX 11.0
 
-#define SHINES_ON_SPEED 200
-void shinesOnOnBeat1(WS2812FX *leds, double val, double freq);
-void shinesOnInit1(WS2812FX *leds)
+#define SHINES_ON_SPEED 80
+void shinesOnOnBeat3(WS2812FX *leds, double val, double freq);
+void shinesOnInit3(WS2812FX *leds)
 {
 
-  setSymmetry(leds, SYM_SURFACE);
+  setSymmetry(leds, SYM_VERTEX);
   leds->clear();
   for (int i = 0; i < leds->getNumSegments(); i++)
   {
@@ -19,11 +19,11 @@ void shinesOnInit1(WS2812FX *leds)
     _segrt->counter_mode_step = 1;
     seg->speed = SHINES_ON_SPEED;
   }
-  shinesOnOnBeat1(leds, 99, 99);
+  shinesOnOnBeat3(leds, 99, 99);
 }
 // float activateLeds = SHINES_ON_COUNT_LED_MAX;
 
-void shinesOnOnBeat1(WS2812FX *leds, double val, double freq)
+void shinesOnOnBeat3(WS2812FX *leds, double val, double freq)
 {
   if (val < 25)
     return;
@@ -39,7 +39,7 @@ void shinesOnOnBeat1(WS2812FX *leds, double val, double freq)
   }
 }
 
-uint16_t shinesOnHandler1(WS2812FX *leds)
+uint16_t shinesOnHandler3(WS2812FX *leds)
 {
 
   WS2812FX::Segment *_seg = leds->getSegment(); // get the current segment
@@ -59,7 +59,9 @@ uint16_t shinesOnHandler1(WS2812FX *leds)
   }
   if (activateLeds > SHINES_ON_COUNT_LED_MIN)
   {
+    // _segrt->counter_mode_step--;
     _segrt->counter_mode_step-=activateLeds*10/100;
+
     return 0;
   }
   else

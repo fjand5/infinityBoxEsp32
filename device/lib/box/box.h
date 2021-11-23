@@ -251,7 +251,6 @@ public:
         {
             setValue("react_music", "false");
             changeMode(_mode);
-
         }
     }
     void changeSpeed(uint16_t spd, bool save = true)
@@ -347,13 +346,25 @@ public:
         if (millis() - timer > _timer && _runTimer)
         {
             timer = millis();
-            nextMode();
-            setValue("current_mode", String(getMode()));
+            if (_isReacMusic)
+            {
+                soundEffectMode++;
+                if(soundEffectMode>= SE_COUNT)
+                    soundEffectMode=0;
+                setSoundEffectMode(soundEffectMode, this);
+            }
+            else
+            {
+
+                nextMode();
+                setValue("current_mode", String(getMode()));
+            }
         }
 
+        // chạy để kích beat
         if (_isReacMusic)
         {
-            double micVal = micValFunc();
+            micValFunc();
         }
         return true;
     }

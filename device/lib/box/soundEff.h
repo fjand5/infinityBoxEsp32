@@ -13,13 +13,15 @@
 #define SE_RAINBOW_RUN              11
 #define SE_VU_METER_COLUMN          12
 #define SE_SHINES_ON_1              13
-
+#define SE_SHINES_ON_3              14
+#define SE_COUNT                    15
 #include <WS2812FX.h>
 #include "./listEffect/lazy.h"
 #include "./listEffect/overflowBegin.h"
 #include "./listEffect/overflowMid.h"
 #include "./listEffect/starBeat.h"
 #include "./listEffect/runSpeed.h"
+#include "./listEffect/shinesOn_3.h"
 #include "./listEffect/shinesOn_2.h"
 #include "./listEffect/shinesOn_1.h"
 #include "./listEffect/vuMeter.h"
@@ -30,6 +32,7 @@
 
 uint8_t soundEffectMode = SE_SHINES_ON_2;
 void setSoundEffectMode(uint8_t eff, WS2812FX * leds){
+    setValue("cur_music_mode",String(eff));
     soundEffectMode = eff;
     if(soundEffectMode == SE_OVERFLOW_BEGIN){
         overflowBeginInit(leds);
@@ -52,6 +55,8 @@ void setSoundEffectMode(uint8_t eff, WS2812FX * leds){
         
     }else if(soundEffectMode == SE_SHINES_ON_2){
         shinesOnInit2(leds);
+    }else if(soundEffectMode == SE_SHINES_ON_3){
+        shinesOnInit3(leds);
     }else if(soundEffectMode == SE_SHINES_ON_1){
         shinesOnInit1(leds);
     }else if(soundEffectMode == SE_RUN_SPEED){
@@ -83,6 +88,8 @@ uint16_t soundEffHandle(WS2812FX * leds){
         return shinesOnHandler2(leds);
     }else if(soundEffectMode == SE_SHINES_ON_1){
         return shinesOnHandler1(leds);
+    }else if(soundEffectMode == SE_SHINES_ON_3){
+        return shinesOnHandler3(leds);
     }else if(soundEffectMode == SE_RUN_SPEED){
         return runSpeedHandler(leds);
     }else if(soundEffectMode == SE_LAZY){
@@ -108,6 +115,8 @@ void onBeat(WS2812FX * leds, double micVal , double freq){
         segmentBeatOnBeat(leds, micVal, freq);
     }else if(soundEffectMode == SE_SHINES_ON_2){
         shinesOnOnBeat2(leds, micVal, freq);
+    }else if(soundEffectMode == SE_SHINES_ON_3){
+        shinesOnOnBeat3(leds, micVal, freq);
     }else if(soundEffectMode == SE_SHINES_ON_1){
         shinesOnOnBeat1(leds, micVal, freq);
     }else if(soundEffectMode == SE_RUN_SPEED){

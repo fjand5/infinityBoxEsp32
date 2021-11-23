@@ -94,7 +94,7 @@ void boxHandle(void *pvParameters)
   if (getValue("react_music", "false") == "true")
   {
     onReact();
-    setSymmetry(&box, SYM_VERTEX);
+    // setSymmetry(&box, SYM_VERTEX);
     setSoundEffectMode(getValue("cur_music_mode").toInt(), &box);
   }
   else

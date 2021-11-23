@@ -1,7 +1,7 @@
 #include <WS2812FX.h>
 #include "./utils.h"
 #include "../utils.h"
-#define VU_METTER_SPEED  500
+#define VU_METTER_SPEED  20
 void vuMeterInit(WS2812FX * leds){
   setSymmetry(leds, SYM_VERTEX);
 

@@ -34,16 +34,14 @@ void renderMusic()
                {
                  if (val == "true")
                  {
-                   offTimer();
                    onReact();
-                   if (!checkKey("cur_music_mode"))
-                     setSoundEffectMode(SE_VU_METER_COLUMN, &box);
+                   setSoundEffectMode(getValue("cur_music_mode", String(SE_STAR_BEAT_1)).toInt(), &box);
                  }
                  if (val == "false")
                  {
                    offReact();
                    changeMode(getValue("current_mode", "12").toInt());
-                   changeSpeed(getValue("speed_sld", "80").toInt());
+                   //  changeSpeed(getValue("speed_sld", "80").toInt());
                  }
                });
 
@@ -149,5 +147,12 @@ void renderMusic()
                [](String key, String val)
                {
                  setSoundEffectMode(SE_SHINES_ON_1, &box);
+               });
+  renderButton("Music", "music_mode_14", "Shines On 3", R"({
+    newLine: True
+  })",
+               [](String key, String val)
+               {
+                 setSoundEffectMode(SE_SHINES_ON_3, &box);
                });
 }
