@@ -91,7 +91,7 @@ void renderSystem()
                    if (WiFi.status() == WL_CONNECTED)
                    {
                      log_d("WiFi connected");
-                     log_d("IP address: %s",WiFi.localIP().toString().c_str());
+                     log_d("IP address: %s", WiFi.localIP().toString().c_str());
                      setValue("sta_ip", IpAddress2String(WiFi.localIP()));
                      isConnect = true;
                    }
@@ -141,7 +141,7 @@ void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info)
     while (WiFi.status() != WL_CONNECTED && millis() < 30000)
     {
       delay(500);
-      log_d(".");
+      log_d("-");
     }
   }
 }
@@ -149,17 +149,17 @@ void setupWebserver()
 {
   renderSystem();
   WiFi.mode(WIFI_AP_STA);
-  WiFi.begin(getValueByCStr("sta_id", "Vong Cat-Hide"), getValueByCStr("sta_pass", "78787878"));
+  WiFi.begin(getValueByCStr("sta_id", "Vong Cat-Hide2"), getValueByCStr("sta_pass", "78787878"));
 
-  while (WiFi.status() != WL_CONNECTED && millis() < 30000)
+  while (WiFi.status() != WL_CONNECTED && millis() < 10000)
   {
-    delay(500);
+    delay(1000);
     log_d(".");
   }
   if (WiFi.status() == WL_CONNECTED)
   {
     log_d("WiFi connected");
-    log_d("IP address: %s",WiFi.localIP().toString().c_str());
+    log_d("IP address: %s", WiFi.localIP().toString().c_str());
     setValue("sta_ip", IpAddress2String(WiFi.localIP()));
     WiFi.onEvent(WiFiStationDisconnected, SYSTEM_EVENT_STA_DISCONNECTED);
 
@@ -167,13 +167,13 @@ void setupWebserver()
   }
   // if (checkKey("ap_id") && checkKey("ap_pass"))
   // {
-    // SPEX_xxx
-    uint8_t tmp[6];
-    char ap_id[18];
-    ap_id[17]=0;
-    WiFi.macAddress(tmp);
-    sprintf(ap_id, "SPEX_%X%X%X%X%X%X", tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5]);
-    WiFi.softAP(getValueByCStr("ap_id", ap_id), getValueByCStr("ap_pass", "12345678"));
+  // SPEX_xxx
+  uint8_t tmp[6];
+  char ap_id[18];
+  ap_id[17] = 0;
+  WiFi.macAddress(tmp);
+  sprintf(ap_id, "SPEX_%X%X%X%X%X%X", tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5]);
+  WiFi.softAP(getValueByCStr("ap_id", ap_id), getValueByCStr("ap_pass", "12345678"));
   // }
   // else
   // {
@@ -205,7 +205,6 @@ void setupWebserver()
       {
         webSocket.sendTXT(num, getValuesByString().c_str());
       }
-      
 
       if (cmd == "exe")
       {
@@ -284,5 +283,4 @@ void loopWebserver()
 {
   webSocket.loop();
   server.handleClient();
-
 }

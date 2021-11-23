@@ -88,12 +88,12 @@ void renderMusic()
                {
                  setSoundEffectMode(SE_SEGMENT_BEAT, &box);
                });
-  renderButton("Music", "music_mode_5", "Shines On", R"({
+  renderButton("Music", "music_mode_5", "Shines On 2", R"({
     newLine: True
   })",
                [](String key, String val)
                {
-                 setSoundEffectMode(SE_SHINES_ON, &box);
+                 setSoundEffectMode(SE_SHINES_ON_2, &box);
                });
   renderButton("Music", "music_mode_6", "Run Speed", R"({
   })",
@@ -142,5 +142,12 @@ void renderMusic()
                [](String key, String val)
                {
                  setSoundEffectMode(SE_VU_METER_COLUMN, &box);
+               });
+  renderButton("Music", "music_mode_13", "Shines On 1", R"({
+    newLine: True
+  })",
+               [](String key, String val)
+               {
+                 setSoundEffectMode(SE_SHINES_ON_1, &box);
                });
 }

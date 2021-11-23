@@ -90,23 +90,23 @@ void boxHandle(void *pvParameters)
   setValue("pause_tgl", "true");
   getValue("on_off_tgl", "true") == "true" ? onBox() : offBox();
   setTimer(getValue("timer_sld", "5").toInt());
-  getValue("timer_tgl", "false") == "true" ? onTimer() : offTimer();
   changeBrightness(getValue("brightness_sld", "50").toInt());
   if (getValue("react_music", "false") == "true")
   {
     onReact();
-    setSoundEffectMode(SE_VU_METER_COLUMN, &box);
-    setSymmetry(&box,SYM_VERTEX);
+    setSymmetry(&box, SYM_VERTEX);
+    setSoundEffectMode(getValue("cur_music_mode").toInt(), &box);
   }
   else
   {
     offReact();
     changeMode(getValue("current_mode", "12").toInt());
   }
+  getValue("timer_tgl", "false") == "true" ? onTimer() : offTimer();
   
-    onReact();
-    setSoundEffectMode(SE_SHINES_ON, &box);
-    setSymmetry(&box,SYM_SURFACE);
+    // onReact();
+    // setSoundEffectMode(SE_SHINES_ON, &box);
+    // setSymmetry(&box,SYM_SURFACE);
   // uint32_t preTime = millis();
   for (;;)
   {

@@ -201,7 +201,6 @@ public:
         }
         setValue("current_mode", String(_mode));
         changeSpeed(getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt(), false);
-        
     }
     void nextMode()
     {
@@ -239,8 +238,10 @@ public:
     }
     void setReacMusic(bool val)
     {
+        _isReacMusic = val;
         if (val)
         {
+            setValue("react_music", "true");
             for (int i = 0; i < getNumSegments(); i++)
             {
                 setMode(i, FX_MODE_CUSTOM);
@@ -248,13 +249,10 @@ public:
         }
         else
         {
-            changeMode(_mode);
-        }
-        _isReacMusic = val;
-        if (val)
-            setValue("react_music", "true");
-        else
             setValue("react_music", "false");
+            changeMode(_mode);
+
+        }
     }
     void changeSpeed(uint16_t spd, bool save = true)
     {
@@ -485,8 +483,7 @@ public:
     // CoupleSeg getColumn(int num){
     //     return coupleSeg[num];
     // }
-// private:
-    
+    // private:
 };
 
 Box box = Box(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);

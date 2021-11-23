@@ -129,12 +129,17 @@ String getValuesByJson()
 // Gán giá trị cho key
 void setValue(String key, String value, bool save = true)
 {
-  if (key.indexOf(":") >= 0 || key.indexOf("\n") >= 0 || value.indexOf(":") >= 0 || value.indexOf("\n") >= 0)
-    return;
-  if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
+  bool noChange = ConfigContent[key] == value;
+  
+  if (!noChange)
   {
-    ConfigContent[key] = value;
-    xSemaphoreGive(configContent_sem);
+    if (key.indexOf(":") >= 0 || key.indexOf("\n") >= 0 || value.indexOf(":") >= 0 || value.indexOf("\n") >= 0)
+      return;
+    if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
+    {
+      ConfigContent[key] = value;
+      xSemaphoreGive(configContent_sem);
+    }
   }
 
   for (auto onConfigChange = onConfigChanges.begin();
@@ -147,7 +152,7 @@ void setValue(String key, String value, bool save = true)
     }
   }
   // nếu không yêu cầu lưu vào flash hoặc giá trị như cũ
-  if (!save || getValue(key) == value)
+  if (!save || noChange)
     return;
   saveConfigFile();
 }
