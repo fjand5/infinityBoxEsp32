@@ -19,9 +19,9 @@ def before_upload():
 
         for i, line in enumerate(lines):
             if(line.startswith("#define MAX_NUM_SEGMENTS")):
-                lines[i] = "#define MAX_NUM_SEGMENTS \t 24\n"
+                lines[i] = "#define MAX_NUM_SEGMENTS \t 48\n"
             if(line.startswith("#define MAX_NUM_ACTIVE_SEGMENTS")):
-                lines[i] = "#define MAX_NUM_ACTIVE_SEGMENTS \t 24\n"
+                lines[i] = "#define MAX_NUM_ACTIVE_SEGMENTS \t 48\n"
         f = open(WS2812FX_PATH, "w")
         f.writelines(lines)
         f.close()

@@ -9,14 +9,14 @@ void renderSettingMenu()
                [](String key, String val)
                {
                  previousMode();
-                 offTimer();
+                //  offTimer();
                });
   renderInputText("setting Box", "current_mode", "Current Mode", R"({
   })",
                   [](String key, String val)
                   {
                     changeMode(val.toInt());
-                    offTimer();
+                    // offTimer();
 
                   });
   renderButton("setting Box", "next_mode", "Next Mode", R"({
@@ -25,7 +25,7 @@ void renderSettingMenu()
                [](String key, String val)
                {
                  nextMode();
-                 offTimer();
+                //  offTimer();
                });
 
   renderToggle("setting Box", "pause_tgl", "Pause/Resume", R"({

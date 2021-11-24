@@ -1,11 +1,11 @@
 #include "colorMenu.h"
-// #include "symmetryMenu.h"
+#include "patternMenu.h"
 #include "settingMenu.h"
 #include "musicMenu.h"
 #include "configMenu.h"
 void setupRender(){
     renderColorMenu();
-    // renderSymmetryMenu();
+    renderPattern();
     renderSettingMenu();
     renderMusic();
     renderConfigMenu();

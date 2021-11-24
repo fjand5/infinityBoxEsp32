@@ -102,21 +102,23 @@ void boxHandle(void *pvParameters)
     offReact();
     changeMode(getValue("current_mode", "12").toInt());
   }
+  if (getValue("pattern_mode", "false") == "true")
+  {
+      box.setPatternEffect(true);
+  }
+  else
+  {
+      box.setPatternEffect(false);
+  }
   getValue("timer_tgl", "false") == "true" ? onTimer() : offTimer();
   
-    // onReact();
-    // setSoundEffectMode(SE_SHINES_ON, &box);
-    // setSymmetry(&box,SYM_SURFACE);
-  // uint32_t preTime = millis();
+
   for (;;)
   {
-    // preTime = millis();
     if (box.beforeService([]()
                           { return getValByFreq(onChangeBeat); }))
       box.service();
     box.affterService();
-    // uint32_t delta = millis() - preTime;
-    // log_e("%s",delta);
   }
 }
 void setupBox()
@@ -126,7 +128,7 @@ void setupBox()
   xTaskCreatePinnedToCore(
       boxHandle,            /* Task function. */
       "boxHandle",          /* name of task. */
-      50000,                /* Stack size of task */
+      60000,                /* Stack size of task */
       NULL,                 /* parameter of the task */
       configMAX_PRIORITIES, /* priority of the task */
       NULL,                 /* Task handle to keep track of created task */

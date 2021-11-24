@@ -8,9 +8,10 @@
 #define SYM_NO_SYM 2
 #define SYM_SURFACE 3
 
-void setSymmetry(WS2812FX *leds, int sym)
+void setSymmetry(WS2812FX *leds, int sym, bool x2 = false)
 {
-    int mode, color, speed;
+    int mode, color, speed, index = 0;
+    
     mode = leds->getMode();
     color = leds->getColor();
     speed = leds->getSpeed();
@@ -51,9 +52,10 @@ void setSymmetry(WS2812FX *leds, int sym)
     }
     else if (sym == SYM_VERTEX)
     {
-        int tmp, index = 0;
+        int tmp;
         uint8_t opt;
         leds->resetSegments();
+        DOUBLE_VERTEX:
         tmp = getValue("seg_font_1", "15").toInt();
         opt = getValue("seg_font_1_rev", "true") == "true";
         opt = opt << 7;
@@ -208,11 +210,17 @@ void setSymmetry(WS2812FX *leds, int sym)
         opt = opt << 7;
         leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
                          opt);
+        if(x2){
+            x2 = false;
+            index++;
+            goto DOUBLE_VERTEX;
+        }
     }
     else if (sym == SYM_SURFACE)
     {
         int val1, val2, min_seg, max_seg;
         leds->resetSegments();
+        DOUBLE_SURFACE:
         // font
         val1 = getValue("seg_font_1").toInt();
         val2 = getValue("seg_font_4").toInt();
@@ -254,6 +262,11 @@ void setSymmetry(WS2812FX *leds, int sym)
         min_seg = _min(val1, val2);
         max_seg = _max(val1, val2);
         leds->setSegment(5, min_seg * 12, (max_seg + 1) * 12 - 1, mode, color, speed, false);
+        if(x2){
+            x2 =false;
+            index++;
+            goto DOUBLE_SURFACE;
+        }
     }
     for (int i = 0; i < leds->getNumSegments(); i++)
     {
