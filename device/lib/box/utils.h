@@ -7,10 +7,10 @@
 #define SYM_VERTEX 1
 #define SYM_NO_SYM 2
 #define SYM_SURFACE 3
-
+#define LED_COUNT 288
 void setSymmetry(WS2812FX *leds, int sym, bool x2 = false)
 {
-    int mode, color, speed, index = 0;
+    int mode, color, speed;
     
     mode = leds->getMode();
     color = leds->getColor();
@@ -19,7 +19,7 @@ void setSymmetry(WS2812FX *leds, int sym, bool x2 = false)
     if (sym == SYM_TEST)
     {
         leds->resetSegments();
-
+        leds->updateLength(LED_COUNT);
         leds->setSegment(0, 12 * 0, 12 * 1 - 1, FX_MODE_COLOR_WIPE, color, speed, false);
         leds->setSegment(1, 12 * 1, 12 * 2 - 1, FX_MODE_COLOR_WIPE, color, speed, false);
         leds->setSegment(2, 12 * 2, 12 * 3 - 1, FX_MODE_COLOR_WIPE, color, speed, true);
@@ -48,177 +48,183 @@ void setSymmetry(WS2812FX *leds, int sym, bool x2 = false)
     else if (sym == SYM_NO_SYM)
     {
         leds->resetSegments();
+        
+        leds->updateLength(LED_COUNT);
         leds->setSegment(0, 0, leds->getLength() - 1, mode, color, speed, false);
     }
     else if (sym == SYM_VERTEX)
     {
         int tmp;
-        uint8_t opt;
+        uint8_t opt, index = 0;
+        uint16_t offset =0;
         leds->resetSegments();
         DOUBLE_VERTEX:
         tmp = getValue("seg_font_1", "15").toInt();
         opt = getValue("seg_font_1_rev", "true") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
         tmp = getValue("seg_top_4", "16").toInt();
         opt = getValue("seg_top_4_rev", "true") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
 
         tmp = getValue("seg_font_2", "14").toInt();
         opt = getValue("seg_font_2_rev", "true") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
         tmp = getValue("seg_left_2", "1").toInt();
         opt = getValue("seg_left_2_rev", "false") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
 
         tmp = getValue("seg_font_3", "13").toInt();
         opt = getValue("seg_font_3_rev", "true") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
         tmp = getValue("seg_bottom_3", "9").toInt();
         opt = getValue("seg_bottom_3_rev", "true") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
 
         tmp = getValue("seg_font_4", "12").toInt();
         opt = getValue("seg_font_4_rev", "true") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
         tmp = getValue("seg_right_1", "23").toInt();
         opt = getValue("seg_right_1_rev", "true") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
 
         tmp = getValue("seg_back_1", "4").toInt();
         opt = getValue("seg_back_1_rev", "false") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
         tmp = getValue("seg_left_4", "3").toInt();
         opt = getValue("seg_left_4_rev", "false") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
 
         tmp = getValue("seg_back_2", "5").toInt();
         opt = getValue("seg_back_2_rev", "false") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
         tmp = getValue("seg_top_2", "18").toInt();
         opt = getValue("seg_top_2_rev", "true") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
 
         tmp = getValue("seg_back_3", "6").toInt();
         opt = getValue("seg_back_3_rev", "false") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
         tmp = getValue("seg_right_3", "21").toInt();
         opt = getValue("seg_right_3_rev", "true") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
 
         tmp = getValue("seg_back_4", "7").toInt();
         opt = getValue("seg_back_4_rev", "false") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
         tmp = getValue("seg_bottom_1", "11").toInt();
         opt = getValue("seg_bottom_1_rev", "true") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
 
         tmp = getValue("seg_top_3", "17").toInt();
         opt = getValue("seg_top_3_rev", "true") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
         tmp = getValue("seg_left_3", "2").toInt();
         opt = getValue("seg_left_3_rev", "false") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
 
         tmp = getValue("seg_top_1", "19").toInt();
         opt = getValue("seg_top_1_rev", "true") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
         tmp = getValue("seg_right_4", "20").toInt();
         opt = getValue("seg_right_4_rev", "true") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
 
         tmp = getValue("seg_bottom_4", "8").toInt();
         opt = getValue("seg_bottom_4_rev", "true") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
         tmp = getValue("seg_left_1", "0").toInt();
         opt = getValue("seg_left_1_rev", "false") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
 
         tmp = getValue("seg_bottom_2", "10").toInt();
         opt = getValue("seg_bottom_2_rev", "true") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         index++;
         tmp = getValue("seg_right_2", "22").toInt();
         opt = getValue("seg_right_2_rev", "true") == "true";
         opt = opt << 7;
-        leds->setSegment(index, 12 * tmp, 12 * (tmp + 1) - 1, mode, color, speed,
+        leds->setSegment(index, 12 * tmp + offset, 12 * (tmp + 1) - 1 + offset, mode, color, speed,
                          opt);
         if(x2){
             x2 = false;
             index++;
+            offset = LED_COUNT;
+            leds->updateLength(LED_COUNT*2);
             goto DOUBLE_VERTEX;
         }
     }
     else if (sym == SYM_SURFACE)
     {
-        int val1, val2, min_seg, max_seg;
+        int val1, val2, min_seg, max_seg, offset;
+        uint8_t index = 0;
         leds->resetSegments();
         DOUBLE_SURFACE:
         // font
@@ -226,45 +232,53 @@ void setSymmetry(WS2812FX *leds, int sym, bool x2 = false)
         val2 = getValue("seg_font_4").toInt();
         min_seg = _min(val1, val2);
         max_seg = _max(val1, val2);
-        leds->setSegment(0, min_seg * 12, (max_seg + 1) * 12 - 1, mode, color, speed, false);
+        leds->setSegment(index, min_seg * 12 + offset, (max_seg + 1) * 12 - 1 + offset, mode, color, speed, false);
+        index++;
 
         // back
         val1 = getValue("seg_back_1").toInt();
         val2 = getValue("seg_back_4").toInt();
         min_seg = _min(val1, val2);
         max_seg = _max(val1, val2);
-        leds->setSegment(1, min_seg * 12, (max_seg + 1) * 12 - 1, mode, color, speed, false);
+        leds->setSegment(index, min_seg * 12 + offset, (max_seg + 1) * 12 - 1 + offset, mode, color, speed, false);
+        index++;
 
         // top
         val1 = getValue("seg_top_1").toInt();
         val2 = getValue("seg_top_4").toInt();
         min_seg = _min(val1, val2);
         max_seg = _max(val1, val2);
-        leds->setSegment(2, min_seg * 12, (max_seg + 1) * 12 - 1, mode, color, speed, false);
+        leds->setSegment(index, min_seg * 12 + offset, (max_seg + 1) * 12 - 1 + offset, mode, color, speed, false);
+        index++;
 
         // bottom
         val1 = getValue("seg_bottom_1").toInt();
         val2 = getValue("seg_bottom_4").toInt();
         min_seg = _min(val1, val2);
         max_seg = _max(val1, val2);
-        leds->setSegment(3, min_seg * 12, (max_seg + 1) * 12 - 1, mode, color, speed, false);
+        leds->setSegment(index, min_seg * 12 + offset, (max_seg + 1) * 12 - 1 + offset, mode, color, speed, false);
+        index++;
 
         // left
         val1 = getValue("seg_left_1").toInt();
         val2 = getValue("seg_left_4").toInt();
         min_seg = _min(val1, val2);
         max_seg = _max(val1, val2);
-        leds->setSegment(4, min_seg * 12, (max_seg + 1) * 12 - 1, mode, color, speed, false);
+        leds->setSegment(index, min_seg * 12 + offset, (max_seg + 1) * 12 - 1 + offset, mode, color, speed, false);
+        index++;
 
         // right
         val1 = getValue("seg_right_1").toInt();
         val2 = getValue("seg_right_4").toInt();
         min_seg = _min(val1, val2);
         max_seg = _max(val1, val2);
-        leds->setSegment(5, min_seg * 12, (max_seg + 1) * 12 - 1, mode, color, speed, false);
+        leds->setSegment(index, min_seg * 12 + offset, (max_seg + 1) * 12 - 1 + offset, mode, color, speed, false);
+        index++;
         if(x2){
             x2 =false;
             index++;
+            offset = LED_COUNT;
+            leds->updateLength(LED_COUNT*2);
             goto DOUBLE_SURFACE;
         }
     }

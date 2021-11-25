@@ -168,6 +168,7 @@ private:
     // for pattern
     int _pat_eff_1 = 3;
     int _pat_eff_2 = 45;
+    uint8_t *_patternBuffer = NULL;
 
 public:
     Box() : WS2812FX(0, -1, 0, 0, 0){};
@@ -212,6 +213,9 @@ public:
         setValue("current_mode", String(_mode));
         changeSpeed(getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt(), false);
     }
+    bool isPatternMode(){
+        return _isPatternMode;
+    }
     void changePaternEffect1(int effect)
     {
 
@@ -232,7 +236,6 @@ public:
         _pat_eff_1 = effect;
         int _pat_spd_1 = getValue(String("speed_mode_") + _pat_eff_1, String(defaulSpeed(_mode))).toInt();
         int _pat_spd_2= getValue(String("speed_mode_") + _pat_eff_2, String(defaulSpeed(_mode))).toInt();
-        setSymmetry(this, SYM_VERTEX, true);
         for (int i = 0; i < getNumSegments() / 2; i++)
         {
             setMode(i, _pat_eff_1);
@@ -274,7 +277,6 @@ public:
         _pat_eff_2 = effect;
         int _pat_spd_1 = getValue(String("speed_mode_") + _pat_eff_1, String(defaulSpeed(_mode))).toInt();
         int _pat_spd_2= getValue(String("speed_mode_") + _pat_eff_2, String(defaulSpeed(_mode))).toInt();
-        setSymmetry(this, SYM_VERTEX, true);
         for (int i = 0; i < getNumSegments() / 2; i++)
         {
             setMode(i, _pat_eff_1);
@@ -287,6 +289,9 @@ public:
         }
         setValue("cur_pat_eff_2", String(_pat_eff_2));
     }
+    uint8_t * getPatternBuffer(){
+        return _patternBuffer;
+    }
     void setPatternEffect(bool val)
     {
 
@@ -295,16 +300,19 @@ public:
         {
             offTimer();
             setValue("pattern_mode", "true");
-
+            setSymmetry(this, SYM_VERTEX, true);
             changePaternEffect1(getValue("cur_pat_eff_1", "3").toInt());
             changePaternEffect2(getValue("cur_pat_eff_2", "45").toInt());
+            if(_patternBuffer == NULL){
+                _patternBuffer = new uint8_t[ getNumBytes()/2 +1 ];
+            }
         }
         else
         {
             setValue("pattern_mode", "false");
             changeMode(_mode);
-        }
     }
+        }
     void nextMode()
     {
         do

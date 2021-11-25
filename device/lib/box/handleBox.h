@@ -3,6 +3,9 @@
 #include "mic.h"
 #include "../helper.h"
 #include "./utils.h"
+#define DEFAULT_TIMER 10
+#define DEFAULT_BRIGHTNESS 50
+#define DEFAULT_MODE FX_MODE_RAINBOW_CYCLE
 
 void setTimer(uint32_t timer)
 {
@@ -68,11 +71,31 @@ void onChangeBeat(double val, double freq)
 {
   box.onChangeBeat(val, freq);
 }
+
 void rmtShow()
 {
   uint8_t *pixels = box.getPixels();
   uint16_t numBytes = box.getNumBytes() + 1;
-  rmt_write_sample(RMT_CHANNEL, pixels, numBytes, true); // channel 0
+
+  uint8_t *pixels2Show;
+
+  uint16_t numBytes2Show;
+  if (box.isPatternMode())
+  {
+    uint8_t *patternBuffer = box.getPatternBuffer();
+    numBytes2Show = (numBytes - 1) / 2 ;
+    for (uint16_t i = 0; i < numBytes2Show; i++)
+    {
+      patternBuffer[i] = pixels[i]/2 + pixels[i+numBytes2Show]/2;
+    }
+    pixels2Show = patternBuffer;
+  }
+  else
+  {
+    pixels2Show = pixels;
+    numBytes2Show = numBytes;
+  }
+  rmt_write_sample(RMT_CHANNEL, pixels2Show, numBytes2Show, true); // channel 0
 }
 void boxHandle(void *pvParameters)
 {
@@ -89,8 +112,8 @@ void boxHandle(void *pvParameters)
   resumeBox();
   setValue("pause_tgl", "true");
   getValue("on_off_tgl", "true") == "true" ? onBox() : offBox();
-  setTimer(getValue("timer_sld", "5").toInt());
-  changeBrightness(getValue("brightness_sld", "50").toInt());
+  setTimer(getValue("timer_sld", String(DEFAULT_TIMER)).toInt());
+  changeBrightness(getValue("brightness_sld", String(DEFAULT_BRIGHTNESS)).toInt());
   if (getValue("react_music", "false") == "true")
   {
     onReact();
@@ -100,18 +123,17 @@ void boxHandle(void *pvParameters)
   else
   {
     offReact();
-    changeMode(getValue("current_mode", "12").toInt());
+    changeMode(getValue("current_mode", String(DEFAULT_MODE)).toInt());
   }
   if (getValue("pattern_mode", "false") == "true")
   {
-      box.setPatternEffect(true);
+    box.setPatternEffect(true);
   }
   else
   {
-      box.setPatternEffect(false);
+    box.setPatternEffect(false);
   }
   getValue("timer_tgl", "false") == "true" ? onTimer() : offTimer();
-  
 
   for (;;)
   {
