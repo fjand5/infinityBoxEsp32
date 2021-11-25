@@ -10,9 +10,12 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 # access to global construction environment
-def before_upload():
+def before_upload(source, target, env):
+    print(bcolors.FAIL + bcolors.BOLD +"before_upload===================================================================================================")
     WS2812FX_PATH = env['PROJECT_LIBDEPS_DIR'] + "\\" +  "\\node32s\WS2812FX\\src\\WS2812FX.h"
     try:
+        print(bcolors.WARNING + bcolors.BOLD + "Đang hiệu chỉnh file WS2812FX.h" + bcolors.ENDC)
+
         f = open(WS2812FX_PATH, "r")
         lines = f.readlines()
         f.close()

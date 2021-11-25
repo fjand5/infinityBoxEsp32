@@ -34,7 +34,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
     {
       data += (char)payload[i];
     }
-
+    log_d("WStype_TEXT: %s",data.c_str());
     if (data == "ping")
     {
       webSocket.sendTXT(num, "pong");
