@@ -223,7 +223,7 @@ void setSymmetry(WS2812FX *leds, int sym, bool x2 = false)
     }
     else if (sym == SYM_SURFACE)
     {
-        int val1, val2, min_seg, max_seg, offset;
+        int val1, val2, min_seg, max_seg, offset = 0;
         uint8_t index = 0;
         leds->resetSegments();
         DOUBLE_SURFACE:
@@ -275,7 +275,7 @@ void setSymmetry(WS2812FX *leds, int sym, bool x2 = false)
         leds->setSegment(index, min_seg * 12 + offset, (max_seg + 1) * 12 - 1 + offset, mode, color, speed, false);
         index++;
         if(x2){
-            x2 =false;
+            x2 = false;
             index++;
             offset = LED_COUNT;
             leds->updateLength(LED_COUNT*2);

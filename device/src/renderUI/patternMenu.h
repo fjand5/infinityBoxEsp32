@@ -7,7 +7,7 @@
 
 void renderPattern()
 {
-  renderToggle("Pattern", "pattern_mode", "On/Off", R"({
+  renderToggle("Pattern", "pattern_mode", "Off/On", R"({
     "newLine":true
   })",
                [](String key, String val)

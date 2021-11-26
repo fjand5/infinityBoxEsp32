@@ -213,7 +213,8 @@ public:
         setValue("current_mode", String(_mode));
         changeSpeed(getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt(), false);
     }
-    bool isPatternMode(){
+    bool isPatternMode()
+    {
         return _isPatternMode;
     }
     void changePaternEffect1(int effect)
@@ -235,7 +236,7 @@ public:
         }
         _pat_eff_1 = effect;
         int _pat_spd_1 = getValue(String("speed_mode_") + _pat_eff_1, String(defaulSpeed(_mode))).toInt();
-        int _pat_spd_2= getValue(String("speed_mode_") + _pat_eff_2, String(defaulSpeed(_mode))).toInt();
+        int _pat_spd_2 = getValue(String("speed_mode_") + _pat_eff_2, String(defaulSpeed(_mode))).toInt();
         for (int i = 0; i < getNumSegments() / 2; i++)
         {
             setMode(i, _pat_eff_1);
@@ -276,7 +277,7 @@ public:
         }
         _pat_eff_2 = effect;
         int _pat_spd_1 = getValue(String("speed_mode_") + _pat_eff_1, String(defaulSpeed(_mode))).toInt();
-        int _pat_spd_2= getValue(String("speed_mode_") + _pat_eff_2, String(defaulSpeed(_mode))).toInt();
+        int _pat_spd_2 = getValue(String("speed_mode_") + _pat_eff_2, String(defaulSpeed(_mode))).toInt();
         for (int i = 0; i < getNumSegments() / 2; i++)
         {
             setMode(i, _pat_eff_1);
@@ -289,32 +290,51 @@ public:
         }
         setValue("cur_pat_eff_2", String(_pat_eff_2));
     }
-    uint8_t * getPatternBuffer(){
+    uint8_t *getPatternBuffer()
+    {
         return _patternBuffer;
     }
     void setPatternEffect(bool val)
     {
 
-        _isPatternMode = val;
         if (val)
         {
-            offTimer();
-            setValue("pattern_mode", "true");
             setSymmetry(this, SYM_VERTEX, true);
             changePaternEffect1(getValue("cur_pat_eff_1", "3").toInt());
             changePaternEffect2(getValue("cur_pat_eff_2", "45").toInt());
-            if(_patternBuffer == NULL){
-                _patternBuffer = new uint8_t[ getNumBytes()/2 +1 ];
+            if (_patternBuffer == NULL)
+            {
+                _patternBuffer = new uint8_t[getNumBytes() / 2 + 1];
+            }
+
+            /*
+             Nếu không cấp được bộ nhớ cho buffer
+             Thì trả lại hiện trạng cũ cho hệ thống
+            */
+            if (_patternBuffer == NULL)
+            {
+                _isPatternMode = false;
+                setSymmetry(this, SYM_VERTEX, false);
+            }
+            else
+            {
+                offTimer();
+                setValue("pattern_mode", "true");
+                _isPatternMode = true;
+                setReacMusic(false);
             }
         }
         else
         {
             setValue("pattern_mode", "false");
             changeMode(_mode);
-    }
+            _isPatternMode = false;
         }
+    }
     void nextMode()
     {
+        if(_isPatternMode || _isReacMusic)
+            return;
         do
         {
             _mode++;
@@ -332,6 +352,8 @@ public:
     }
     void previousMode()
     {
+        if(_isPatternMode || _isReacMusic)
+            return;
         do
         {
             _mode--;
@@ -426,19 +448,24 @@ public:
     }
     void setReacMusic(bool val)
     {
-        _isReacMusic = val;
+
         if (val)
         {
+            setPatternEffect(false);
             setValue("react_music", "true");
+            setSymmetry(this, SYM_VERTEX, false);
             for (int i = 0; i < getNumSegments(); i++)
             {
                 setMode(i, FX_MODE_CUSTOM);
             }
+            _isReacMusic = true;
         }
         else
         {
             setValue("react_music", "false");
             changeMode(_mode);
+            _isReacMusic = false;
+
         }
     }
     void changeSpeed(uint16_t spd, bool save = true)

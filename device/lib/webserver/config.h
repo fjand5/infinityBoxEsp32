@@ -9,6 +9,7 @@ void setValue(String key, String value, bool save);
 std::map<String, String> ConfigContent;
 typedef void (*configChangeCallback)(String, String);
 std::list<configChangeCallback> onConfigChanges;
+std::list<String> ignoreSave;
 SemaphoreHandle_t spiffs_sem;
 SemaphoreHandle_t configContent_sem;
 void setOnConfigChange(void (*func)(String key, String value))
@@ -129,8 +130,8 @@ String getValuesByJson()
 // Gán giá trị cho key
 void setValue(String key, String value, bool save = true)
 {
+  log_d("key: %s; value: %s; save: %d", key.c_str(), value.c_str(), save);
   bool noChange = ConfigContent[key] == value;
-  
   if (!noChange)
   {
     if (key.indexOf(":") >= 0 || key.indexOf("\n") >= 0 || value.indexOf(":") >= 0 || value.indexOf("\n") >= 0)
@@ -153,7 +154,12 @@ void setValue(String key, String value, bool save = true)
   }
   // nếu không yêu cầu lưu vào flash hoặc giá trị như cũ
   if (!save || noChange)
+  {
+    ignoreSave.push_front(key);
     return;
+  }
+  ignoreSave.remove(key);
+
   saveConfigFile();
 }
 void saveConfigFile()
@@ -177,7 +183,23 @@ void saveConfigFile()
       {
         String k = e.first;
         String v = e.second;
-        cfg_file.print(k + ":" + v + "\n");
+        bool ignore = false;
+        for (auto _key = ignoreSave.begin();
+             _key != ignoreSave.end();
+             ++_key)
+        {
+          if (*_key == k)
+          {
+            ignore = true;
+            break;
+          }
+        }
+
+        if (!ignore)
+          cfg_file.print(k + ":" + v + "\n");
+        else{
+          log_d("egnore: %s", k.c_str());
+        }
       }
       xSemaphoreGive(configContent_sem);
     }

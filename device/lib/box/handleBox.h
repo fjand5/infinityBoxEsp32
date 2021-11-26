@@ -83,10 +83,12 @@ void rmtShow()
   if (box.isPatternMode())
   {
     uint8_t *patternBuffer = box.getPatternBuffer();
-    numBytes2Show = (numBytes - 1) / 2 ;
+    numBytes2Show = (numBytes - 1) / 2;
     for (uint16_t i = 0; i < numBytes2Show; i++)
     {
-      patternBuffer[i] = pixels[i]/2 + pixels[i+numBytes2Show]/2;
+      uint8_t pixel1 = pixels[i] / 2;
+      uint8_t pixel2 = pixels[i + numBytes2Show] / 2;
+      patternBuffer[i] = pixel1 + pixel2;
     }
     pixels2Show = patternBuffer;
   }
