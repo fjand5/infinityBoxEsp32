@@ -123,8 +123,6 @@ void renderSettingMenu()
                  }
                  if (val == "false")
                  {
-                log_d("off timer <=====================================================");
-
                    offTimer();
                  }
                });

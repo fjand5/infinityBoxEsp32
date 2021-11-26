@@ -39,7 +39,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
       webSocket.sendTXT(num, "pong");
       return;
     }
-    log_d("WStype_TEXT: %s",data.c_str());
+    log_d("WStype_TEXT: %s", data.c_str());
 
     if (onClientCommit != NULL)
       onClientCommit(num, data);
@@ -165,6 +165,10 @@ void setupWebserver()
     WiFi.onEvent(WiFiStationDisconnected, SYSTEM_EVENT_STA_DISCONNECTED);
 
     isConnect = true;
+  }
+  else
+  {
+    WiFi.mode(WIFI_AP);
   }
   // if (checkKey("ap_id") && checkKey("ap_pass"))
   // {

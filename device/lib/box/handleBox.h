@@ -65,8 +65,8 @@ void onReact()
 void offReact()
 {
   // Nếu lastTimerState đã được gán giá trị.
-  if(lastTimerState >= 0)
-    lastTimerState  ? box.onTimer() : box.offTimer();
+  if (lastTimerState >= 0)
+    lastTimerState ? box.onTimer() : box.offTimer();
   box.setReacMusic(false);
 }
 void onChangeBeat(double val, double freq)
@@ -114,10 +114,11 @@ void boxHandle(void *pvParameters)
   box.setColor3(stringToColor(getValue("color3_inp", "#0000ff")));
 
   resumeBox();
+  onBox();
   setValue("pause_tgl", "true");
-  getValue("on_off_tgl", "true") == "true" ? onBox() : offBox();
   setTimer(getValue("timer_sld", String(DEFAULT_TIMER)).toInt());
   changeBrightness(getValue("brightness_sld", String(DEFAULT_BRIGHTNESS)).toInt());
+
   if (getValue("react_music", "false") == "true")
   {
     onReact();
@@ -138,9 +139,10 @@ void boxHandle(void *pvParameters)
     box.setPatternEffect(false);
   }
   delay(1000);
-  String tmp =  getValue("timer_tgl", "true");
-  log_d("===============================================tmp: %s",tmp.c_str());
+  String tmp = getValue("timer_tgl", "true");
+  log_d("===============================================tmp: %s", tmp.c_str());
   tmp == "true" ? onTimer() : offTimer();
+  // setOnSaveConfigFile(&box);
 
   for (;;)
   {

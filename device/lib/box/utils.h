@@ -8,10 +8,11 @@
 #define SYM_NO_SYM 2
 #define SYM_SURFACE 3
 #define LED_COUNT 288
+int current_symmetry = SYM_VERTEX;
 void setSymmetry(WS2812FX *leds, int sym, bool x2 = false)
 {
     int mode, color, speed;
-    
+    current_symmetry = sym;
     mode = leds->getMode();
     color = leds->getColor();
     speed = leds->getSpeed();

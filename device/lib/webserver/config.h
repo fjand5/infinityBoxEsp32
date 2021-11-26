@@ -1,20 +1,27 @@
 #pragma once
 #define CONFIG_FILE "/config.txt"
 #include "./json/ArduinoJson.h"
-#include "SPIFFS.h"
+#include "FS.h"
+#include <LITTLEFS.h>
 #include <map>
 #include <list>
+#include <WS2812FX.h>
+
 void saveConfigFile();
-void setValue(String key, String value, bool save);
+void setValue(String key, String value, bool save = true);
+WS2812FX *tmp4Show;
 std::map<String, String> ConfigContent;
 typedef void (*configChangeCallback)(String, String);
 std::list<configChangeCallback> onConfigChanges;
-std::list<String> ignoreSave;
 SemaphoreHandle_t spiffs_sem;
 SemaphoreHandle_t configContent_sem;
 void setOnConfigChange(void (*func)(String key, String value))
 {
   onConfigChanges.push_front(func);
+}
+void setOnSaveConfigFile(WS2812FX *obj)
+{
+  tmp4Show = obj;
 }
 // Mỗi dòng là một phần tử (một cặp key value) (key):(value)\n
 void loadFileIntoConfig(String content)
@@ -128,9 +135,8 @@ String getValuesByJson()
   return ret;
 }
 // Gán giá trị cho key
-void setValue(String key, String value, bool save = true)
+void setValue(String key, String value, bool save)
 {
-  log_d("key: %s; value: %s; save: %d", key.c_str(), value.c_str(), save);
   bool noChange = ConfigContent[key] == value;
   if (!noChange)
   {
@@ -152,60 +158,49 @@ void setValue(String key, String value, bool save = true)
       (*onConfigChange)(key, value);
     }
   }
+
+  log_d("key: %s; value: %s; save: %d; noChange: %d", key.c_str(), value.c_str(), save, noChange);
   // nếu không yêu cầu lưu vào flash hoặc giá trị như cũ
   if (!save || noChange)
   {
-    ignoreSave.push_front(key);
     return;
   }
-  ignoreSave.remove(key);
-
   saveConfigFile();
 }
 void saveConfigFile()
 {
+
+  if (tmp4Show != NULL)
+    tmp4Show->show();
   if (xSemaphoreTake(spiffs_sem, portMAX_DELAY) == pdTRUE)
   {
   REOPEN:
-    File cfg_file = SPIFFS.open(CONFIG_FILE, "w");
+    File cfg_file = LITTLEFS.open(CONFIG_FILE, "w");
     if (!cfg_file)
     {
       cfg_file.close();
       delay(100);
       log_e("can't open file, reopening...");
-      SPIFFS.end();
-      SPIFFS.begin();
+      LITTLEFS.end();
+      LITTLEFS.begin();
       goto REOPEN;
     }
+
+    if (tmp4Show != NULL)
+      tmp4Show->show();
     if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
     {
       for (std::pair<String, String> e : ConfigContent)
       {
         String k = e.first;
         String v = e.second;
-        bool ignore = false;
-        for (auto _key = ignoreSave.begin();
-             _key != ignoreSave.end();
-             ++_key)
-        {
-          if (*_key == k)
-          {
-            ignore = true;
-            break;
-          }
-        }
-
-        if (!ignore){
-          cfg_file.print(k + ":" + v + "\n");
-          // log_d("save: %s = %s", k.c_str(), k.c_str());
-
-        }
-        else{
-          // log_d("egnore: %s", k.c_str());
-        }
+        cfg_file.print(k + ":" + v + "\n");
+        if (tmp4Show != NULL)
+          tmp4Show->show();
       }
       xSemaphoreGive(configContent_sem);
     }
+
     cfg_file.close();
     xSemaphoreGive(spiffs_sem);
   }
@@ -214,11 +209,11 @@ void saveConfigFile()
 void setupConfig()
 {
   spiffs_sem = xSemaphoreCreateBinary();
-  if (!SPIFFS.begin())
+  if (!LITTLEFS.begin())
   {
-    log_d("Can't mount SPIFFS, Try format");
-    SPIFFS.format();
-    if (!SPIFFS.begin())
+    log_d("Can't mount LITTLEFS, Try format");
+    LITTLEFS.format();
+    if (!LITTLEFS.begin())
     {
       log_d("Can't mount SPIFFS");
     }
@@ -236,11 +231,15 @@ void setupConfig()
   }
   if (xSemaphoreTake(spiffs_sem, portMAX_DELAY) == pdTRUE)
   {
-    File cfg_file = SPIFFS.open(CONFIG_FILE, "r");
+    File cfg_file = LITTLEFS.open(CONFIG_FILE, "r");
     if (cfg_file)
     {
       String tmp = cfg_file.readString();
       loadFileIntoConfig(tmp);
+    }
+    else
+    {
+      LITTLEFS.open(CONFIG_FILE, "a");
     }
     cfg_file.close();
     xSemaphoreGive(spiffs_sem);

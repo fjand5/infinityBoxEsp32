@@ -22,7 +22,6 @@ void onClick()
     else
     {
         nextMode();
-        setValue("current_mode", String(box.getMode()));
     }
 }
 void onPressed()

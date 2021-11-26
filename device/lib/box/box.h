@@ -205,12 +205,17 @@ public:
             }
         }
         _mode = mode;
-        setSymmetry(this, SYM_VERTEX);
+        pause();
+        setValue("current_mode", String(_mode));
+        resume();
+        if (current_symmetry != SYM_VERTEX)
+            setSymmetry(this, SYM_VERTEX);
         for (int i = 0; i < getNumSegments(); i++)
         {
             setMode(i, _mode);
+            setSpeed(i, getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt());
+            delay(1500 / getNumSegments());
         }
-        setValue("current_mode", String(_mode));
         changeSpeed(getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt(), false);
     }
     bool isPatternMode()
@@ -334,7 +339,7 @@ public:
     }
     void nextMode()
     {
-        if(_isPatternMode || _isReacMusic)
+        if (_isPatternMode || _isReacMusic)
             return;
         do
         {
@@ -350,12 +355,12 @@ public:
             } while (checkIsIgnoreMode(_mode));
         }
         changeMode(_mode);
-        
+
         log_d("Current Mode: %d", _mode);
     }
     void previousMode()
     {
-        if(_isPatternMode || _isReacMusic)
+        if (_isPatternMode || _isReacMusic)
             return;
         do
         {
@@ -468,7 +473,6 @@ public:
             setValue("react_music", "false");
             changeMode(_mode);
             _isReacMusic = false;
-
         }
     }
     void changeSpeed(uint16_t spd, bool save = true)
@@ -477,6 +481,7 @@ public:
         _spd = spd;
         if (curMode == FX_MODE_CUSTOM)
             return;
+        log_d("change speed: %d; save: %d ", spd, save);
         setValue(String("speed_mode_") + _mode, String(_spd), save);
         setValue("speed_inp", String(_spd), save);
         for (int i = 0; i < getNumSegments(); i++)
@@ -564,7 +569,7 @@ public:
     }
     bool beforeService(double (*micValFunc)())
     {
-        if (!_isConfigMode  && _runTimer &&  millis() - timer > _timer )
+        if (!_isConfigMode && _runTimer && millis() - timer > _timer)
         {
             timer = millis();
             if (_isReacMusic)
