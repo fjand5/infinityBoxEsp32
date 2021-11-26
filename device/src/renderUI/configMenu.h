@@ -8,7 +8,6 @@ void renderConfigMenu()
                [](String key, String val)
                {                 
                  setValue("timer_tgl", "false");
-                 offTimer();
                  box.beginConfigMode();
 
                });

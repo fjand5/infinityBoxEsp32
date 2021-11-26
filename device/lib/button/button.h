@@ -35,9 +35,11 @@ void doubleClick()
 {
     log_d(" running");
     lastClickTime = 0;
-    if (getValue("timer_tgl") == "true")
+    if (getValue("timer_tgl","true") == "true")
     {
         setValue("timer_tgl", "false");
+                log_d("off timer <=====================================================");
+
         offTimer();
     }
     else
@@ -66,7 +68,7 @@ void buttonHandle(void *pvParameters)
         }
         else
         {
-            if (getValue("timer_tgl") == "true")
+            if (getValue("timer_tgl","true") == "true")
             {
                 ledcWrite(LEDC_CHANNEL_0, brightness);
                 brightness = brightness + fadeAmount;

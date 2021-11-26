@@ -56,7 +56,7 @@ void offTimer()
   box.offTimer();
 }
 
-bool lastTimerState;
+int lastTimerState = -1;
 void onReact()
 {
   lastTimerState = box.isTimerOn();
@@ -64,7 +64,9 @@ void onReact()
 }
 void offReact()
 {
-  lastTimerState ? box.onTimer() : box.offTimer();
+  // Nếu lastTimerState đã được gán giá trị.
+  if(lastTimerState >= 0)
+    lastTimerState  ? box.onTimer() : box.offTimer();
   box.setReacMusic(false);
 }
 void onChangeBeat(double val, double freq)
@@ -135,7 +137,10 @@ void boxHandle(void *pvParameters)
   {
     box.setPatternEffect(false);
   }
-  getValue("timer_tgl", "false") == "true" ? onTimer() : offTimer();
+  delay(1000);
+  String tmp =  getValue("timer_tgl", "true");
+  log_d("===============================================tmp: %s",tmp.c_str());
+  tmp == "true" ? onTimer() : offTimer();
 
   for (;;)
   {

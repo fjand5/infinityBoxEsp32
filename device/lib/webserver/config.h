@@ -195,10 +195,13 @@ void saveConfigFile()
           }
         }
 
-        if (!ignore)
+        if (!ignore){
           cfg_file.print(k + ":" + v + "\n");
+          // log_d("save: %s = %s", k.c_str(), k.c_str());
+
+        }
         else{
-          log_d("egnore: %s", k.c_str());
+          // log_d("egnore: %s", k.c_str());
         }
       }
       xSemaphoreGive(configContent_sem);

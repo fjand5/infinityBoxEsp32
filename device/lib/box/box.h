@@ -318,6 +318,7 @@ public:
             }
             else
             {
+                log_d(ARDUHAL_LOG_COLOR_W "off timer <=====================================================");
                 offTimer();
                 setValue("pattern_mode", "true");
                 _isPatternMode = true;
@@ -349,6 +350,8 @@ public:
             } while (checkIsIgnoreMode(_mode));
         }
         changeMode(_mode);
+        
+        log_d("Current Mode: %d", _mode);
     }
     void previousMode()
     {
@@ -494,11 +497,13 @@ public:
     {
         setValue("timer_tgl", "true");
         _runTimer = true;
+        log_d("Timer on: %d", _runTimer);
     }
     void offTimer()
     {
         setValue("timer_tgl", "false");
         _runTimer = false;
+        log_d("Timer off: %d", _runTimer);
     }
     void changeBrightness(uint16_t bgh, bool gama = false)
     {
@@ -559,7 +564,7 @@ public:
     }
     bool beforeService(double (*micValFunc)())
     {
-        if (millis() - timer > _timer && _runTimer)
+        if (!_isConfigMode  && _runTimer &&  millis() - timer > _timer )
         {
             timer = millis();
             if (_isReacMusic)
@@ -571,9 +576,7 @@ public:
             }
             else
             {
-
                 nextMode();
-                setValue("current_mode", String(getMode()));
             }
         }
 

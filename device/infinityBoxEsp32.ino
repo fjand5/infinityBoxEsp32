@@ -9,6 +9,8 @@
 void setup() {
   // Serial.begin(115200);
   delay(100);
+  log_d("BOOTED...");
+
   setupConfig();
   setupBox();
   setupButton();
