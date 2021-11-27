@@ -99,7 +99,7 @@ void rmtShow()
     pixels2Show = pixels;
     numBytes2Show = numBytes;
   }
-  rmt_write_sample(RMT_CHANNEL, pixels2Show, numBytes2Show, true); // channel 0
+  rmt_write_sample(RMT_CHANNEL, pixels2Show, numBytes2Show, false); // channel 0
 }
 void boxHandle(void *pvParameters)
 {

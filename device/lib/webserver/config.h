@@ -137,6 +137,7 @@ String getValuesByJson()
 // Gán giá trị cho key
 void setValue(String key, String value, bool save)
 {
+
   bool noChange = ConfigContent[key] == value;
   if (!noChange)
   {
@@ -169,6 +170,7 @@ void setValue(String key, String value, bool save)
 }
 void saveConfigFile()
 {
+  log_i("saveConfigFile running on core: %d",xPortGetCoreID());
 
   if (tmp4Show != NULL)
     tmp4Show->show();

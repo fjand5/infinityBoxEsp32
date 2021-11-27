@@ -5,6 +5,7 @@
 #include "../webserver/json/ArduinoJson.h"
 #include "../webserver/config.h"
 #include "utils.h"
+#include "utils_box.h"
 
 #define RMT_CHANNEL RMT_CHANNEL_0
 
@@ -19,128 +20,12 @@
 #define LED_COUNT_ONE_SEG 288 / LED_NUM_OF_SEG
 uint16_t musicEffect();
 uint16_t patternEffect();
-
+void vTaskCodeOneTime(void *pvParameters);
 struct CoupleSeg
 {
     int first;
     int senconds;
 };
-int defaulSpeed(int mode)
-{
-    if (mode == FX_MODE_COLOR_WIPE)
-        return 1000;
-    if (mode == FX_MODE_COLOR_WIPE_RANDOM)
-        return 400;
-    if (mode == FX_MODE_SINGLE_DYNAMIC)
-        return 50;
-    if (mode == FX_MODE_SCAN)
-        return 800;
-    if (mode == FX_MODE_THEATER_CHASE)
-        return 800;
-    if (mode == FX_MODE_THEATER_CHASE_RAINBOW)
-        return 1000;
-    if (mode == FX_MODE_RUNNING_LIGHTS)
-        return 1000;
-    if (mode == FX_MODE_TWINKLE)
-        return 500;
-    if (mode == FX_MODE_TWINKLE_RANDOM)
-        return 500;
-    if (mode == FX_MODE_TWINKLE_FADE)
-        return 600;
-    if (mode == FX_MODE_TWINKLE_FADE_RANDOM)
-        return 600;
-    if (mode == FX_MODE_FLASH_SPARKLE)
-        return 3000;
-    if (mode == FX_MODE_HYPER_SPARKLE)
-        return 3000;
-    if (mode == FX_MODE_CHASE_RAINBOW)
-        return 500;
-    if (mode == FX_MODE_CHASE_BLACKOUT)
-        return 500;
-    if (mode == FX_MODE_FIREWORKS)
-        return 1000;
-    if (mode == FX_MODE_HALLOWEEN)
-        return 500;
-    if (mode == FX_MODE_TRICOLOR_CHASE)
-        return 500;
-    if (mode == FX_MODE_TWINKLEFOX)
-        return 1000;
-    return 0;
-}
-bool checkIsIgnoreMode(int mode)
-{
-    // if (mode == FX_MODE_STATIC)
-    //     return true;
-    if (mode == FX_MODE_BLINK)
-        return true;
-    if (mode == FX_MODE_COLOR_WIPE_INV)
-        return true;
-    if (mode == FX_MODE_COLOR_WIPE_REV)
-        return true;
-    if (mode == FX_MODE_COLOR_WIPE_REV_INV)
-        return true;
-    if (mode == FX_MODE_RANDOM_COLOR)
-        return true;
-    if (mode == FX_MODE_MULTI_DYNAMIC)
-        return true;
-    if (mode == FX_MODE_RAINBOW_CYCLE)
-        return true;
-    if (mode == FX_MODE_DUAL_SCAN)
-        return true;
-    if (mode == FX_MODE_FADE)
-        return true;
-    if (mode == FX_MODE_SPARKLE)
-        return true;
-    if (mode == FX_MODE_STROBE)
-        return true;
-    if (mode == FX_MODE_STROBE_RAINBOW)
-        return true;
-    if (mode == FX_MODE_MULTI_STROBE)
-        return true;
-    if (mode == FX_MODE_BLINK_RAINBOW)
-        return true;
-    if (mode == FX_MODE_CHASE_WHITE)
-        return true;
-    if (mode == FX_MODE_CHASE_COLOR)
-        return true;
-    if (mode == FX_MODE_CHASE_RANDOM)
-        return true;
-    if (mode == FX_MODE_CHASE_FLASH)
-        return true;
-    if (mode == FX_MODE_CHASE_FLASH_RANDOM)
-        return true;
-    if (mode == FX_MODE_CHASE_RAINBOW_WHITE)
-        return true;
-    if (mode == FX_MODE_CHASE_BLACKOUT_RAINBOW)
-        return true;
-    if (mode == FX_MODE_COLOR_SWEEP_RANDOM)
-        return true;
-    if (mode == FX_MODE_RUNNING_COLOR)
-        return true;
-    if (mode == FX_MODE_RUNNING_RED_BLUE)
-        return true;
-    if (mode == FX_MODE_RUNNING_RANDOM)
-        return true;
-    if (mode == FX_MODE_LARSON_SCANNER)
-        return true;
-    if (mode == FX_MODE_COMET)
-        return true;
-    if (mode == FX_MODE_FIREWORKS_RANDOM)
-        return true;
-    if (mode == FX_MODE_MERRY_CHRISTMAS)
-        return true;
-    if (mode == FX_MODE_FIRE_FLICKER)
-        return true;
-    if (mode == FX_MODE_FIRE_FLICKER_SOFT)
-        return true;
-    if (mode == FX_MODE_FIRE_FLICKER_INTENSE)
-        return true;
-    if (mode == FX_MODE_CIRCUS_COMBUSTUS)
-        return true;
-    if (mode == FX_MODE_BICOLOR_CHASE)
-        return true;
-    return false;
-}
 class Box : public WS2812FX
 {
 private:
@@ -191,7 +76,6 @@ public:
     }
     void changeMode(int mode)
     {
-
         while (checkIsIgnoreMode(mode))
         {
             mode++;
@@ -205,18 +89,15 @@ public:
             }
         }
         _mode = mode;
-        pause();
-        setValue("current_mode", String(_mode));
-        resume();
-        if (current_symmetry != SYM_VERTEX)
-            setSymmetry(this, SYM_VERTEX);
-        for (int i = 0; i < getNumSegments(); i++)
-        {
-            setMode(i, _mode);
-            setSpeed(i, getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt());
-            delay(1500 / getNumSegments());
-        }
-        changeSpeed(getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt(), false);
+
+        xTaskCreatePinnedToCore(
+            vTaskCodeOneTime,     /* Function that implements the task. */
+            "proccessChangeMode", /* Text name for the task. */
+            10000,                /* Stack size in words, not bytes. */
+            this,                 /* Parameter passed into the task. */
+            1,                    /* Priority at which the task is created. */
+            NULL,
+            0); /* Used to pass out the created task's handle. */
     }
     bool isPatternMode()
     {
@@ -263,6 +144,7 @@ public:
     {
         return _pat_eff_2;
     }
+    
     void changePaternEffect2(int effect)
     {
 
@@ -298,6 +180,9 @@ public:
     uint8_t *getPatternBuffer()
     {
         return _patternBuffer;
+    }
+    int getCurrentMode(){
+        return _mode;
     }
     void setPatternEffect(bool val)
     {
@@ -726,253 +611,21 @@ uint16_t musicEffect(void)
 {
     return soundEffHandle(&box);
 }
-// void handleEffect(Box *leds, int mode)
-// {
-//     if (mode == FX_MODE_STATIC)
-//     {
-//         leds->mode_static();
-//     }
-//     else if (mode == FX_MODE_BLINK)
-//     {
-//         leds->mode_blink();
-
-//     }
-//     else if (mode == FX_MODE_BREATH)
-//     {
-//         leds->mode_breath();
-
-//     }
-//     else if (mode == FX_MODE_COLOR_WIPE)
-//     {
-//         leds->mode_color_wipe();
-
-//     }
-//     else if (mode == FX_MODE_COLOR_WIPE_INV)
-//     {
-//         leds->mode_color_wipe_inv();
-
-//     }
-//     else if (mode == FX_MODE_COLOR_WIPE_REV)
-//     {
-//         leds->mode_color_wipe_rev();
-//     }
-//     else if (mode == FX_MODE_COLOR_WIPE_REV_INV)
-//     {
-//         leds->mode_color_wipe_rev_inv();
-//     }
-//     else if (mode == FX_MODE_COLOR_WIPE_RANDOM)
-//     {
-//         leds->mode_color_wipe_random();
-//     }
-//     else if (mode == FX_MODE_RANDOM_COLOR)
-//     {
-//         leds->mode_random_color();
-//     }
-//     else if (mode == FX_MODE_SINGLE_DYNAMIC)
-//     {
-//         leds->mode_single_dynamic();
-//     }
-//     else if (mode == FX_MODE_MULTI_DYNAMIC)
-//     {
-//         leds->mode_multi_dynamic();
-//     }
-//     else if (mode == FX_MODE_RAINBOW)
-//     {
-//         leds->mode_rainbow();
-//     }
-//     else if (mode == FX_MODE_RAINBOW_CYCLE)
-//     {
-//         leds->mode_rainbow_cycle();
-//     }
-//     else if (mode == FX_MODE_SCAN)
-//     {
-//         leds->mode_scan();
-//     }
-//     else if (mode == FX_MODE_DUAL_SCAN)
-//     {
-//         leds->mode_dual_scan();
-//     }
-//     else if (mode == FX_MODE_FADE)
-//     {
-//         leds->mode_fade();
-//     }
-//     else if (mode == FX_MODE_THEATER_CHASE)
-//     {
-//         leds->mode_theater_chase();
-//     }
-//     else if (mode == FX_MODE_THEATER_CHASE_RAINBOW)
-//     {
-//         leds->mode_theater_chase_rainbow();
-//     }
-//     else if (mode == FX_MODE_RUNNING_LIGHTS)
-//     {
-//         leds->mode_running_lights();
-//     }
-//     else if (mode == FX_MODE_TWINKLE)
-//     {
-//         leds->mode_twinkle();
-//     }
-//     else if (mode == FX_MODE_TWINKLE_RANDOM)
-//     {
-//         leds->mode_twinkle_random();
-//     }
-//     else if (mode == FX_MODE_TWINKLE_FADE)
-//     {
-//         leds->mode_twinkle_fade();
-//     }
-//     else if (mode == FX_MODE_TWINKLE_FADE_RANDOM)
-//     {
-//         leds->mode_twinkle_fade_random();
-//     }
-//     else if (mode == FX_MODE_SPARKLE)
-//     {
-//         leds->mode_sparkle();
-//     }
-//     else if (mode == FX_MODE_FLASH_SPARKLE)
-//     {
-//         leds->mode_flash_sparkle();
-//     }
-//     else if (mode == FX_MODE_HYPER_SPARKLE)
-//     {
-//         leds->mode_hyper_sparkle();
-//     }
-//     else if (mode == FX_MODE_STROBE)
-//     {
-//         leds->mode_strobe();
-//     }
-//     else if (mode == FX_MODE_STROBE_RAINBOW)
-//     {
-//         leds->mode_strobe_rainbow();
-//     }
-//     else if (mode == FX_MODE_MULTI_STROBE)
-//     {
-//         leds->mode_multi_strobe();
-//     }
-//     else if (mode == FX_MODE_BLINK_RAINBOW)
-//     {
-//         leds->mode_blink_rainbow();
-//     }
-//     else if (mode == FX_MODE_CHASE_WHITE)
-//     {
-//         leds->mode_chase_white();
-//     }
-//     else if (mode == FX_MODE_CHASE_COLOR)
-//     {
-//         leds->mode_chase_color();
-//     }
-//     else if (mode == FX_MODE_CHASE_RANDOM)
-//     {
-//         leds->mode_chase_random();
-//     }
-//     else if (mode == FX_MODE_CHASE_RAINBOW)
-//     {
-//         leds->mode_chase_rainbow();
-//     }
-//     else if (mode == FX_MODE_CHASE_FLASH)
-//     {
-//         leds->mode_chase_flash();
-//     }
-//     else if (mode == FX_MODE_CHASE_FLASH_RANDOM)
-//     {
-//         leds->mode_chase_flash_random();
-//     }
-//     else if (mode == FX_MODE_CHASE_RAINBOW_WHITE)
-//     {
-//         leds->mode_chase_rainbow_white();
-//     }
-//     else if (mode == FX_MODE_CHASE_BLACKOUT)
-//     {
-//         leds->mode_chase_blackout();
-//     }
-//     else if (mode == FX_MODE_CHASE_BLACKOUT_RAINBOW)
-//     {
-//         leds->mode_chase_blackout_rainbow();
-//     }
-//     else if (mode == FX_MODE_COLOR_SWEEP_RANDOM)
-//     {
-//         leds->mode_color_sweep_random();
-//     }
-//     else if (mode == FX_MODE_RUNNING_COLOR)
-//     {
-//         leds->mode_running_color();
-//     }
-//     else if (mode == FX_MODE_RUNNING_RED_BLUE)
-//     {
-//         leds->mode_running_red_blue();
-//     }
-//     else if (mode == FX_MODE_RUNNING_RANDOM)
-//     {
-//         leds->mode_running_random();
-//     }
-//     else if (mode == FX_MODE_LARSON_SCANNER)
-//     {
-//         leds->mode_larson_scanner();
-//     }
-//     else if (mode == FX_MODE_COMET)
-//     {
-//         leds->mode_comet();
-//     }
-//     else if (mode == FX_MODE_FIREWORKS)
-//     {
-//         leds->mode_fireworks();
-//     }
-//     else if (mode == FX_MODE_FIREWORKS_RANDOM)
-//     {
-//         leds->mode_fireworks_random();
-//     }
-//     else if (mode == FX_MODE_MERRY_CHRISTMAS)
-//     {
-//         leds->mode_merry_christmas();
-//     }
-//     else if (mode == FX_MODE_FIRE_FLICKER)
-//     {
-//         leds->mode_fire_flicker();
-//     }
-//     else if (mode == FX_MODE_FIRE_FLICKER_SOFT)
-//     {
-//         leds->mode_fire_flicker_soft();
-//     }
-//     else if (mode == FX_MODE_FIRE_FLICKER_INTENSE)
-//     {
-//         leds->mode_fire_flicker_intense();
-//     }
-//     else if (mode == FX_MODE_CIRCUS_COMBUSTUS)
-//     {
-//         leds->mode_circus_combustus();
-//     }
-//     else if (mode == FX_MODE_HALLOWEEN)
-//     {
-//         leds->mode_halloween();
-//     }
-//     else if (mode == FX_MODE_BICOLOR_CHASE)
-//     {
-//         leds->mode_bicolor_chase();
-//     }
-//     else if (mode == FX_MODE_TRICOLOR_CHASE)
-//     {
-//         leds->mode_tricolor_chase();
-//     }
-//     else if (mode == FX_MODE_TWINKLEFOX)
-//     {
-//         leds->mode_twinkleFOX();
-//     }
-// }
-// uint16_t patternEffect(void)
-// {
-//     WS2812FX::Segment *_seg = box.getSegment(); // get the current segment
-//     WS2812FX::Segment_runtime *_segrt = box.getSegmentRuntime();
-//     if ((_segrt->counter_mode_call % 2) == 0)
-//     {
-//         // box.mode_rainbow();
-//         int tmp = box.getPatternEffect1();
-//         handleEffect(&box,tmp);
-//         // box.fireworks(GREEN);
-
-//         return defaulSpeed(tmp)/8;
-//     }
-//     else if ((_segrt->counter_mode_call % 2) == 1)
-//     {
-//         box.fireworks(RED);
-//         return 50;
-//     }
-// }
+void vTaskCodeOneTime(void *pvParameters)
+{
+    Box *_box = (Box *)pvParameters;
+    int _mode = _box->getCurrentMode();
+    _box->pause();
+    setValue("current_mode", String(_mode));
+    _box->changeSpeed(getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt(), false);
+    _box->resume();
+    if (current_symmetry != SYM_VERTEX)
+        setSymmetry(_box, SYM_VERTEX);
+    for (int i = 0; i < _box->getNumSegments(); i++)
+    {
+        _box->setMode(i, _mode);
+        _box->setSpeed(i, getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt());
+        delay(1500 / _box->getNumSegments());
+    }
+    vTaskDelete(NULL);
+}
