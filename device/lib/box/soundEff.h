@@ -32,7 +32,7 @@
 
 uint8_t soundEffectMode = SE_SHINES_ON_2;
 void setSoundEffectMode(uint8_t eff, WS2812FX * leds){
-    setValue("cur_music_mode",String(eff));
+    setValue("cur_music_mode",String(eff), false);
     soundEffectMode = eff;
     if(soundEffectMode == SE_OVERFLOW_BEGIN){
         overflowBeginInit(leds);
@@ -70,7 +70,6 @@ void setSoundEffectMode(uint8_t eff, WS2812FX * leds){
     }else if(soundEffectMode == SE_VU_METER_COLUMN){
         vuMeterColumnInit(leds);
     }
-    setValue("cur_music_mode", String(eff));
 }
 // ===================================================== Handler =====================================================
 uint16_t soundEffHandle(WS2812FX * leds){

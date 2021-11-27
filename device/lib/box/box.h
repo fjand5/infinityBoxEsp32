@@ -615,17 +615,20 @@ void vTaskCodeOneTime(void *pvParameters)
 {
     Box *_box = (Box *)pvParameters;
     int _mode = _box->getCurrentMode();
-    _box->pause();
-    setValue("current_mode", String(_mode));
+    // _box->pause();
+    // không lưu current_mode lại đề chuyển hiệu ứng mượt hơn.
+    setValue("current_mode", String(_mode), false);
     _box->changeSpeed(getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt(), false);
-    _box->resume();
+    // _box->resume();
     if (current_symmetry != SYM_VERTEX)
         setSymmetry(_box, SYM_VERTEX);
     for (int i = 0; i < _box->getNumSegments(); i++)
     {
         _box->setMode(i, _mode);
+        delay(1000 / _box->getNumSegments());
         _box->setSpeed(i, getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt());
-        delay(1500 / _box->getNumSegments());
+        delay(1000 / _box->getNumSegments());
+
     }
     vTaskDelete(NULL);
 }
