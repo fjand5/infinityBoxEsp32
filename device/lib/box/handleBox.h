@@ -56,17 +56,20 @@ void offTimer()
   box.offTimer();
 }
 
-int lastTimerState = -1;
+// int lastTimerState = -1;
 void onReact()
 {
-  lastTimerState = box.isTimerOn();
+  // lastTimerState = box.isTimerOn();
+  
+  box.offTimer();
   box.setReacMusic(true);
+  box.onTimer();
 }
 void offReact()
 {
   // Nếu lastTimerState đã được gán giá trị.
-  if (lastTimerState >= 0)
-    lastTimerState ? box.onTimer() : box.offTimer();
+  // if (lastTimerState >= 0)
+  //   lastTimerState ? box.onTimer() : box.offTimer();
   box.setReacMusic(false);
 }
 void onChangeBeat(double val, double freq)

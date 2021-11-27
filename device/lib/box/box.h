@@ -38,7 +38,7 @@ private:
     uint32_t _timer = 3000;
 
     bool _isOff = false;
-    bool _runTimer = false;
+    volatile bool _runTimer = false;
 
     bool _isReacMusic = false;
     bool _isPatternMode = false;
@@ -144,7 +144,7 @@ public:
     {
         return _pat_eff_2;
     }
-    
+
     void changePaternEffect2(int effect)
     {
 
@@ -181,7 +181,8 @@ public:
     {
         return _patternBuffer;
     }
-    int getCurrentMode(){
+    int getCurrentMode()
+    {
         return _mode;
     }
     void setPatternEffect(bool val)
@@ -454,6 +455,16 @@ public:
     }
     bool beforeService(double (*micValFunc)())
     {
+        if (!_isConfigMode && _isReacMusic && getMode() != FX_MODE_CUSTOM)
+        {
+            // set lại Mode cho react,
+            // phòng trường hợp đã bật rồi nhưng timer chưa phát hiện
+
+            for (int i = 0; i < getNumSegments(); i++)
+            {
+                setMode(i, FX_MODE_CUSTOM);
+            }
+        }
         if (!_isConfigMode && _runTimer && millis() - timer > _timer)
         {
             timer = millis();
@@ -628,7 +639,6 @@ void vTaskCodeOneTime(void *pvParameters)
         delay(1000 / _box->getNumSegments());
         _box->setSpeed(i, getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt());
         delay(1000 / _box->getNumSegments());
-
     }
     vTaskDelete(NULL);
 }
