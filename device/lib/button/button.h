@@ -13,52 +13,47 @@ EasyButton button(BUTTON_PIN);
 uint32_t lastClickTime = 0;
 void onClick()
 {
-    log_d(" running");
-    if (getValue("on_off_tgl") != "true")
-    {
-        setValue("on_off_tgl", "true");
-        onBox();
-    }
-    else
-    {
-        nextMode();
-    }
+    // log_d(" running");
+    // if (getValue("on_off_tgl") != "true")
+    // {
+    //     setValue("on_off_tgl", "true");
+    //     onBox();
+    // }
+    // else
+    // {
+    nextMode();
+    // }
 }
 void onPressed()
 {
     log_d(" running");
-    setValue("on_off_tgl", "false");
-    offBox();
+    box.setReacMusic(!box.getReactMusic());
 }
 void doubleClick()
 {
     log_d(" running");
     lastClickTime = 0;
-    if (getValue("timer_tgl","true") == "true")
+    if (getValue("timer_tgl", "true") == "true")
     {
-        setValue("timer_tgl", "false");
-                log_d("off timer <=====================================================");
-
         offTimer();
     }
     else
     {
-        setValue("timer_tgl", "true");
         onTimer();
     }
 }
 void buttonHandle(void *pvParameters)
 {
-
-    int brightness = 0;  // how bright the LED is
-    int fadeAmount = 10; // how many points to fade the LED by
+    int brightness = 0;       // how bright the LED is
+    int fadeAmount = 10;      // how many points to fade the LED by
+    int fadeAmountMusic = 20; // how many points to fade the LED by
     while (1)
     {
         vTaskDelay(50 / portTICK_PERIOD_MS);
         button.read();
         if (lastClickTime != 0 && millis() - lastClickTime > DOUBLE_CLICK_DURATION)
         {
-            lastClickTime=0;
+            lastClickTime = 0;
             onClick();
         }
         if (getValue("on_off_tgl") != "true")
@@ -67,13 +62,24 @@ void buttonHandle(void *pvParameters)
         }
         else
         {
-            if (getValue("timer_tgl","true") == "true")
+            if (getValue("timer_tgl", "true") == "true")
             {
                 ledcWrite(LEDC_CHANNEL_0, brightness);
-                brightness = brightness + fadeAmount;
-                if (brightness <= 0 || brightness >= 250)
+                if (getValue("react_music", "true") == "true")
                 {
-                    fadeAmount = -fadeAmount;
+                    brightness = brightness + fadeAmountMusic;
+                    if (brightness <= 0 || brightness >= 240)
+                    {
+                        fadeAmountMusic = -fadeAmountMusic;
+                    }
+                }
+                else
+                {
+                    brightness = brightness + fadeAmount;
+                    if (brightness <= 0 || brightness >= 250)
+                    {
+                        fadeAmount = -fadeAmount;
+                    }
                 }
             }
             else

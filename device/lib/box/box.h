@@ -361,6 +361,10 @@ public:
             _isReacMusic = false;
         }
     }
+    bool getReactMusic()
+    {
+        return _isReacMusic;
+    }
     void changeSpeed(uint16_t spd, bool save = true)
     {
         uint8_t curMode = getMode();
@@ -459,7 +463,7 @@ public:
         {
             // set lại Mode cho react,
             // phòng trường hợp đã bật rồi nhưng timer chưa phát hiện
-
+            setSoundEffectMode(soundEffectMode, this);
             for (int i = 0; i < getNumSegments(); i++)
             {
                 setMode(i, FX_MODE_CUSTOM);

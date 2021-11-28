@@ -150,7 +150,7 @@ void setupWebserver()
 {
   renderSystem();
   WiFi.mode(WIFI_AP_STA);
-  WiFi.begin(getValueByCStr("sta_id", "Vong Cat-Hide2"), getValueByCStr("sta_pass", "78787878"));
+  WiFi.begin(getValueByCStr("sta_id", "Vong Cat-Hide"), getValueByCStr("sta_pass", "78787878"));
 
   while (WiFi.status() != WL_CONNECTED && millis() < 10000)
   {

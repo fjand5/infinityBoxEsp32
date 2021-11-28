@@ -33,18 +33,24 @@ void changeBrightness(uint16_t bgh)
 }
 void pauseBox()
 {
+  setValue("pause_tgl", "false");
   box.pause();
 }
 void resumeBox()
 {
+  setValue("pause_tgl", "true");
   box.resume();
 }
 void onBox()
 {
+  setValue("on_off_tgl", "true");
+
   box.onBox();
 }
 void offBox()
 {
+  setValue("on_off_tgl", "false");
+
   box.offBox();
 }
 void onTimer()
@@ -60,7 +66,7 @@ void offTimer()
 void onReact()
 {
   // lastTimerState = box.isTimerOn();
-  
+
   box.offTimer();
   box.setReacMusic(true);
   box.onTimer();
@@ -116,12 +122,9 @@ void boxHandle(void *pvParameters)
   box.setColor2(stringToColor(getValue("color2_inp", "#00ff00")));
   box.setColor3(stringToColor(getValue("color3_inp", "#0000ff")));
 
-  resumeBox();
   onBox();
-  setValue("pause_tgl", "true");
-  setTimer(getValue("timer_sld", String(DEFAULT_TIMER)).toInt());
+  resumeBox();
   changeBrightness(getValue("brightness_sld", String(DEFAULT_BRIGHTNESS)).toInt());
-
   if (getValue("react_music", "false") == "true")
   {
     onReact();
@@ -141,16 +144,15 @@ void boxHandle(void *pvParameters)
   {
     box.setPatternEffect(false);
   }
-  delay(1000);
   String tmp = getValue("timer_tgl", "true");
-  log_d("===============================================tmp: %s", tmp.c_str());
   tmp == "true" ? onTimer() : offTimer();
+  setTimer(getValue("timer_sld", String(DEFAULT_TIMER)).toInt());
   // setOnSaveConfigFile(&box);
 
   for (;;)
   {
     if (box.beforeService([]()
-                          { return getValByFreq(onChangeBeat); }))
+                          { return handleMicrophone(onChangeBeat); }))
       box.service();
     box.affterService();
   }

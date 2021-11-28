@@ -2,11 +2,7 @@
 #include "driver/i2s.h"
 #include "arduinoFFT.h"
 
-#define SAMPLES 128
-#define BAND 16
-#define SAMPLES_MAX_FREQ 16000
-#define MAX_INTENSITY 2511122.00
-
+const uint16_t SAMPLES = 256;
 double vReal[SAMPLES];
 double vImag[SAMPLES];
 double micGain = 1.0;
@@ -20,30 +16,25 @@ int32_t getMIC_RAW()
   static int32_t lastSample = 0;
   int32_t sample = 0;
   int bytes_read = i2s_pop_sample(I2S_NUM_0, (char *)&sample, portMAX_DELAY); // no timeout
-
-  // chỉ sử dụng 24 bit.
-  sample = sample >> 8;
   sample = sample < 0 ? -sample : sample;
   if (bytes_read > 0)
   {
     lastSample = sample;
+    return sample;
   }
-
   return lastSample;
 }
-double calcData()
+void calcData()
 {
   static uint32_t samplingTime;
-  double ret = 0;
   samplingTime = micros();
   for (int i = 0; i < SAMPLES; i++)
   {
     double val = getMIC_RAW();
+    val = val < 0 ? -val : val;
     vReal[i] = val;
     vImag[i] = 0;
-    ret += val;
   }
-
   samplingTime = micros() - samplingTime;
   double samplingFrequency = 1000000.00 * double(SAMPLES) / double(samplingTime);
   arduinoFFT FFT = arduinoFFT(vReal, vImag, SAMPLES, samplingFrequency);
@@ -51,64 +42,40 @@ double calcData()
   FFT.Windowing(FFT_WIN_TYP_HAMMING, FFT_FORWARD);
   FFT.Compute(FFT_FORWARD);
   FFT.ComplexToMagnitude();
-  return ret / double(SAMPLES);
 }
-double handleMicrophone(void (*onChangeMax)(double val, double freq) = NULL)
+double getValByFreq(void (*onChangeMax)(double val, double freq) = NULL)
 {
-  static double lastFreq = 0;
-  static double lastIntensity = 0;
-  double curentIntensity = 0;
-  curentIntensity = calcData();
-  if (lastIntensity > 0)
-    lastIntensity -= lastIntensity / (100 - takeBeat);
+  static double ret = 1;
+  if (ret > SAMPLES * 3 / 4)
+    ret -= 32 * takeBeat / 100;
+  else if (ret > SAMPLES / 2)
+    ret -= 16 * takeBeat / 100;
+  else
+    ret -= 8 * takeBeat / 100;
+  if (ret < 0)
+    ret = 0;
 
+  calcData();
   double maxValByFreq = 0;
-  double indexFreq = 0;
-  double _val = 0;
-  for (int i = 2; i < SAMPLES / 2; i += BAND)
+  double _freq = 0;
+  for (int i = 2; i < SAMPLES / 2; i++)
   {
-    _val = 0;
-    for (int j = 0; j < BAND; j++)
+    if (vReal[i] > maxValByFreq)
     {
-      _val += vReal[i + j];
-    }
-    _val /= BAND;
-    if (_val > maxValByFreq)
-    {
-      maxValByFreq = _val;
-      indexFreq = i;
+      maxValByFreq = vReal[i];
+      _freq = i;
     }
   }
-
-  // if (abs(indexFreq - lastFreq)>8)
-  // {
-  //   lastFreq = indexFreq;
-  //   log_d("maxValByFreq: %.2f", maxValByFreq);
-
-  //   if (onChangeMax != NULL)
-  //     onChangeMax(mapf(_val, 0.0, double(SAMPLES), 0.0, 100.0), maxValByFreq);
-  // }
-
-  /* Dùng để đo max intensity, giá trị này còn phụ thuộc vào SAMPLES
-  static double maxcurentIntensity;
-  if(curentIntensity>maxcurentIntensity){
-    maxcurentIntensity=curentIntensity;
-  log_d("curentIntensity: %2.f",maxcurentIntensity);
-  }
-  */
-  double micVal = mapf(curentIntensity, 0.00, MAX_INTENSITY, 0.00, 100.00);
-  double freqVal = mapf(maxValByFreq, 0.00, SAMPLES/2, 0.00, 100.00);
-  micVal = micVal * micGain;
-  micVal = constrain(micVal, 0.00, 100.00);
-  if (curentIntensity > lastIntensity)
+  if (maxValByFreq < 100000000.0)
+    maxValByFreq = 0;
+  maxValByFreq = mapf(maxValByFreq, 0.0, 5000000000.0 / micGain, 0.0, double(SAMPLES));
+  if (maxValByFreq > ret)
   {
-    lastIntensity = curentIntensity;
+    ret = maxValByFreq;
     if (onChangeMax != NULL)
-    {
-      onChangeMax(micVal, freqVal);
-    }
+      onChangeMax(mapf(ret, 0.0, double(SAMPLES), 0.0, 100.0), _freq);
   }
-  return mapf(micVal, 0.0, 2 ^ 24, 0.0, 100.0);
+  return mapf(ret, 0.0, double(SAMPLES), 0.0, 100.0);
 }
 void setMicGain(double gain)
 {
@@ -136,13 +103,13 @@ void setupMIC()
   // The I2S config as per the example
   const i2s_config_t i2s_config = {
       .mode = i2s_mode_t(I2S_MODE_MASTER | I2S_MODE_RX), // Receive, not transfer
-      .sample_rate = SAMPLES_MAX_FREQ,                   // 16KHz
-      .bits_per_sample = I2S_BITS_PER_SAMPLE_24BIT,      // could only get it to work with 32bits
+      .sample_rate = 32000,                              // 16KHz
+      .bits_per_sample = I2S_BITS_PER_SAMPLE_32BIT,      // could only get it to work with 32bits
       .channel_format = I2S_CHANNEL_FMT_ONLY_RIGHT,      // use right channel
       .communication_format = i2s_comm_format_t(I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB),
       .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1, // Interrupt level 1
       .dma_buf_count = 4,                       // number of buffers
-      .dma_buf_len = SAMPLES                        // 8 samples per buffer (minimum)
+      .dma_buf_len = 256                        // 8 samples per buffer (minimum)
   };
 
   // The pin config as per the setup
@@ -170,8 +137,6 @@ void setupMIC()
       ;
   }
   log_d("I2S driver installed.");
-  setMicGain(5);
-  setTakeBeat(10);
-  setMicGain(getValue("micGain_sld", "5").toDouble());
-  setTakeBeat(getValue("takeBeat_sld", "10").toDouble());
+  setMicGain(getValue("micGain_sld", "2").toDouble());
+  setTakeBeat(getValue("takeBeat_sld", "50").toDouble());
 }

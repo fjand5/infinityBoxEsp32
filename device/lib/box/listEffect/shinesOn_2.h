@@ -76,7 +76,7 @@ uint16_t shinesOnHandler2(WS2812FX *leds)
       // _segrt->counter_mode_step--;
     _segrt->counter_mode_step-=activateLeds*10/100;
 
-    return 0;
+    return 20;
   }
   else
   {
