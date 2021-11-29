@@ -19,8 +19,8 @@ void setSymmetry(WS2812FX *leds, int sym, bool x2 = false)
 
     if (sym == SYM_TEST)
     {
-        leds->resetSegments();
         leds->updateLength(LED_COUNT);
+        leds->resetSegments();
         leds->setSegment(0, 12 * 0, 12 * 1 - 1, FX_MODE_COLOR_WIPE, color, speed, false);
         leds->setSegment(1, 12 * 1, 12 * 2 - 1, FX_MODE_COLOR_WIPE, color, speed, false);
         leds->setSegment(2, 12 * 2, 12 * 3 - 1, FX_MODE_COLOR_WIPE, color, speed, true);
@@ -48,9 +48,9 @@ void setSymmetry(WS2812FX *leds, int sym, bool x2 = false)
     }
     else if (sym == SYM_NO_SYM)
     {
+        leds->updateLength(LED_COUNT);
         leds->resetSegments();
         
-        leds->updateLength(LED_COUNT);
         leds->setSegment(0, 0, leds->getLength() - 1, mode, color, speed, false);
     }
     else if (sym == SYM_VERTEX)
@@ -58,6 +58,7 @@ void setSymmetry(WS2812FX *leds, int sym, bool x2 = false)
         int tmp;
         uint8_t opt, index = 0;
         uint16_t offset =0;
+        leds->updateLength(LED_COUNT);
         leds->resetSegments();
         DOUBLE_VERTEX:
         tmp = getValue("seg_font_1", "15").toInt();
@@ -226,6 +227,7 @@ void setSymmetry(WS2812FX *leds, int sym, bool x2 = false)
     {
         int val1, val2, min_seg, max_seg, offset = 0;
         uint8_t index = 0;
+        leds->updateLength(LED_COUNT);
         leds->resetSegments();
         DOUBLE_SURFACE:
         // font

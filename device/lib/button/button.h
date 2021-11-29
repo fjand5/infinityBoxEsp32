@@ -8,9 +8,19 @@
 #include "Arduino.h"
 #include "../webserver/config.h"
 #include "../box/handleBox.h"
+#include <LITTLEFS.h>
+
 #define DOUBLE_CLICK_DURATION 300
 EasyButton button(BUTTON_PIN);
 uint32_t lastClickTime = 0;
+
+int countToFactoryReset = 0;
+void resetFactory()
+{
+    LITTLEFS.format();
+    delay(1000);
+    ESP.restart();
+}
 void onClick()
 {
     // log_d(" running");
@@ -21,13 +31,21 @@ void onClick()
     // }
     // else
     // {
-    nextMode();
+    randomMode();
     // }
 }
 void onPressed()
 {
     log_d(" running");
-    box.setReacMusic(!box.getReactMusic());
+
+    if (box.getReactMusic())
+    {
+        offReact();
+    }
+    else
+    {
+        onReact();
+    }
 }
 void doubleClick()
 {
@@ -50,7 +68,25 @@ void buttonHandle(void *pvParameters)
     while (1)
     {
         vTaskDelay(50 / portTICK_PERIOD_MS);
+        if (digitalRead(BUTTON_PIN) == 0)
+        {
+            countToFactoryReset++;
+            if (countToFactoryReset >= 200)
+            {
+                countToFactoryReset = 200;
+                brightness = 0;
+                for (size_t i = 0; i < 20; i++)
+                {
+                    ledcWrite(LEDC_CHANNEL_0, 0);
+                    vTaskDelay(100 / portTICK_PERIOD_MS);
+                    ledcWrite(LEDC_CHANNEL_0, 250);
+                    vTaskDelay(100 / portTICK_PERIOD_MS);
+                }
+                resetFactory();
+            }
+        }
         button.read();
+
         if (lastClickTime != 0 && millis() - lastClickTime > DOUBLE_CLICK_DURATION)
         {
             lastClickTime = 0;

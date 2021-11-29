@@ -55,7 +55,7 @@ void vuMeterColumnOnBeat(WS2812FX *leds, double val, double freq)
         if (!segrt->aux_param)
             continue;
         int seglen = _seg->stop - _seg->start + 1;
-        double count = val * seglen / 100;
+        double count = val * seglen / 100.00;
         if (segrt->aux_param3)
             for (uint16_t i = 0; i < count; i++)
             {
@@ -65,7 +65,7 @@ void vuMeterColumnOnBeat(WS2812FX *leds, double val, double freq)
                     float hsvColor[3];
                     rgb2hsv(color, hsvColor);
 
-                    hsvColor[0] = (hsvColor[0] + freq / 100) / 2;
+                    hsvColor[0] = (hsvColor[0] + freq / 100.00) / 2.00;
                     hsv2rgb(hsvColor[0], hsvColor[1], hsvColor[2], &color);
 
                     leds->setPixelColor(_seg->stop - i, color);
@@ -80,7 +80,7 @@ void vuMeterColumnOnBeat(WS2812FX *leds, double val, double freq)
                     float hsvColor[3];
                     rgb2hsv(color, hsvColor);
 
-                    hsvColor[0] = (hsvColor[0] + freq / 100) / 2;
+                    hsvColor[0] = (hsvColor[0] + freq / 100.00) / 2.00;
                     hsv2rgb(hsvColor[0], hsvColor[1], hsvColor[2], &color);
 
                     leds->setPixelColor(_seg->start + i, color);

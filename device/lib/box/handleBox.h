@@ -19,6 +19,10 @@ void nextMode()
 {
   box.nextMode();
 }
+void randomMode()
+{
+  box.randomMode();
+}
 void previousMode()
 {
   box.previousMode();
@@ -62,14 +66,13 @@ void offTimer()
   box.offTimer();
 }
 
-// int lastTimerState = -1;
 void onReact()
 {
-  // lastTimerState = box.isTimerOn();
+  bool lastTimerState = box.isTimerOn();
 
   box.offTimer();
   box.setReacMusic(true);
-  box.onTimer();
+  lastTimerState ?  box.onTimer(): box.offTimer();
 }
 void offReact()
 {

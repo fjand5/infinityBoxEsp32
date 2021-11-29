@@ -9,7 +9,7 @@
 int overflowMode = OVER_FLOW_BEGIN_0;
 void overflowBeginInit(WS2812FX *leds, int mode = OVER_FLOW_BEGIN_0)
 {
-  setSymmetry(leds, SYM_VERTEX);
+    setSymmetry(leds, SYM_VERTEX);
 
     for (int i = 0; i < leds->getNumSegments(); i++)
     {

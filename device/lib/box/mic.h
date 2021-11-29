@@ -170,8 +170,8 @@ void setupMIC()
       ;
   }
   log_d("I2S driver installed.");
-  setMicGain(5);
+  setMicGain(10);
   setTakeBeat(10);
-  setMicGain(getValue("micGain_sld", "5").toDouble());
-  setTakeBeat(getValue("takeBeat_sld", "10").toDouble());
+  setMicGain(getValue("micGain_sld", "10").toDouble());
+  setTakeBeat(getValue("takeBeat_sld", "50").toDouble());
 }

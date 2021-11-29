@@ -40,7 +40,7 @@ private:
     bool _isOff = false;
     volatile bool _runTimer = false;
 
-    bool _isReacMusic = false;
+    volatile bool _isReacMusic = false;
     bool _isPatternMode = false;
 
     uint32_t _colors[3];
@@ -54,6 +54,8 @@ private:
     int _pat_eff_1 = 3;
     int _pat_eff_2 = 45;
     uint8_t *_patternBuffer = NULL;
+
+    TaskHandle_t taskOneTimeHandle;
 
 public:
     Box() : WS2812FX(0, -1, 0, 0, 0){};
@@ -96,7 +98,7 @@ public:
             10000,                /* Stack size in words, not bytes. */
             this,                 /* Parameter passed into the task. */
             1,                    /* Priority at which the task is created. */
-            NULL,
+            &taskOneTimeHandle,
             0); /* Used to pass out the created task's handle. */
     }
     bool isPatternMode()
@@ -244,6 +246,29 @@ public:
 
         log_d("Current Mode: %d", _mode);
     }
+    void randomMode()
+    {
+        if (_isPatternMode)
+            return;
+
+        if (_isReacMusic)
+        {
+            setSoundEffectRandomMode(this);
+        }
+        else
+        {
+            uint8_t tmp = 0;
+            do
+            {
+                tmp = random8(55);
+            } while (_mode == tmp);
+            _mode = tmp;
+
+            changeMode(_mode);
+        }
+
+        log_d("Current Mode: %d", _mode);
+    }
     void previousMode()
     {
         if (_isPatternMode || _isReacMusic)
@@ -345,14 +370,23 @@ public:
 
         if (val)
         {
+            // if (taskOneTimeHandle != NULL)
+            // {
+            //     vTaskSuspend(taskOneTimeHandle);
+            //     vTaskDelete(taskOneTimeHandle);
+            // }
+            _isReacMusic = true;
             setPatternEffect(false);
             setValue("react_music", "true");
-            setSymmetry(this, SYM_VERTEX, false);
-            for (int i = 0; i < getNumSegments(); i++)
-            {
-                setMode(i, FX_MODE_CUSTOM);
-            }
-            _isReacMusic = true;
+
+            xTaskCreatePinnedToCore(
+                vTaskCodeOneTime,     /* Function that implements the task. */
+                "proccessChangeMode", /* Text name for the task. */
+                10000,                /* Stack size in words, not bytes. */
+                this,                 /* Parameter passed into the task. */
+                1,                    /* Priority at which the task is created. */
+                &taskOneTimeHandle,
+                0); /* Used to pass out the created task's handle. */
         }
         else
         {
@@ -459,30 +493,31 @@ public:
     }
     bool beforeService(double (*micValFunc)())
     {
-        if (!_isConfigMode && _isReacMusic && getMode() != FX_MODE_CUSTOM)
-        {
-            // set lại Mode cho react,
-            // phòng trường hợp đã bật rồi nhưng timer chưa phát hiện
-            setSoundEffectMode(soundEffectMode, this);
-            for (int i = 0; i < getNumSegments(); i++)
-            {
-                setMode(i, FX_MODE_CUSTOM);
-            }
-        }
+        // if (!_isConfigMode && _isReacMusic && getMode() != FX_MODE_CUSTOM)
+        // {
+        //     // set lại Mode cho react,
+        //     // phòng trường hợp đã bật rồi nhưng timer chưa phát hiện
+        //     setSoundEffectMode(soundEffectMode, this);
+        //     for (int i = 0; i < getNumSegments(); i++)
+        //     {
+        //         setMode(i, FX_MODE_CUSTOM);
+        //     }
+        // }
         if (!_isConfigMode && _runTimer && millis() - timer > _timer)
         {
             timer = millis();
-            if (_isReacMusic)
-            {
-                soundEffectMode++;
-                if (soundEffectMode >= SE_COUNT)
-                    soundEffectMode = 0;
-                setSoundEffectMode(soundEffectMode, this);
-            }
-            else
-            {
-                nextMode();
-            }
+            randomMode();
+            // if (_isReacMusic)
+            // {
+            //     soundEffectMode++;
+            //     if (soundEffectMode >= SE_COUNT)
+            //         soundEffectMode = 0;
+            //     setSoundEffectMode(soundEffectMode, this);
+            // }
+            // else
+            // {
+            //     nextMode();
+            // }
         }
 
         // chạy để kích beat
@@ -629,20 +664,34 @@ uint16_t musicEffect(void)
 void vTaskCodeOneTime(void *pvParameters)
 {
     Box *_box = (Box *)pvParameters;
-    int _mode = _box->getCurrentMode();
-    // _box->pause();
-    // không lưu current_mode lại đề chuyển hiệu ứng mượt hơn.
-    setValue("current_mode", String(_mode), false);
-    _box->changeSpeed(getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt(), false);
-    // _box->resume();
-    if (current_symmetry != SYM_VERTEX)
-        setSymmetry(_box, SYM_VERTEX);
-    for (int i = 0; i < _box->getNumSegments(); i++)
+
+    if (_box->getReactMusic())
     {
-        _box->setMode(i, _mode);
-        delay(1000 / _box->getNumSegments());
-        _box->setSpeed(i, getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt());
-        delay(1000 / _box->getNumSegments());
+
+        setSymmetry(_box, SYM_VERTEX, false);
+        for (int i = 0; i < _box->getNumSegments(); i++)
+        {
+            _box->setMode(i, FX_MODE_CUSTOM);
+        }
+        setSoundEffectRandomMode(_box);
     }
+    else
+    {
+        int _mode = _box->getCurrentMode(); // _box->pause();
+        // không lưu current_mode lại đề chuyển hiệu ứng mượt hơn.
+        setValue("current_mode", String(_mode), false);
+        _box->changeSpeed(getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt(), false);
+        // _box->resume();
+        if (current_symmetry != SYM_VERTEX)
+            setSymmetry(_box, SYM_VERTEX);
+        for (int i = 0; i < _box->getNumSegments(); i++)
+        {
+
+            _box->setMode(i, _mode);
+            _box->setSpeed(i, getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt());
+            delay(1000 / _box->getNumSegments());
+        }
+    }
+
     vTaskDelete(NULL);
 }
