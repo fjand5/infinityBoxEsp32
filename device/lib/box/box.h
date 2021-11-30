@@ -689,7 +689,7 @@ void vTaskCodeOneTime(void *pvParameters)
 
             _box->setMode(i, _mode);
             _box->setSpeed(i, getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt());
-            delay(1000 / _box->getNumSegments());
+            delay(750 / _box->getNumSegments());
         }
     }
 

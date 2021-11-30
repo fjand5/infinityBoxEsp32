@@ -3,6 +3,7 @@
 
 uint32_t stringToColor( String val){
     // #ffaabb
+    val.toLowerCase();
     if(!val.startsWith("#")
       || val.length()!=7
     )val = "#ff0000" ;
@@ -13,6 +14,6 @@ uint32_t stringToColor( String val){
     int redInt = strtol(redStr.c_str(),NULL,16);
     int greenInt = strtol(greenStr.c_str(),NULL,16);
     int blueInt = strtol(blueStr.c_str(),NULL,16);
-    color = ((uint32_t)redInt << 16) | ((uint32_t)blueInt << 8) | greenInt;
+    color = ((uint32_t)redInt << 16) | ((uint32_t)greenInt << 8) | blueInt;
     return color;
 }

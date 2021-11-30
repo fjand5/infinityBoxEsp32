@@ -132,6 +132,13 @@ void renderSystem()
                {
                  ESP.restart();
                });
+  
+  renderInputText("system", "version", "Phiên bản", R"({
+    "label":"Phiên bản firmware"
+    }))",
+                  [](String key, String val)
+                  {
+                  });
 }
 void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info)
 {
