@@ -1,5 +1,5 @@
 #define LED_BUTTON_PIN 19
-#define BUTTON_PIN 18
+#define BUTTON_PIN 4
 
 #define LEDC_CHANNEL_0 0
 #define LEDC_TIMER_8_BIT 8
