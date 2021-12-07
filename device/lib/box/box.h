@@ -17,7 +17,7 @@
 #define LED_PIN 23 // digital pin used to drive the LED strip
 #define LED_NUM_OF_SEG 24
 #define LED_COUNT 288 // number of LEDs on the strip
-#define LED_COUNT_ONE_SEG 288 / LED_NUM_OF_SEG
+#define LED_COUNT_ONE_SEG LED_COUNT / LED_NUM_OF_SEG
 uint16_t musicEffect();
 uint16_t patternEffect();
 void vTaskCodeOneTime(void *pvParameters);
