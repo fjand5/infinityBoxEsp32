@@ -2,6 +2,8 @@
 
 int defaulSpeed(int mode)
 {
+    if (mode == FX_MODE_BLINK)
+        return 1000;
     if (mode == FX_MODE_COLOR_WIPE)
         return 1000;
     if (mode == FX_MODE_COLOR_WIPE_RANDOM)
@@ -28,10 +30,18 @@ int defaulSpeed(int mode)
         return 3000;
     if (mode == FX_MODE_HYPER_SPARKLE)
         return 3000;
+    if (mode == FX_MODE_CHASE_WHITE)
+        return 1000;
+
+    if (mode == FX_MODE_CHASE_COLOR)
+        return 1000;
     if (mode == FX_MODE_CHASE_RAINBOW)
         return 500;
     if (mode == FX_MODE_CHASE_BLACKOUT)
         return 500;
+
+    if (mode == FX_MODE_LARSON_SCANNER)
+        return 1000;
     if (mode == FX_MODE_FIREWORKS)
         return 1000;
     if (mode == FX_MODE_HALLOWEEN)
@@ -46,8 +56,6 @@ bool checkIsIgnoreMode(int mode)
 {
     // if (mode == FX_MODE_STATIC)
     //     return true;
-    if (mode == FX_MODE_BLINK)
-        return true;
     if (mode == FX_MODE_COLOR_WIPE_INV)
         return true;
     if (mode == FX_MODE_COLOR_WIPE_REV)
@@ -74,8 +82,6 @@ bool checkIsIgnoreMode(int mode)
         return true;
     if (mode == FX_MODE_BLINK_RAINBOW)
         return true;
-    if (mode == FX_MODE_CHASE_WHITE)
-        return true;
     if (mode == FX_MODE_CHASE_COLOR)
         return true;
     if (mode == FX_MODE_CHASE_RANDOM)
@@ -95,8 +101,6 @@ bool checkIsIgnoreMode(int mode)
     if (mode == FX_MODE_RUNNING_RED_BLUE)
         return true;
     if (mode == FX_MODE_RUNNING_RANDOM)
-        return true;
-    if (mode == FX_MODE_LARSON_SCANNER)
         return true;
     if (mode == FX_MODE_COMET)
         return true;

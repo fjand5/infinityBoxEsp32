@@ -16,8 +16,9 @@
 // Nhớ thiết lập lại max segment trong thư viện (đã dùng extra_scripts để tự sửa)
 #define LED_PIN 23 // digital pin used to drive the LED strip
 #define LED_NUM_OF_SEG 24
-#define LED_COUNT 288 // number of LEDs on the strip
+#define LED_COUNT 480 // number of LEDs on the strip
 #define LED_COUNT_ONE_SEG LED_COUNT / LED_NUM_OF_SEG
+#define LED_COUNT_LOLORS 15 // number of LEDs on the strip
 uint16_t musicEffect();
 uint16_t patternEffect();
 void vTaskCodeOneTime(void *pvParameters);
@@ -25,6 +26,23 @@ struct CoupleSeg
 {
     int first;
     int senconds;
+};
+uint32_t listColors[LED_COUNT_LOLORS][3] = {
+    {0x0f2557, 0xee7879, 0xf3a51a},
+    {0xff6700, 0x191970, 0xe0e722},
+    {0x3e090d, 0xc75f5f, 0x89feff},
+    {0x800000, 0xf3a51a, 0x8b4513},
+    {0x191970, 0x800000, 0xfffafa},
+    {0x8b008b, 0x7fff00, 0xff4500},
+    {0x4b0082, 0x800000, 0xff69b4},
+    {0x8b4513, 0xe0e722, 0x006400},
+    {0xff00ff, 0x9932cc, 0xff00a0},
+    {0xfe00fe, 0xdefe47, 0x00b3fe},
+    {0x65dc98, 0x8d8980, 0x222035},
+    {0xff2a6d, 0xd1f7ff, 0x05d9e8},
+    {0xfff69f, 0xd0902f, 0xa15501},
+    {0xb0acb0, 0x85ebd9, 0x2f404d},
+    {0xff577d, 0xffccdc, 0x0a9cf5},
 };
 class Box : public WS2812FX
 {
@@ -664,6 +682,14 @@ uint16_t musicEffect(void)
 void vTaskCodeOneTime(void *pvParameters)
 {
     Box *_box = (Box *)pvParameters;
+
+    if (getValue("color_timer", "true") == "true")
+    {
+        uint8_t index = box.random8(LED_COUNT_LOLORS);
+        box.setColor1(listColors[index][0]);
+        box.setColor2(listColors[index][1]);
+        box.setColor3(listColors[index][2]);
+    }
 
     if (_box->getReactMusic())
     {

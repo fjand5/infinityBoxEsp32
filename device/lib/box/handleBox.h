@@ -7,6 +7,7 @@
 #define DEFAULT_BRIGHTNESS 50
 #define DEFAULT_MODE FX_MODE_RAINBOW_CYCLE
 
+
 void setTimer(uint32_t timer)
 {
   box.setTimer(timer);
@@ -72,7 +73,7 @@ void onReact()
 
   box.offTimer();
   box.setReacMusic(true);
-  lastTimerState ?  box.onTimer(): box.offTimer();
+  lastTimerState ? box.onTimer() : box.offTimer();
 }
 void offReact()
 {
@@ -151,9 +152,10 @@ void boxHandle(void *pvParameters)
   tmp == "true" ? onTimer() : offTimer();
   setTimer(getValue("timer_sld", String(DEFAULT_TIMER)).toInt());
   // setOnSaveConfigFile(&box);
-
   for (;;)
   {
+
+
     if (box.beforeService([]()
                           { return handleMicrophone(onChangeBeat); }))
       box.service();
