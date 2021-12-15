@@ -10,7 +10,7 @@ void renderMusic()
   renderSlider("Music", "micGain_sld", "Gain", R"({
     "newLine":true,
     "min":1,
-    "max":20
+    "max":100
   })",
                [](String key, String val)
                {
@@ -108,13 +108,13 @@ void renderMusic()
                    setSoundEffectMode(SE_RUN_SPEED, &box);
                });
 
-  renderButton("Music", "music_mode_7", "LAZY", R"({
-  })",
-               [](String key, String val)
-               {
-                 if (box.getReactMusic())
-                   setSoundEffectMode(SE_LAZY, &box);
-               });
+  // renderButton("Music", "music_mode_7", "LAZY", R"({
+  // })",
+  //              [](String key, String val)
+  //              {
+  //                if (box.getReactMusic())
+  //                  setSoundEffectMode(SE_LAZY, &box);
+  //              });
 
   renderButton("Music", "music_mode_8", "Overflow from begin 2", R"({
   })",

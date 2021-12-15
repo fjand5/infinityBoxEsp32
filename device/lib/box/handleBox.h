@@ -7,7 +7,6 @@
 #define DEFAULT_BRIGHTNESS 50
 #define DEFAULT_MODE FX_MODE_RAINBOW_CYCLE
 
-
 void setTimer(uint32_t timer)
 {
   box.setTimer(timer);
@@ -152,9 +151,25 @@ void boxHandle(void *pvParameters)
   tmp == "true" ? onTimer() : offTimer();
   setTimer(getValue("timer_sld", String(DEFAULT_TIMER)).toInt());
   // setOnSaveConfigFile(&box);
+
+  uint32_t color_timer = millis();
   for (;;)
   {
-
+    if (box.getReactMusic() && millis() - color_timer > 3000)
+    {
+      color_timer = millis();
+      if (getValue("color_timer", "true") == "true")
+      {
+        uint8_t index = box.random8(LED_COUNT_COLORS);
+        for (int i = 0; i < box.getNumSegments(); i++)
+        {
+          box.setColors(i, listColors[index]);
+        }
+        // setColor1(listColors[index][0]);
+        // setColor2(listColors[index][1]);
+        // setColor3(listColors[index][2]);
+      }
+    }
 
     if (box.beforeService([]()
                           { return handleMicrophone(onChangeBeat); }))

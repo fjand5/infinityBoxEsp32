@@ -30,17 +30,17 @@ void overflowBeginOnBeat(WS2812FX *leds, double val, double freq)
             if (leds->getPixelColor(seg->start) == 0)
             {
                 seg->speed = OVER_FLOW_BEGIN_SPEED / 2;
-                blendRange(leds, seg->start,seg->stop,0, freq*255/100);
+                blendRange(leds, seg->start, seg->stop, 0, freq * 255 / 100);
             }
             else
             {
                 seg->speed = OVER_FLOW_BEGIN_SPEED;
             }
-        if (overflowMode == OVER_FLOW_BEGIN_1)
+        else if (overflowMode == OVER_FLOW_BEGIN_1)
             if (leds->getPixelColor(seg->start) != 0)
             {
                 seg->speed = OVER_FLOW_BEGIN_SPEED / 2;
-                blendRange(leds, seg->start,seg->stop,0, freq*255/100);
+                blendRange(leds, seg->start, seg->stop, 0, val * 255 / 100);
             }
             else
             {

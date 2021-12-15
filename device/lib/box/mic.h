@@ -5,7 +5,7 @@
 #define SAMPLES 128
 #define BAND 16
 #define SAMPLES_MAX_FREQ 16000
-#define MAX_INTENSITY 2511122.00
+#define MAX_INTENSITY 1048576.00
 
 double vReal[SAMPLES];
 double vImag[SAMPLES];
@@ -170,8 +170,8 @@ void setupMIC()
       ;
   }
   log_d("I2S driver installed.");
-  setMicGain(10);
-  setTakeBeat(10);
-  setMicGain(getValue("micGain_sld", "10").toDouble());
+  // setMicGain(50);
+  // setTakeBeat(50);
+  setMicGain(getValue("micGain_sld", "25").toDouble());
   setTakeBeat(getValue("takeBeat_sld", "50").toDouble());
 }

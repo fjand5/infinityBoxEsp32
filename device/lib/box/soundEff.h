@@ -31,6 +31,12 @@
 #include "./listEffect/vuMeterColumn.h"
 
 uint8_t soundEffectMode = SE_SHINES_ON_2;
+bool isIgnoreEffect(uint8_t eff)
+{
+    if (eff == SE_LAZY)
+        return true;
+    return false;
+}
 void setSoundEffectMode(uint8_t eff, WS2812FX *leds);
 void setSoundEffectRandomMode(WS2812FX *leds)
 {
@@ -39,7 +45,7 @@ void setSoundEffectRandomMode(WS2812FX *leds)
     do
     {
         tmp = leds->random8(SE_COUNT);
-    } while (soundEffectMode == tmp);
+    } while (isIgnoreEffect(tmp ) || soundEffectMode == tmp); // lặp lại nếu hiệu ứng xấu, hoặc như cũ.
     soundEffectMode = tmp;
 
     setSoundEffectMode(soundEffectMode, leds);

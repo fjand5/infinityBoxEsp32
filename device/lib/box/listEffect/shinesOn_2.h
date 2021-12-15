@@ -23,7 +23,7 @@ void shinesOnInit2(WS2812FX *leds)
 
 void shinesOnOnBeat2(WS2812FX *leds, double val, double freq)
 {
-  if (val < 25)
+  if (val < 10)
     return;
   // activateLeds = SHINES_ON_COUNT_LED_MAX;
   for (int i = 0; i < leds->getNumSegments(); i++)
@@ -58,6 +58,8 @@ uint16_t shinesOnHandler2(WS2812FX *leds)
   {
     uint32_t _color;
     hsv[1] = abs(float(activateLeds - i)) / (float(activateLeds));
+    hsv[2] = 255.00 * abs(float(activateLeds - i)) / (float(activateLeds));
+
     hsv2rgb(hsv[0], hsv[1], hsv[2], &_color);
     setPixelInSegment(leds, _seg, index + i, _color);
   }

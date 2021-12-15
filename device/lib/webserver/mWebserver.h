@@ -126,11 +126,11 @@ void renderSystem()
                {
                  ESP.restart();
                });
-  renderButton("system", "restart", "Restart hệ thống", R"({
+  renderButton("system", "format", "Restart hệ thống", R"({
     }))",
                [](String key, String val)
                {
-                 ESP.restart();
+                 LITTLEFS.format();
                });
   
   renderInputText("system", "version", "Phiên bản", R"({
