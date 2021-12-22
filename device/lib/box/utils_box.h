@@ -64,6 +64,8 @@ bool checkIsIgnoreMode(int mode)
         return true;
     if (mode == FX_MODE_RANDOM_COLOR)
         return true;
+    if (mode == FX_MODE_SINGLE_DYNAMIC)
+        return true;
     if (mode == FX_MODE_MULTI_DYNAMIC)
         return true;
     if (mode == FX_MODE_RAINBOW_CYCLE)
@@ -71,6 +73,8 @@ bool checkIsIgnoreMode(int mode)
     if (mode == FX_MODE_DUAL_SCAN)
         return true;
     if (mode == FX_MODE_FADE)
+        return true;
+    if (mode == FX_MODE_TWINKLE_RANDOM)
         return true;
     if (mode == FX_MODE_SPARKLE)
         return true;

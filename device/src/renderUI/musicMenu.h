@@ -53,7 +53,7 @@ void renderMusic()
                       setSoundEffectMode(val.toInt(), &box);
                   });
 
-  renderButton("Music", "music_mode_0", "Overflow from begin", R"({
+  renderButton("Music", "music_mode_0", "Light Years Ahead", R"({
   })",
                [](String key, String val)
                {
@@ -61,7 +61,7 @@ void renderMusic()
                    setSoundEffectMode(SE_OVERFLOW_BEGIN, &box);
                });
 
-  renderButton("Music", "music_mode_1", "Overflow from center", R"({
+  renderButton("Music", "music_mode_1", "Elliptical Circuit", R"({
   })",
                [](String key, String val)
                {
@@ -69,7 +69,7 @@ void renderMusic()
                    setSoundEffectMode(SE_OVERFLOW_MID, &box);
                });
 
-  renderButton("Music", "music_mode_2", "Star Beat", R"({
+  renderButton("Music", "music_mode_2", "The Magnetars", R"({
   })",
                [](String key, String val)
                {
@@ -77,7 +77,7 @@ void renderMusic()
                    setSoundEffectMode(SE_STAR_BEAT_1, &box);
                });
 
-  renderButton("Music", "music_mode_3", "VU Metter", R"({
+  renderButton("Music", "music_mode_3", "Flyby Voyagers", R"({
   })",
                [](String key, String val)
                {
@@ -85,14 +85,14 @@ void renderMusic()
                    setSoundEffectMode(SE_VU_METER, &box);
                });
 
-  renderButton("Music", "music_mode_4", "Segment beat", R"({
+  renderButton("Music", "music_mode_4", "Halo of Stars", R"({
   })",
                [](String key, String val)
                {
                  if (box.getReactMusic())
                    setSoundEffectMode(SE_SEGMENT_BEAT, &box);
                });
-  renderButton("Music", "music_mode_5", "Shines On 2", R"({
+  renderButton("Music", "music_mode_5", "Stellar Remnants", R"({
     newLine: True
   })",
                [](String key, String val)
@@ -100,7 +100,7 @@ void renderMusic()
                  if (box.getReactMusic())
                    setSoundEffectMode(SE_SHINES_ON_2, &box);
                });
-  renderButton("Music", "music_mode_6", "Run Speed", R"({
+  renderButton("Music", "music_mode_6", "The Satellite Set", R"({
   })",
                [](String key, String val)
                {
@@ -116,7 +116,7 @@ void renderMusic()
   //                  setSoundEffectMode(SE_LAZY, &box);
   //              });
 
-  renderButton("Music", "music_mode_8", "Overflow from begin 2", R"({
+  renderButton("Music", "music_mode_8", "Marvelous Martians", R"({
   })",
                [](String key, String val)
                {
@@ -124,7 +124,7 @@ void renderMusic()
                    setSoundEffectMode(SE_OVERFLOW_BEGIN2, &box);
                });
 
-  renderButton("Music", "music_mode_9", "Star Beat 2", R"({
+  renderButton("Music", "music_mode_9", "Exploding Stars", R"({
   })",
                [](String key, String val)
                {
@@ -132,7 +132,7 @@ void renderMusic()
                    setSoundEffectMode(SE_STAR_BEAT_2, &box);
                });
 
-  renderButton("Music", "music_mode_10", "RainBow", R"({
+  renderButton("Music", "music_mode_10", "The Lava Planets", R"({
   })",
                [](String key, String val)
                {
@@ -140,7 +140,7 @@ void renderMusic()
                    setSoundEffectMode(SE_RAINBOW, &box);
                });
 
-  renderButton("Music", "music_mode_11", "RainBow Run", R"({
+  renderButton("Music", "music_mode_11", "Mars Attacks", R"({
   })",
                [](String key, String val)
                {
@@ -148,14 +148,14 @@ void renderMusic()
                    setSoundEffectMode(SE_RAINBOW_RUN, &box);
                });
 
-  renderButton("Music", "music_mode_12", "Vu Metter Column", R"({
+  renderButton("Music", "music_mode_12", "The Dark Energy Stars", R"({
   })",
                [](String key, String val)
                {
                  if (box.getReactMusic())
                    setSoundEffectMode(SE_VU_METER_COLUMN, &box);
                });
-  renderButton("Music", "music_mode_13", "Shines On 1", R"({
+  renderButton("Music", "music_mode_13", "Cosmic Rays", R"({
     newLine: True
   })",
                [](String key, String val)
@@ -163,7 +163,7 @@ void renderMusic()
                  if (box.getReactMusic())
                    setSoundEffectMode(SE_SHINES_ON_1, &box);
                });
-  renderButton("Music", "music_mode_14", "Shines On 3", R"({
+  renderButton("Music", "music_mode_14", "The Omega Nebula", R"({
     newLine: True
   })",
                [](String key, String val)

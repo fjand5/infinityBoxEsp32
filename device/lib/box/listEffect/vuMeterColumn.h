@@ -8,7 +8,7 @@ bool checkIsColumn(uint16_t seg);
 bool needRev(uint16_t seg);
 void vuMeterColumnInit(WS2812FX *leds)
 {
-  setSymmetry(leds, SYM_VERTEX);
+    setSymmetry(leds, SYM_VERTEX);
 
     for (int i = 0; i < leds->getNumSegments(); i++)
     {
@@ -24,22 +24,22 @@ void vuMeterColumnInit(WS2812FX *leds)
     }
     WS2812FX::Segment *_seg;
     bool isRev;
-    
+
     _seg = leds->getSegment(6);
     isRev = IS_REVERSE;
-    leds->getSegmentRuntime(6)->aux_param3=~isRev;
+    leds->getSegmentRuntime(6)->aux_param3 = ~isRev;
 
     _seg = leds->getSegment(9);
     isRev = IS_REVERSE;
-    leds->getSegmentRuntime(9)->aux_param3=~isRev;
+    leds->getSegmentRuntime(9)->aux_param3 = ~isRev;
 
     _seg = leds->getSegment(12);
     isRev = IS_REVERSE;
-    leds->getSegmentRuntime(12)->aux_param3=~isRev;
+    leds->getSegmentRuntime(12)->aux_param3 = ~isRev;
 
     _seg = leds->getSegment(13);
     isRev = IS_REVERSE;
-    leds->getSegmentRuntime(13)->aux_param3=~isRev;
+    leds->getSegmentRuntime(13)->aux_param3 = ~isRev;
 
     // _seg = leds->getSegment(7);
     // isRev = IS_REVERSE;
@@ -52,8 +52,10 @@ void vuMeterColumnOnBeat(WS2812FX *leds, double val, double freq)
     {
         WS2812FX::Segment *_seg = leds->getSegment(i);
         WS2812FX::Segment_runtime *segrt = leds->getSegmentRuntime(i);
-        if (!segrt->aux_param)
+        if (!segrt->aux_param){
+            _seg->speed = VU_METTER_COLUMN_SPEED+ val;
             continue;
+        }
         int seglen = _seg->stop - _seg->start + 1;
         double count = val * seglen / 100.00;
         if (segrt->aux_param3)
@@ -95,53 +97,58 @@ uint16_t vuMeterColumnHandler(WS2812FX *leds)
     WS2812FX::Segment_runtime *segrt = leds->getSegmentRuntime();
 
     if (!segrt->aux_param)
-        return 0;
-
-    int seglen = _seg->stop - _seg->start + 1;
-    int maxPos = 0;
-    if (segrt->aux_param3)
     {
-        for (int i = seglen - 1; i >= 0; i--)
-        {
-            if (leds->getPixelColor(_seg->stop - i) != 0)
-            {
-                leds->setPixelColor(_seg->stop - i, 0);
-                maxPos = i;
-                break;
-            }
-        }
-        for (int i = 0; i < maxPos; i++)
-        {
-            uint32_t color = leds->getPixelColor(_seg->stop - i);
-            color = leds->color_blend(color, 0, 2);
-            leds->setPixelColor(_seg->stop - i, color);
-        }
+        leds->running(_seg->colors[0], 0);
+        return _seg->speed;
     }
     else
     {
-        for (int i = seglen - 1; i >= 0; i--)
+
+        int seglen = _seg->stop - _seg->start + 1;
+        int maxPos = 0;
+        if (segrt->aux_param3)
         {
-            if (leds->getPixelColor(_seg->start + i) != 0)
+            for (int i = seglen - 1; i >= 0; i--)
             {
-                leds->setPixelColor(_seg->start + i, 0);
-                maxPos = i;
-                break;
+                if (leds->getPixelColor(_seg->stop - i) != 0)
+                {
+                    leds->setPixelColor(_seg->stop - i, 0);
+                    maxPos = i;
+                    break;
+                }
+            }
+            for (int i = 0; i < maxPos; i++)
+            {
+                uint32_t color = leds->getPixelColor(_seg->stop - i);
+                color = leds->color_blend(color, 0, 2);
+                leds->setPixelColor(_seg->stop - i, color);
             }
         }
-        for (int i = 0; i < maxPos; i++)
+        else
         {
-            uint32_t color = leds->getPixelColor(_seg->start + i);
-            color = leds->color_blend(color, 0, 2);
-            leds->setPixelColor(_seg->start + i, color);
+            for (int i = seglen - 1; i >= 0; i--)
+            {
+                if (leds->getPixelColor(_seg->start + i) != 0)
+                {
+                    leds->setPixelColor(_seg->start + i, 0);
+                    maxPos = i;
+                    break;
+                }
+            }
+            for (int i = 0; i < maxPos; i++)
+            {
+                uint32_t color = leds->getPixelColor(_seg->start + i);
+                color = leds->color_blend(color, 0, 2);
+                leds->setPixelColor(_seg->start + i, color);
+            }
         }
-    }
 
-    return _seg->speed;
+        return _seg->speed;
+    }
 }
 bool checkIsColumn(uint16_t seg)
 {
-    if ((seg == 0) || (seg == 1)
-        || (seg == 4) || (seg == 5)
+    if ((seg == 0) || (seg == 1) || (seg == 4) || (seg == 5)
 
         || (seg == 10) || (seg == 11)
 

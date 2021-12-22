@@ -78,18 +78,20 @@ int countZeroPixel(WS2812FX *leds, int start, int stop)
   }
   return ret;
 }
-void setPixelInSegment(WS2812FX *leds, WS2812FX::Segment *_seg, int index, uint32_t color)
+int setPixelInSegment(WS2812FX *leds, WS2812FX::Segment *_seg, int index, uint32_t color)
 {
   int len = _seg->stop - _seg->start + 1;
   index = index % len;
   if (IS_REVERSE)
   {
     leds->setPixelColor(_seg->stop - index, color);
+    index  = len - index - 1;
   }
   else
   {
     leds->setPixelColor(_seg->start + index, color);
   }
+  return index;
 }
 void clearPixelInSegment(WS2812FX *leds, WS2812FX::Segment *_seg)
 {
