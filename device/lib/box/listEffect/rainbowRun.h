@@ -1,7 +1,7 @@
 #include <WS2812FX.h>
 #include "./utils.h"
 #include "../utils.h"
-#define RAINBOW_RUN_SPEED  100
+#define RAINBOW_RUN_SPEED  200
 
 void rainbowRunInit(WS2812FX * leds){
   setSymmetry(leds, SYM_VERTEX);

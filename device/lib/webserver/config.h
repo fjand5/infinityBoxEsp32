@@ -9,7 +9,6 @@
 
 void saveConfigFile();
 void setValue(String key, String value, bool save = true);
-WS2812FX *tmp4Show;
 std::map<String, String> ConfigContent;
 typedef void (*configChangeCallback)(String, String);
 std::list<configChangeCallback> onConfigChanges;
@@ -21,7 +20,6 @@ void setOnConfigChange(void (*func)(String key, String value))
 }
 void setOnSaveConfigFile(WS2812FX *obj)
 {
-  tmp4Show = obj;
 }
 // Mỗi dòng là một phần tử (một cặp key value) (key):(value)\n
 void loadFileIntoConfig(String content)
@@ -173,8 +171,6 @@ void saveConfigFile()
 {
   log_i("saveConfigFile running on core: %d",xPortGetCoreID());
 
-  if (tmp4Show != NULL)
-    tmp4Show->show();
   if (xSemaphoreTake(spiffs_sem, portMAX_DELAY) == pdTRUE)
   {
   REOPEN:
@@ -189,8 +185,6 @@ void saveConfigFile()
       goto REOPEN;
     }
 
-    if (tmp4Show != NULL)
-      tmp4Show->show();
     if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
     {
       for (std::pair<String, String> e : ConfigContent)
@@ -198,8 +192,6 @@ void saveConfigFile()
         String k = e.first;
         String v = e.second;
         cfg_file.print(k + ":" + v + "\n");
-        if (tmp4Show != NULL)
-          tmp4Show->show();
       }
       xSemaphoreGive(configContent_sem);
     }

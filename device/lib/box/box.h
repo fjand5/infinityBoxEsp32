@@ -16,7 +16,7 @@
 // Nhớ thiết lập lại max segment trong thư viện (đã dùng extra_scripts để tự sửa)
 #define LED_PIN 23 // digital pin used to drive the LED strip
 #define LED_NUM_OF_SEG 24
-#define LED_COUNT 480 // sửa 2 chổ (cả file ultis)
+#define LED_COUNT 288 // sửa 2 chổ (cả file ultis)
 #define LED_COUNT_ONE_SEG LED_COUNT / LED_NUM_OF_SEG
 #define LED_COUNT_COLORS 15 // number of LEDs on the strip
 uint16_t musicEffect();

@@ -2,8 +2,7 @@
 #include "./utils.h"
 #include "../utils.h"
 
-#define OVER_FLOW_BEGIN_SPEED 70
-
+#define OVER_FLOW_BEGIN_SPEED 100
 #define OVER_FLOW_BEGIN_0 0
 #define OVER_FLOW_BEGIN_1 1
 int overflowMode = OVER_FLOW_BEGIN_0;
@@ -29,17 +28,17 @@ void overflowBeginOnBeat(WS2812FX *leds, double val, double freq)
         if (overflowMode == OVER_FLOW_BEGIN_0)
             if (leds->getPixelColor(seg->start) == 0)
             {
-                seg->speed = OVER_FLOW_BEGIN_SPEED / 2;
+                seg->speed = OVER_FLOW_BEGIN_SPEED;
                 blendRange(leds, seg->start, seg->stop, 0, freq * 255 / 100);
             }
             else
             {
-                seg->speed = OVER_FLOW_BEGIN_SPEED;
+                seg->speed = OVER_FLOW_BEGIN_SPEED /2;
             }
         else if (overflowMode == OVER_FLOW_BEGIN_1)
             if (leds->getPixelColor(seg->start) != 0)
             {
-                seg->speed = OVER_FLOW_BEGIN_SPEED / 2;
+                seg->speed = OVER_FLOW_BEGIN_SPEED;
                 blendRange(leds, seg->start, seg->stop, 0, val * 255 / 100);
             }
             else
