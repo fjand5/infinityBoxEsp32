@@ -11,7 +11,6 @@
 #include "event.h"
 #include "dist.h"
 #include "utils.h"
-
 DynamicJsonDocument webDoc(1024);
 void (*onClientCommit)(uint8_t num, String);
 WebServer server(80);
@@ -19,9 +18,21 @@ WebSocketsServer webSocket = WebSocketsServer(81);
 bool isConnect = false;
 
 HTTPUpdateServer httpUpdater;
+SemaphoreHandle_t websocket_sem;
+void sendTXT(uint8_t num, String data)
+{
+  if (xSemaphoreTake(websocket_sem, portMAX_DELAY) == pdTRUE)
+  {
+    log_w("sendTXT: %d", num);
+    if (webSocket.clientIsConnected(num))
+      webSocket.sendTXT(num, data.c_str());
 
+    xSemaphoreGive(websocket_sem);
+  }
+}
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
 {
+
   switch (type)
   {
   case WStype_DISCONNECTED:
@@ -36,13 +47,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
     }
     if (data == "ping")
     {
-      webSocket.sendTXT(num, "pong");
+      sendTXT(num, "pong");
       return;
     }
-    log_d("WStype_TEXT: %s", data.c_str());
 
     if (onClientCommit != NULL)
+    {
       onClientCommit(num, data);
+    }
     break;
   }
 }
@@ -132,12 +144,11 @@ void renderSystem()
                {
                  LITTLEFS.format();
                });
-  
+
   renderInputText("system", "version", "Phiên bản", R"({
     "label":"Phiên bản firmware"
     }))",
-                  [](String key, String val)
-                  {
+                  [](String key, String val) {
                   });
 }
 void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info)
@@ -204,25 +215,37 @@ void setupWebserver()
       if (cmd == "gut")
       {
         // String key = obj["key"];
+        log_w("millis");
+
         String res = String(millis());
-        webSocket.sendTXT(num, res.c_str());
+        sendTXT(num, res.c_str());
+        log_w("millis");
       }
-      if (cmd == "get")
+      else if (cmd == "get")
       {
+        log_w("getValue");
+
         String key = obj["key"];
         String res = "{\"key\":\"" + key + "\",\"val\":\"" + getValue(key) + "\"}";
-        webSocket.sendTXT(num, res.c_str());
+        sendTXT(num, res.c_str());
+        log_w("getValue");
       }
-      if (cmd == "gal")
+      else if (cmd == "gal")
       {
-        webSocket.sendTXT(num, getValuesByString().c_str());
+        log_w("getValuesByString");
+
+        sendTXT(num, getValuesByString().c_str());
+        log_w("getValuesByString");
       }
 
-      if (cmd == "exe")
+      else if (cmd == "exe")
       {
+        log_w("execEvent");
+
         String key = obj["key"];
         String val = obj["val"];
         execEvent(key, val);
+        log_w("execEvent");
       }
     }
   };
@@ -231,7 +254,11 @@ void setupWebserver()
   setOnConfigChange([](String key, String val)
                     {
                       // String res = "{\"" + key +"\":\""+getValue(key)+"\"}";
-                      webSocket.broadcastTXT(getValuesByString().c_str());
+                      if (xSemaphoreTake(websocket_sem, portMAX_DELAY) == pdTRUE)
+                      {
+                        webSocket.broadcastTXT(getValuesByString().c_str());
+                        xSemaphoreGive(websocket_sem);
+                      }
                     });
 
   server.on("/", HTTP_GET, []()
@@ -290,6 +317,9 @@ void setupWebserver()
 
   webSocket.begin();
   webSocket.onEvent(webSocketEvent);
+  log_d("webserver ready");
+  websocket_sem = xSemaphoreCreateBinary();
+  xSemaphoreGive(websocket_sem);
 }
 void loopWebserver()
 {

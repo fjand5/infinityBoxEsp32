@@ -4,6 +4,8 @@
 
 #include "../../webserver/config.h"
 #define VU_METTER_COLUMN_SPEED 40
+#define VU_METTER_COLUMN_SILENT_VAL 5
+
 bool checkIsColumn(uint16_t seg);
 bool needRev(uint16_t seg);
 void vuMeterColumnInit(WS2812FX *leds)
@@ -48,46 +50,60 @@ void vuMeterColumnInit(WS2812FX *leds)
 
 void vuMeterColumnOnBeat(WS2812FX *leds, double val, double freq)
 {
+
     for (int i = 0; i < leds->getNumSegments(); i++)
     {
         WS2812FX::Segment *_seg = leds->getSegment(i);
         WS2812FX::Segment_runtime *segrt = leds->getSegmentRuntime(i);
-        if (!segrt->aux_param){
-            _seg->speed = VU_METTER_COLUMN_SPEED+ val;
-            continue;
+
+        if (segrt->counter_mode_step <= VU_METTER_COLUMN_SILENT_VAL )
+        {
+            leds->setPixelColor(_seg->start, _seg->colors[0]);
         }
-        int seglen = _seg->stop - _seg->start + 1;
-        double count = val * seglen / 100.00;
-        if (segrt->aux_param3)
-            for (uint16_t i = 0; i < count; i++)
-            {
-                uint32_t color;
-                if (leds->getPixelColor(_seg->stop - i) == 0)
-                {
-                    float hsvColor[3];
-                    rgb2hsv(color, hsvColor);
-
-                    hsvColor[0] = (hsvColor[0] + freq / 100.00) / 2.00;
-                    hsv2rgb(hsvColor[0], hsvColor[1], hsvColor[2], &color);
-
-                    leds->setPixelColor(_seg->stop - i, color);
-                }
-            }
         else
-            for (uint16_t i = 0; i < count; i++)
+        {
+            if (!segrt->aux_param)
             {
-                uint32_t color;
-                if (leds->getPixelColor(_seg->start + i) == 0)
-                {
-                    float hsvColor[3];
-                    rgb2hsv(color, hsvColor);
-
-                    hsvColor[0] = (hsvColor[0] + freq / 100.00) / 2.00;
-                    hsv2rgb(hsvColor[0], hsvColor[1], hsvColor[2], &color);
-
-                    leds->setPixelColor(_seg->start + i, color);
-                }
+                // _seg->speed = VU_METTER_COLUMN_SPEED+ val;
+                // continue;
             }
+            else
+            {
+                int seglen = _seg->stop - _seg->start + 1;
+                double count = val * seglen / 100.00;
+                if (segrt->aux_param3)
+                    for (uint16_t i = 0; i < count; i++)
+                    {
+                        uint32_t color;
+                        if (leds->getPixelColor(_seg->stop - i) == 0)
+                        {
+                            float hsvColor[3];
+                            rgb2hsv(color, hsvColor);
+
+                            hsvColor[0] = (hsvColor[0] + freq / 100.00) / 2.00;
+                            hsv2rgb(hsvColor[0], hsvColor[1], hsvColor[2], &color);
+
+                            leds->setPixelColor(_seg->stop - i, color);
+                        }
+                    }
+                else
+                    for (uint16_t i = 0; i < count; i++)
+                    {
+                        uint32_t color;
+                        if (leds->getPixelColor(_seg->start + i) == 0)
+                        {
+                            float hsvColor[3];
+                            rgb2hsv(color, hsvColor);
+
+                            hsvColor[0] = (hsvColor[0] + freq / 100.00) / 2.00;
+                            hsv2rgb(hsvColor[0], hsvColor[1], hsvColor[2], &color);
+
+                            leds->setPixelColor(_seg->start + i, color);
+                        }
+                    }
+            }
+        }
+        segrt->counter_mode_step = val;
     }
 }
 
@@ -96,10 +112,10 @@ uint16_t vuMeterColumnHandler(WS2812FX *leds)
     WS2812FX::Segment *_seg = leds->getSegment(); // get the current segment
     WS2812FX::Segment_runtime *segrt = leds->getSegmentRuntime();
 
-    if (!segrt->aux_param)
+    if (segrt->counter_mode_step <= VU_METTER_COLUMN_SILENT_VAL)
     {
         leds->running(_seg->colors[0], 0);
-        return _seg->speed;
+        return _seg->speed * 2;
     }
     else
     {

@@ -463,8 +463,10 @@ public:
     }
     void offBox()
     {
-        stop();
+        pause();
+        // clear();
         _isOff = true;
+
     }
     void onBox()
     {
@@ -543,7 +545,7 @@ public:
         {
             micValFunc();
         }
-        return true;
+        return !_isOff;
     }
     void affterService()
     {

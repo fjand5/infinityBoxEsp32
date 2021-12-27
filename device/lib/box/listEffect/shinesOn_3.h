@@ -5,7 +5,7 @@
 #define SHINES_ON_COUNT_LED_MIN 3.0
 #define SHINES_ON_COUNT_LED_MAX 11.0
 
-#define SHINES_ON_SPEED 50
+#define SHINES_ON_SPEED 75
 void shinesOnOnBeat3(WS2812FX *leds, double val, double freq);
 void shinesOnInit3(WS2812FX *leds)
 {
@@ -64,7 +64,7 @@ uint16_t shinesOnHandler3(WS2812FX *leds)
     // _segrt->counter_mode_step--;
     _segrt->counter_mode_step -= activateLeds * 10 / 100;
 
-    return 30;
+    return 40;
   }
   else
   {

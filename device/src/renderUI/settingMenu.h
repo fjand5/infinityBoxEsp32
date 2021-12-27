@@ -41,7 +41,7 @@ void renderSettingMenu()
                  {
                    pauseBox();
                  }
-                 setValue(key, val);
+                //  setValue(key, val);
                });
   renderToggle("setting Box", "on_off_tgl", "Off/On", R"({
     "newLine":true
@@ -56,7 +56,7 @@ void renderSettingMenu()
                  {
                    offBox();
                  }
-                 setValue(key, val);
+                //  setValue(key, val);
                });
   // renderButton("setting Box", "next_segment", "Next Segment", R"({
   //   "newLine":true

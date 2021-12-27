@@ -5,8 +5,6 @@
 #include <LITTLEFS.h>
 #include <map>
 #include <list>
-#include <WS2812FX.h>
-
 void saveConfigFile();
 void setValue(String key, String value, bool save = true);
 std::map<String, String> ConfigContent;
@@ -17,9 +15,6 @@ SemaphoreHandle_t configContent_sem;
 void setOnConfigChange(void (*func)(String key, String value))
 {
   onConfigChanges.push_front(func);
-}
-void setOnSaveConfigFile(WS2812FX *obj)
-{
 }
 // Mỗi dòng là một phần tử (một cặp key value) (key):(value)\n
 void loadFileIntoConfig(String content)

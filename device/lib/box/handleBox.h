@@ -48,14 +48,13 @@ void resumeBox()
 void onBox()
 {
   setValue("on_off_tgl", "true");
-
   box.onBox();
 }
 void offBox()
 {
   setValue("on_off_tgl", "false");
-
   box.offBox();
+  log_w("offBox");
 }
 void onTimer()
 {
