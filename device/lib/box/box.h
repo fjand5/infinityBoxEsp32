@@ -113,7 +113,7 @@ public:
         xTaskCreatePinnedToCore(
             vTaskCodeOneTime,     /* Function that implements the task. */
             "proccessChangeMode", /* Text name for the task. */
-            2048,                /* Stack size in words, not bytes. */
+            3000,                /* Stack size in words, not bytes. */
             this,                 /* Parameter passed into the task. */
             1,                    /* Priority at which the task is created. */
             &taskOneTimeHandle,
@@ -459,7 +459,7 @@ public:
         int val = _bgh;
         if (gama)
             val = gamma8(_bgh);
-        setBrightness(val);
+        Adafruit_NeoPixel::setBrightness(val);
     }
     void offBox()
     {
@@ -717,6 +717,14 @@ void vTaskCodeOneTime(void *pvParameters)
             _box->setSpeed(i, getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt());
             delay(750 / _box->getNumSegments());
         }
+    }
+
+    static UBaseType_t lastUxHighWaterMark = 0;
+    UBaseType_t uxHighWaterMark = uxTaskGetStackHighWaterMark(NULL);
+    if (lastUxHighWaterMark != uxHighWaterMark)
+    {
+        lastUxHighWaterMark = uxHighWaterMark;
+        log_w("uxTaskGetStackHighWaterMark: %d", lastUxHighWaterMark);
     }
     vTaskDelete(NULL);
 }
