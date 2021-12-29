@@ -9,18 +9,11 @@ void webserverHandle(void *pvParameters)
   while (1)
   {
     loopWebserver();
-    if (millis() - timer > 1000
-    // &&  webSocket.connectedClients() == 0
-    )
-    {
-  log_d("webserverHandle loop on core: %d ",xPortGetCoreID());
-
-      // udp.beginPacket("255.255.255.255", 7878);
-      // udp.println(String("MAC: ") + WiFi.macAddress());
-      // udp.endPacket();
-      // log_d("beginPacket");
-      timer = millis();
-    }
+    // if (millis() - timer > 1000)
+    // {
+    //   log_d("webserverHandle loop on core: %d ", xPortGetCoreID());
+    //   timer = millis();
+    // }
   }
 }
 void setupMServer()
@@ -28,7 +21,7 @@ void setupMServer()
   xTaskCreatePinnedToCore(
       webserverHandle,   /* Task function. */
       "webserverHandle", /* name of task. */
-      50000,             /* Stack size of task */
+      10000,             /* Stack size of task */
       NULL,              /* parameter of the task */
       1,                 /* priority of the task */
       NULL,              /* Task handle to keep track of created task */

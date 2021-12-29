@@ -7,7 +7,7 @@
 #define SYM_VERTEX 1
 #define SYM_NO_SYM 2
 #define SYM_SURFACE 3
-#define LED_COUNT 288 // sửa 2 chổ (cả file box.h)
+#define LED_COUNT 480 // sửa 2 chổ (cả file box.h)
 #define LED_NUM_OF_SEG 24
 #define LED_COUNT_ONE_SEG LED_COUNT / LED_NUM_OF_SEG
 int current_symmetry = SYM_VERTEX;

@@ -16,7 +16,7 @@
 // Nhớ thiết lập lại max segment trong thư viện (đã dùng extra_scripts để tự sửa)
 #define LED_PIN 23 // digital pin used to drive the LED strip
 #define LED_NUM_OF_SEG 24
-#define LED_COUNT 288 // sửa 2 chổ (cả file ultis)
+#define LED_COUNT 480 // sửa 2 chổ (cả file ultis)
 #define LED_COUNT_ONE_SEG LED_COUNT / LED_NUM_OF_SEG
 #define LED_COUNT_COLORS 15 // number of LEDs on the strip
 uint16_t musicEffect();
@@ -113,7 +113,7 @@ public:
         xTaskCreatePinnedToCore(
             vTaskCodeOneTime,     /* Function that implements the task. */
             "proccessChangeMode", /* Text name for the task. */
-            10000,                /* Stack size in words, not bytes. */
+            2048,                /* Stack size in words, not bytes. */
             this,                 /* Parameter passed into the task. */
             1,                    /* Priority at which the task is created. */
             &taskOneTimeHandle,
@@ -466,7 +466,6 @@ public:
         pause();
         // clear();
         _isOff = true;
-
     }
     void onBox()
     {
@@ -719,6 +718,5 @@ void vTaskCodeOneTime(void *pvParameters)
             delay(750 / _box->getNumSegments());
         }
     }
-
     vTaskDelete(NULL);
 }
