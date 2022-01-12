@@ -16,7 +16,7 @@
 // Nhớ thiết lập lại max segment trong thư viện (đã dùng extra_scripts để tự sửa)
 #define LED_PIN 23 // digital pin used to drive the LED strip
 #define LED_NUM_OF_SEG 24
-#define LED_COUNT 480 // sửa 2 chổ (cả file ultis)
+#define LED_COUNT 288 // sửa 2 chổ (cả file ultis)
 #define LED_COUNT_ONE_SEG LED_COUNT / LED_NUM_OF_SEG
 #define LED_COUNT_COLORS 15 // number of LEDs on the strip
 uint16_t musicEffect();
@@ -153,8 +153,8 @@ public:
             setMode(i, _pat_eff_2);
             setSpeed(i, _pat_spd_2);
         }
-        setValue("cur_pat_eff_1", String(_pat_eff_1));
-        changeSpeed(getValue(String("speed_mode_") + _pat_eff_1, String(defaulSpeed(_mode))).toInt(), false);
+        setValue("cur_pat_eff_1", String(_pat_eff_1), false);
+        changeSpeed(getValue(String("speed_mode_") + _pat_eff_1, String(defaulSpeed(_mode))).toInt());
     }
     int getPatternEffect1()
     {
@@ -195,7 +195,7 @@ public:
             setMode(i, _pat_eff_2);
             setSpeed(i, _pat_spd_2);
         }
-        setValue("cur_pat_eff_2", String(_pat_eff_2));
+        setValue("cur_pat_eff_2", String(_pat_eff_2), false);
     }
     uint8_t *getPatternBuffer()
     {
@@ -231,14 +231,14 @@ public:
             {
                 log_d(ARDUHAL_LOG_COLOR_W "off timer <=====================================================");
                 offTimer();
-                setValue("pattern_mode", "true");
+                setValue("pattern_mode", "true", false);
                 _isPatternMode = true;
                 setReacMusic(false);
             }
         }
         else
         {
-            setValue("pattern_mode", "false");
+            setValue("pattern_mode", "false", false);
             changeMode(_mode);
             _isPatternMode = false;
         }
@@ -395,7 +395,7 @@ public:
             // }
             _isReacMusic = true;
             setPatternEffect(false);
-            setValue("react_music", "true");
+            setValue("react_music", "true", false);
 
             xTaskCreatePinnedToCore(
                 vTaskCodeOneTime,     /* Function that implements the task. */
@@ -408,7 +408,7 @@ public:
         }
         else
         {
-            setValue("react_music", "false");
+            setValue("react_music", "false", false);
             changeMode(_mode);
             _isReacMusic = false;
         }
@@ -417,15 +417,14 @@ public:
     {
         return _isReacMusic;
     }
-    void changeSpeed(uint16_t spd, bool save = true)
+    void changeSpeed(uint16_t spd)
     {
         uint8_t curMode = getMode();
         _spd = spd;
         if (curMode == FX_MODE_CUSTOM)
             return;
-        log_d("change speed: %d; save: %d ", spd, save);
-        setValue(String("speed_mode_") + _mode, String(_spd), save);
-        setValue("speed_inp", String(_spd), save);
+        setValue(String("speed_mode_") + _mode, String(_spd), false);
+        setValue("speed_inp", String(_spd), false);
         for (int i = 0; i < getNumSegments(); i++)
         {
             setSpeed(i, _spd);
@@ -433,7 +432,7 @@ public:
     }
     void setTimer(uint16_t timer)
     {
-        setValue("timer_sld", String(timer));
+        setValue("timer_sld", String(timer), false);
         _timer = timer * 1000;
     }
     bool isTimerOn()
@@ -442,19 +441,19 @@ public:
     }
     void onTimer()
     {
-        setValue("timer_tgl", "true");
+        setValue("timer_tgl", "true", false);
         _runTimer = true;
         log_d("Timer on: %d", _runTimer);
     }
     void offTimer()
     {
-        setValue("timer_tgl", "false");
+        setValue("timer_tgl", "false", false);
         _runTimer = false;
         log_d("Timer off: %d", _runTimer);
     }
     void changeBrightness(uint16_t bgh, bool gama = false)
     {
-        setValue("brightness_sld", String(bgh));
+        setValue("brightness_sld", String(bgh), false);
         _bgh = map(bgh, 0, 100, 0, 255);
         int val = _bgh;
         if (gama)
@@ -706,7 +705,7 @@ void vTaskCodeOneTime(void *pvParameters)
         int _mode = _box->getCurrentMode(); // _box->pause();
         // không lưu current_mode lại đề chuyển hiệu ứng mượt hơn.
         setValue("current_mode", String(_mode), false);
-        _box->changeSpeed(getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt(), false);
+        _box->changeSpeed(getValue(String("speed_mode_") + _mode, String(defaulSpeed(_mode))).toInt());
         // _box->resume();
         if (current_symmetry != SYM_VERTEX)
             setSymmetry(_box, SYM_VERTEX);

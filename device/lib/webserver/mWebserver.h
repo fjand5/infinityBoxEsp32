@@ -247,6 +247,12 @@ void setupWebserver()
         execEvent(key, val);
         log_w("execEvent");
       }
+
+      else if (cmd == "save")
+      {
+        saveConfigFile();
+        sendTXT(num, getValuesByString().c_str());
+      }
     }
   };
 

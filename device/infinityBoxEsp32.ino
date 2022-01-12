@@ -16,7 +16,7 @@ void setup() {
   setupMServer();
   setupRender();
   log_d("setup running on core: %d",xPortGetCoreID());
-  setValue("version","1.5.4");
+  setValue("version","1.6.0");
   vTaskDelete(NULL);
 }
 

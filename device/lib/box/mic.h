@@ -113,7 +113,7 @@ double handleMicrophone(void (*onChangeMax)(double val, double freq) = NULL)
 void setMicGain(double gain)
 {
   micGain = gain;
-  setValue("micGain_sld", String(gain));
+  setValue("micGain_sld", String(gain), false);
 }
 double getMicGain()
 {
@@ -122,7 +122,7 @@ double getMicGain()
 void setTakeBeat(double beat)
 {
   takeBeat = beat;
-  setValue("takeBeat_sld", String(beat));
+  setValue("takeBeat_sld", String(beat), false);
 }
 double getTakeBeat()
 {

@@ -3,13 +3,20 @@
 #include "../lib/box/handleBox.h"
 void renderSettingMenu()
 {
+  renderButton("setting Box", "save_data", "Lưu", R"({
+    "newLine":true
+  })",
+               [](String key, String val)
+               {
+                 saveConfigFile();
+               });
 
   renderButton("setting Box", "previous_mode", "Previous Mode", R"({
   })",
                [](String key, String val)
                {
                  previousMode();
-                //  offTimer();
+                 //  offTimer();
                });
   renderInputText("setting Box", "current_mode", "Current Mode", R"({
   })",
@@ -17,7 +24,6 @@ void renderSettingMenu()
                   {
                     changeMode(val.toInt());
                     // offTimer();
-
                   });
   renderButton("setting Box", "next_mode", "Next Mode", R"({
     "newLine":true
@@ -25,7 +31,7 @@ void renderSettingMenu()
                [](String key, String val)
                {
                  nextMode();
-                //  offTimer();
+                 //  offTimer();
                });
 
   renderToggle("setting Box", "pause_tgl", "Pause/Resume", R"({
@@ -41,7 +47,7 @@ void renderSettingMenu()
                  {
                    pauseBox();
                  }
-                //  setValue(key, val);
+                 //  setValue(key, val);
                });
   renderToggle("setting Box", "on_off_tgl", "Off/On", R"({
     "newLine":true
@@ -56,7 +62,7 @@ void renderSettingMenu()
                  {
                    offBox();
                  }
-                //  setValue(key, val);
+                 //  setValue(key, val);
                });
   // renderButton("setting Box", "next_segment", "Next Segment", R"({
   //   "newLine":true
