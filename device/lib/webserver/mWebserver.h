@@ -9,7 +9,9 @@
 #include "config.h"
 #include "render.h"
 #include "event.h"
+#include "dist_dev.h"
 #include "dist.h"
+
 #include "utils.h"
 DynamicJsonDocument webDoc(1024);
 void (*onClientCommit)(uint8_t num, String);
@@ -266,42 +268,47 @@ void setupWebserver()
                         xSemaphoreGive(websocket_sem);
                       }
                     });
-
   server.on("/", HTTP_GET, []()
+          {
+            addComonHeader();
+            server.sendHeader("Content-Encoding", "gzip");
+            server.send_P(200, "text/html", index_html_dev, index_html_length_dev);
+          });
+  server.on("/dev", HTTP_GET, []()
             {
               addComonHeader();
               server.sendHeader("Content-Encoding", "gzip");
-              server.send_P(200, "text/html", index_html, index_html_length);
+              server.send_P(200, "text/html", index_html_dev, index_html_length_dev);
             });
   server.on("/css/chunk-vendors.css", []()
             {
               addComonHeader();
               server.sendHeader("Content-Encoding", "gzip");
-              server.send_P(200, "text/css", vendor_css, vendor_css_length);
+              server.send_P(200, "text/css", vendor_css_dev, vendor_css_length_dev);
             });
   server.on("/css/app.css", []()
             {
               addComonHeader();
               server.sendHeader("Content-Encoding", "gzip");
-              server.send_P(200, "text/css", app_css, app_css_length);
+              server.send_P(200, "text/css", app_css_dev, app_css_length_dev);
             });
   server.on("/js/chunk-vendors.js", []()
             {
               addComonHeader();
               server.sendHeader("Content-Encoding", "gzip");
-              server.send_P(200, "application/javascript", vendor_js, vendor_js_length);
+              server.send_P(200, "application/javascript", vendor_js_dev, vendor_js_length_dev);
             });
   server.on("/js/app.js", []()
             {
               addComonHeader();
               server.sendHeader("Content-Encoding", "gzip");
-              server.send_P(200, "application/javascript", app_js, app_js_length);
+              server.send_P(200, "application/javascript", app_js_dev, app_js_length_dev);
             });
   server.on("/favicon.ico", []()
             {
               addComonHeader();
               server.sendHeader("Content-Encoding", "gzip");
-              server.send_P(200, "image/x-icon", favicon_ico, favicon_ico_length);
+              server.send_P(200, "image/x-icon", favicon_ico_dev, favicon_ico_length_dev);
             });
   server.on("/render", []()
             {
