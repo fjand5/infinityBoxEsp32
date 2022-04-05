@@ -47,6 +47,10 @@ export default {
 </script>
 
 <style scoped>
+.el-main{
+  padding: 5px 1px;
+  height: 100vh;
+}
 .el-menu--horizontal > .el-menu-item {
   width: 50%;
   font-weight: 500;
