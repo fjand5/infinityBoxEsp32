@@ -1,65 +1,65 @@
 <template>
   <el-container>
-    <el-main v-loading="getSending">
-      <Panel v-if="getAuthStatus || !getManifest.auth" />
+    <el-header height="75" style="padding: 0">
+      <el-menu
+        mode="horizontal"
+        @select="handleSelect"
+        background-color="#351c75"
+        text-color="#ff3399"
+      >
+        <el-menu-item index="1">COLOR</el-menu-item>
+        <el-menu-item index="2" style="border-right: 1px solid white"
+          >SYSTEM</el-menu-item
+        >
+        <el-menu-item index="3">MUSIC REACTION</el-menu-item>
+        <el-menu-item index="4" style="border-right: 1px solid white"
+          >PATTERN</el-menu-item
+        >
+        <el-menu-item
+          index="5"
+          style="width: 100%; border-right: 1px solid white"
+          >SETTING BOX</el-menu-item
+        >
+      </el-menu>
+    </el-header>
+    <el-main>
+      <Panel :index="index" />
     </el-main>
-    <el-footer>
-      <div v-if="getManifest.creator">
-      {{getManifest.creator}}
-      </div>
-      <div v-else>Email: huynhtheluat@gmail.com</div>
-      </el-footer>
   </el-container>
 </template>
-
 <script>
-import { mapGetters } from "vuex";
-import Panel from "./Panel.vue";
+import Panel from "./Panel";
+
 export default {
   data() {
     return {
-      activeIndex: "1",
-      activeIndex2: "1",
+      index: "1",
     };
   },
-  components: {
-    Panel,
-  },
-  computed: {
-    ...mapGetters([
-      "getAuthStatus",
-      "getCurrentWifi",
-      "getSending",
-      "getResponseTime",
-      "getUptime",
-      "getManifest",
-    ]),
-  },
-  mounted: function () {
-    this.$store.dispatch("requireManifestData").then(() => {
-      if (this.getManifest.auth) this.$showLogin()
-    });
-  },
+  components: { Panel },
+  mounted: function () {},
   methods: {
-    showWifi: function () {
-      if (this.getManifest.wifiSta) {
-        this.$showWifiSelector()
-      }
+    handleSelect: function (index) {
+      this.index = index;
     },
   },
 };
 </script>
 
 <style scoped>
-.el-header {
-  background: #545c64;
+.el-menu--horizontal > .el-menu-item {
+  width: 50%;
+  font-weight: 500;
+  border-left: 1px solid white;
+  border-top: 1px solid white;
+
+  height: 35px;
+  line-height: 35px;
 }
-.wifi-button {
-  display: flex;
-  justify-content: end;
-  align-items: center;
-}
-.cell {
-  cursor: pointer;
+.is-active {
+  color: #351c75;
+  background-color: #ff3399 !important;
+  font-weight: 1000;
+  border-bottom: 0px solid #ff3399 !important;
 }
 </style>
