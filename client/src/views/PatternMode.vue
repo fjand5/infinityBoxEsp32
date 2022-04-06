@@ -1,6 +1,6 @@
 <template>
   <div class="pattern">
-      day la pattern
+      
   </div>
 </template>
 

@@ -15,11 +15,7 @@
         <el-menu-item index="4" style="border-right: 1px solid white"
           >PATTERN</el-menu-item
         >
-        <el-menu-item
-          index="5"
-          style="width: 100%; border-right: 1px solid white"
-          >SETTING BOX</el-menu-item
-        >
+        <el-menu-item index="5"  style="width: 100%; border-right: 1px solid white" >SETTING BOX</el-menu-item>
       </el-menu>
     </el-header>
     <el-main>
@@ -47,7 +43,7 @@ export default {
 </script>
 
 <style scoped>
-.el-main{
+.el-main {
   padding: 5px 1px;
   height: 100vh;
 }

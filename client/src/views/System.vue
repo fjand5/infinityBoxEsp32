@@ -63,7 +63,7 @@ export default {
 
 <style >
 .el-input-group__prepend {
-  width: 65px;
+  width: 65px !important;
 }
 .el-col {
   margin-bottom: 10px;
