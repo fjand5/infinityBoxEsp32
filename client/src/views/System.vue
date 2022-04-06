@@ -62,6 +62,10 @@ export default {
 </script>
 
 <style >
+
+.system {
+  padding: 12px 2px;
+}
 .el-input-group__prepend {
   width: 65px !important;
 }

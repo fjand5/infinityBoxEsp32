@@ -44,22 +44,28 @@ export default {
 
 <style scoped>
 .el-main {
-  padding: 5px 1px;
-  height: 100vh;
+  padding: 22px 2px;
+  max-height: 100vh;
+}
+.el-menu {
+   background-color: #ffffff !important;
 }
 .el-menu--horizontal > .el-menu-item {
   width: 50%;
   font-weight: 500;
   border-left: 1px solid white;
   border-top: 1px solid white;
+  border-bottom: 1px solid white;
 
   height: 35px;
+  border-radius: 5px;
+
   line-height: 35px;
 }
 .is-active {
   color: #351c75;
   background-color: #ff3399 !important;
   font-weight: 1000;
-  border-bottom: 0px solid #ff3399 !important;
+  /* border-bottom: 0px solid #ff3399 !important; */
 }
 </style>

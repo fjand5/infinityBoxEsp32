@@ -1,6 +1,6 @@
 <template>
   <div class="pattern">
-      
+      <el-empty description="coming soon..."></el-empty>
   </div>
 </template>
 

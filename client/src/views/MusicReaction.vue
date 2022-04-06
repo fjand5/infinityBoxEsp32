@@ -1,19 +1,19 @@
 <template>
   <div class="music-reaction">
     <el-row>
-      <el-col :span="4" :pull="1" style="line-height: 34px">Gain </el-col>
+      <el-col :span="4" style="line-height: 34px">Gain </el-col>
       <el-col :span="20">
         <el-slider v-model="gian"></el-slider>
       </el-col>
     </el-row>
     <el-row>
-      <el-col :span="4" :pull="1" style="line-height: 34px">Beat </el-col>
+      <el-col :span="4" style="line-height: 34px">Beat </el-col>
       <el-col :span="20">
         <el-slider v-model="beat"></el-slider>
       </el-col>
     </el-row>
     <el-row>
-      <el-col :span="4" :pull="1" style="line-height: 34px">Mode </el-col>
+      <el-col :span="4" style="line-height: 34px">Mode </el-col>
       <el-col :span="20">
         <el-select v-model="value" placeholder="Select" @change="selectMode">
           <el-option
@@ -112,9 +112,10 @@ export default {
   width: 100%;
 }
 .music-reaction {
-  padding: 25px 10px;
+  padding: 12px 2px;
 }
 .el-col {
+  text-align: left;
   margin-bottom: 0 !important;
 }
 </style>

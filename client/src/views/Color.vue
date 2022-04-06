@@ -1,5 +1,6 @@
 <template>
   <div class="color">
+    <span>Select pattern color</span>
     <el-row :gutter="20">
       <el-col :span="6">
         <el-select v-model="value" placeholder="Select"
@@ -21,6 +22,14 @@
       </el-col>
       <el-col :span="6">
         <el-color-picker v-model="color3"></el-color-picker>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="4" style="line-height: 34px"
+        >Timer
+      </el-col>
+      <el-col :span="19">
+        <el-slider :max="120" v-model="time" :step="10" show-stops> </el-slider>
       </el-col>
     </el-row>
   </div>
@@ -54,4 +63,14 @@ export default {
 </script>
 
 <style>
+span{
+}
+.el-row{
+  margin-top: 12px;
+
+}
+.color {
+  padding: 12px 2px;
+  text-align: left;
+}
 </style>

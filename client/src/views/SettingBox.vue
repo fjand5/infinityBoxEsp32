@@ -1,8 +1,8 @@
 <template>
   <div class="setting-box">
     <el-row>
-      <el-col :span="3" style="line-height: 34px">Mode </el-col>
-      <el-col :span="21">
+      <el-col :span="4" style="line-height: 34px">Mode </el-col>
+      <el-col :span="19">
         <el-select v-model="value" placeholder="Select" @change="selectMode">
           <el-option
             v-for="item in options"
@@ -16,10 +16,18 @@
     </el-row>
     <el-row>
       <el-col :span="4" style="line-height: 34px"
-        >Time
+        >Timer
       </el-col>
-      <el-col :span="20">
+      <el-col :span="19">
         <el-slider :max="120" v-model="time" :step="10" show-stops> </el-slider>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="4" style="line-height: 34px"
+        >Bright
+      </el-col>
+      <el-col :span="19">
+        <el-slider :max="100" v-model="bright"> </el-slider>
       </el-col>
     </el-row>
   </div>
@@ -30,6 +38,7 @@ export default {
   data: function () {
     return {
       time: 0,
+      bright: 0,
       value: -1,
       options: [
         { value: -1, label: "OFF" },
@@ -99,6 +108,10 @@ export default {
 <style>
 .el-select {
   width: 100%;
+}
+
+.setting-box {
+  padding: 12px 2px;
 }
 .el-col {
   text-align: left;
