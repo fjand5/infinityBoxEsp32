@@ -29,7 +29,7 @@
         >Timer
       </el-col>
       <el-col :span="19">
-        <el-slider :max="120" v-model="time" :step="10" show-stops> </el-slider>
+        <el-slider :max="120" v-model="timer" :step="10" show-stops> </el-slider>
       </el-col>
     </el-row>
   </div>
@@ -39,9 +39,10 @@
 export default {
   data: function () {
     return {
+      timer: 0,
       color1: "",
-      color2:"",
-      color3:"",
+      color2: "",
+      color3: "",
       value: 0,
       options: [],
     };

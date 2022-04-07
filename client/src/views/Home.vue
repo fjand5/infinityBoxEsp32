@@ -33,7 +33,10 @@ export default {
     };
   },
   components: { Panel },
-  mounted: function () {},
+  mounted: function () {
+        this.$store.dispatch("initCommand")
+
+  },
   methods: {
     handleSelect: function (index) {
       this.index = index;

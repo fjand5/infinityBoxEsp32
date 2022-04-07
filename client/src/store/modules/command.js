@@ -19,14 +19,22 @@ const command = {
             Object.assign(state, getDefaultState())
         },
         setData: function (state, data) {
-            let objData = JSON.parse(data)
-            if (objData.cmd == "pong") {
-                state.uptime = objData.stamp
-
-                state.lastPongTime = Date.now()
-            } else {
-                state.data = { ...state.data, ...objData }
+            try {
+                let objData = JSON.parse(data)
+                if (objData.cmd == "pong") {
+                    state.uptime = objData.stamp
+                    state.lastPongTime = Date.now()
+                }
+            } catch (error) {
+                let tmp = {}
+                let lines = data.split('\n')
+                lines.forEach(line => {
+                    let elm = line.split(':')
+                    tmp[elm[0]] = elm[1]
+                });
+                state.data = { ...state.data, ...tmp }
             }
+           
 
         },
         setSending: function (state, status) {
@@ -38,8 +46,10 @@ const command = {
     },
     actions: {
         initCommand: function (context) {
-            // socket = new WebSocket('ws://' + "192.168.1.10" + ':81/' + localStorage.getItem('jwt_aut', ""))
-            socket = new WebSocket('ws://' + window.location.hostname + ':81/'+localStorage.getItem('jwt_aut', ""));
+            // socket = new WebSocket('ws://' + "http://192.168.2.101/" + ':81/' + localStorage.getItem('jwt_aut', ""))
+            socket = new WebSocket('ws://' + "192.168.2.101" + ':81/')
+
+            // socket = new WebSocket('ws://' + window.location.hostname + ':81/'+localStorage.getItem('jwt_aut', ""));
 
             socket.addEventListener('message', function (event) {
                 context.commit("setData", event.data)
@@ -65,18 +75,18 @@ const command = {
             context.commit("resetState")
         },
         sendCommand: function (context, { espKey, espValue }) {
-
             if (espValue != undefined)
                 espValue = espValue.toString()
             else
                 espValue = ""
             let obj = {
                 cmd: "exe",
-                espKey,
-                espValue
+                key: espKey,
+                val: espValue
             }
-            if (socket.readyState == WebSocket.OPEN)
+            if (socket.readyState == WebSocket.OPEN){
                 socket.send(JSON.stringify(obj))
+            }
             context.commit("setSending", true)
         },
 
