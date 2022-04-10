@@ -46,10 +46,9 @@ const command = {
     },
     actions: {
         initCommand: function (context) {
-            // socket = new WebSocket('ws://' + "http://192.168.2.101/" + ':81/' + localStorage.getItem('jwt_aut', ""))
-            socket = new WebSocket('ws://' + "192.168.2.101" + ':81/')
+            // socket = new WebSocket('ws://' + "192.168.2.101" + ':81/')
 
-            // socket = new WebSocket('ws://' + window.location.hostname + ':81/'+localStorage.getItem('jwt_aut', ""));
+            socket = new WebSocket('ws://' + window.location.hostname + ':81/');
 
             socket.addEventListener('message', function (event) {
                 context.commit("setData", event.data)

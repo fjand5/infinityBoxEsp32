@@ -266,60 +266,79 @@ void setupWebserver()
                       {
                         webSocket.broadcastTXT(getValuesByString().c_str());
                         xSemaphoreGive(websocket_sem);
-                      }
-                    });
+                      } });
+  // server.on("/dev", HTTP_GET, []()
+  //           {
+  //             addComonHeader();
+  //             server.sendHeader("Content-Encoding", "gzip");
+  //             server.send_P(200, "text/html", index_html_dev, index_html_length_dev);
+  //           });
+  // server.on("/css/chunk-vendors.css", []()
+  //           {
+  //             addComonHeader();
+  //             server.sendHeader("Content-Encoding", "gzip");
+  //             server.send_P(200, "text/css", vendor_css_dev, vendor_css_length_dev);
+  //           });
+  // server.on("/css/app.css", []()
+  //           {
+  //             addComonHeader();
+  //             server.sendHeader("Content-Encoding", "gzip");
+  //             server.send_P(200, "text/css", app_css_dev, app_css_length_dev);
+  //           });
+  // server.on("/js/chunk-vendors.js", []()
+  //           {
+  //             addComonHeader();
+  //             server.sendHeader("Content-Encoding", "gzip");
+  //             server.send_P(200, "application/javascript", vendor_js_dev, vendor_js_length_dev);
+  //           });
+  // server.on("/js/app.js", []()
+  //           {
+  //             addComonHeader();
+  //             server.sendHeader("Content-Encoding", "gzip");
+  //             server.send_P(200, "application/javascript", app_js_dev, app_js_length_dev);
+  //           });
+  // server.on("/favicon.ico", []()
+  //           {
+  //             addComonHeader();
+  //             server.sendHeader("Content-Encoding", "gzip");
+  //             server.send_P(200, "image/x-icon", favicon_ico_dev, favicon_ico_length_dev);
+  //           });
+  // server.on("/render", []()
+  //           {
+  //             addComonHeader();
+  //             server.send_P(200, "application/json", getRender().c_str());
+  //           });
+
+  // ui
   server.on("/", HTTP_GET, []()
-          {
+            {
             addComonHeader();
             server.sendHeader("Content-Encoding", "gzip");
-            server.send_P(200, "text/html", index_html_dev, index_html_length_dev);
-          });
-  server.on("/dev", HTTP_GET, []()
+            server.send_P(200, "text/html", index_html, index_html_length); });
+  server.on("/ui/js/app.js", HTTP_GET, []()
             {
               addComonHeader();
               server.sendHeader("Content-Encoding", "gzip");
-              server.send_P(200, "text/html", index_html_dev, index_html_length_dev);
-            });
-  server.on("/css/chunk-vendors.css", []()
+              server.send_P(200, "application/javascript", app_js, app_js_length); });
+  server.on("/ui/static/favicon.ico", HTTP_GET, []()
             {
               addComonHeader();
               server.sendHeader("Content-Encoding", "gzip");
-              server.send_P(200, "text/css", vendor_css_dev, vendor_css_length_dev);
-            });
-  server.on("/css/app.css", []()
+              server.send_P(200, "image/x-icon", favicon_ico, favicon_ico_length); });
+  server.on("/static/logo.png", HTTP_GET, []()
             {
               addComonHeader();
               server.sendHeader("Content-Encoding", "gzip");
-              server.send_P(200, "text/css", app_css_dev, app_css_length_dev);
-            });
-  server.on("/js/chunk-vendors.js", []()
-            {
-              addComonHeader();
-              server.sendHeader("Content-Encoding", "gzip");
-              server.send_P(200, "application/javascript", vendor_js_dev, vendor_js_length_dev);
-            });
-  server.on("/js/app.js", []()
-            {
-              addComonHeader();
-              server.sendHeader("Content-Encoding", "gzip");
-              server.send_P(200, "application/javascript", app_js_dev, app_js_length_dev);
-            });
-  server.on("/favicon.ico", []()
-            {
-              addComonHeader();
-              server.sendHeader("Content-Encoding", "gzip");
-              server.send_P(200, "image/x-icon", favicon_ico_dev, favicon_ico_length_dev);
-            });
-  server.on("/render", []()
-            {
-              addComonHeader();
-              server.send_P(200, "application/json", getRender().c_str());
-            });
+              server.send_P(200, "image/*", logo_png, logo_png_length); });
+  // server.on("/ui/fonts/element-icons.ttf", HTTP_GET, []()
+  //           {
+  //             addComonHeader();
+  //             server.sendHeader("Content-Encoding", "gzip");
+  //             server.send_P(200, "font/ttf", font_woff, font_woff_length); });
   server.onNotFound([]()
                     {
                       addComonHeader();
-                      server.send(200, "text/plain", "");
-                    });
+                      server.send(200, "text/plain", ""); });
 
   const char *headerkeys[] = {"Version-Content-Client"};
   size_t headerkeyssize = sizeof(headerkeys) / sizeof(char *);

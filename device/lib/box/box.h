@@ -685,10 +685,15 @@ void vTaskCodeOneTime(void *pvParameters)
     if (getValue("color_timer", "true") == "true")
     {
         uint8_t index = box.random8(LED_COUNT_COLORS);
+
+        
         for (int i = 0; i < box.getNumSegments(); i++)
         {
             box.setColors(i, listColors[index]);
         }
+        setValue("color1_inp", colorToString(listColors[index][0]));
+        setValue("color2_inp", colorToString(listColors[index][1]));
+        setValue("color3_inp", colorToString(listColors[index][2]));
     }
     if (_box->getReactMusic())
     {

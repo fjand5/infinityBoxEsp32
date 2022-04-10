@@ -15,7 +15,11 @@
         <el-menu-item index="4" style="border-right: 1px solid white"
           >PATTERN</el-menu-item
         >
-        <el-menu-item index="5"  style="width: 100%; border-right: 1px solid white" >SETTING BOX</el-menu-item>
+        <el-menu-item
+          index="5"
+          style="width: 100%; border-right: 1px solid white"
+          >SETTING BOX</el-menu-item
+        >
       </el-menu>
     </el-header>
     <el-main>
@@ -34,8 +38,7 @@ export default {
   },
   components: { Panel },
   mounted: function () {
-        this.$store.dispatch("initCommand")
-
+    this.$store.dispatch("initCommand");
   },
   methods: {
     handleSelect: function (index) {
@@ -48,17 +51,17 @@ export default {
 <style scoped>
 .el-main {
   padding: 22px 2px;
-  max-height: 100vh;
+  height: 100%;
 }
 .el-menu {
-   background-color: #ffffff !important;
+  background-color: #351c75 !important;
 }
 .el-menu--horizontal > .el-menu-item {
   width: 50%;
   font-weight: 500;
-  border-left: 1px solid white;
-  border-top: 1px solid white;
-  border-bottom: 1px solid white;
+  border-left: 1px solid #ffd3e9;
+  border-top: 1px solid #ffd3e9;
+  border-bottom: 1px solid #ffd3e9;
 
   height: 35px;
   border-radius: 5px;

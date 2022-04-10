@@ -295,3 +295,11 @@ void setSymmetry(WS2812FX *leds, int sym, bool x2 = false)
         seg->colors[2] = stringToColor(getValue("color3_inp", "#0000ff"));
     }
 }
+String colorToString(uint32_t color)
+{
+    if(color>0xffffff)
+        color = 0xffffff;
+    char buff[8];
+    sprintf(buff, "#%06x", color);
+    return String(buff);
+};

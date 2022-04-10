@@ -11,6 +11,9 @@ let app_js_length = 0
 let favicon_ico = ""
 let favicon_ico_length = 0
 
+let logo_png = ""
+let logo_png_length = 0
+
 let font_woff = ""
 let font_woff_length = 0
 
@@ -52,6 +55,13 @@ promises.push(fs.readFileAsync("./dist/static/favicon.ico.gz", 'hex')
     favicon_ico_length = length
     return Promise.resolve()
 }))
+promises.push(fs.readFileAsync("./dist/static/logo.png.gz", 'hex')
+.then( (data)=>{
+    let {newData, length} = convertToHex(data)
+    logo_png = newData
+    logo_png_length = length
+    return Promise.resolve()
+}))
 promises.push(fs.readFileAsync("./dist/fonts/element-icons.woff.gz", 'hex')
 .then( (data)=>{
     let {newData, length} = convertToHex(data)
@@ -71,6 +81,8 @@ static const char index_html[] PROGMEM = {${index_html}};
 static const long index_html_length = ${index_html_length};
 static const char favicon_ico[] PROGMEM = {${favicon_ico}};
 static const long favicon_ico_length = ${favicon_ico_length};
+static const char logo_png[] PROGMEM = {${logo_png}};
+static const long logo_png_length = ${logo_png_length};
 static const char font_woff[] PROGMEM = {${font_woff}};
 static const long font_woff_length = ${font_woff_length};
     `

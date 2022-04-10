@@ -1,5 +1,5 @@
 module.exports = {
-  // publicPath: './ui',
+  publicPath: './ui',
   chainWebpack: config => {
     config
       .plugin('html')
@@ -23,7 +23,7 @@ module.exports = {
       gzip: {
         filename: '[file].gz[query]',
         algorithm: 'gzip',
-        include: /\.(js|css|html|svg|json|ico|woff)(\?.*)?$/i,
+        include: /\.(js|css|html|svg|json|ico|woff|png)(\?.*)?$/i,
         minRatio: 10,
       }
     }

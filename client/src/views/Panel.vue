@@ -36,6 +36,9 @@ export default {
 };
 </script>
 <style>
+.panel{
+  
+}
 .el-button.save-button {
   font-weight: 700;
   height: 38px;

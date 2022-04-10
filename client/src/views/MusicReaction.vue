@@ -3,19 +3,19 @@
     <el-row>
       <el-col :span="4" style="line-height: 34px">Gain </el-col>
       <el-col :span="20">
-        <el-slider v-model="gian"></el-slider>
+        <el-slider @change="sendGainCommand" v-model="gian"></el-slider>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="4" style="line-height: 34px">Beat </el-col>
       <el-col :span="20">
-        <el-slider v-model="beat"></el-slider>
+        <el-slider @change="sendBeatCommand" v-model="beat"></el-slider>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="4" style="line-height: 34px">Mode </el-col>
       <el-col :span="20">
-        <el-select v-model="value" placeholder="Select" @change="selectMode">
+        <el-select v-model="mode" placeholder="Select" @change="selectMode">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -30,12 +30,17 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   data: function () {
     return {
+      debounceGainTimer: undefined,
+      debounceBeatTimer: undefined,
+
       gian: 0,
       beat: 0,
-      value: -1,
+      mode: -1,
       options: [
         {
           value: -1,
@@ -100,9 +105,51 @@ export default {
       ],
     };
   },
-  mounted: function () {},
+  computed: {
+    ...mapGetters(["getData"]),
+  },
+  mounted: function () {
+    this.gian = parseInt(this.getData.micGain_sld);
+    this.beat = parseInt(this.getData.takeBeat_sld);
+  },
   methods: {
-    selectMode: function () {},
+    sendGainCommand: function () {
+      clearTimeout(this.debounceGainTimer);
+      this.debounceGainTimer = setTimeout(() => {
+        this.$store.dispatch("sendCommand", {
+          espKey: "micGain_sld",
+          espValue: this.gian,
+        });
+      }, 100);
+    },
+    sendBeatCommand: function () {
+      clearTimeout(this.debounceBeatTimer);
+      this.debounceBeatTimer = setTimeout(() => {
+        this.$store.dispatch("sendCommand", {
+          espKey: "takeBeat_sld",
+          espValue: this.beat,
+        });
+      }, 100);
+    },
+    selectMode: function (val) {
+      if (val == -1) {
+        this.$store.dispatch("sendCommand", {
+          espKey: "react_music",
+          espValue: "false",
+        });
+      } else {
+        if (this.getData.react_music == "false") {
+          this.$store.dispatch("sendCommand", {
+            espKey: "react_music",
+            espValue: "true",
+          });
+        }
+           this.$store.dispatch("sendCommand", {
+            espKey: "music_mode_" + val,
+            espValue: "n/a",
+          });
+      }
+    },
   },
 };
 </script>
