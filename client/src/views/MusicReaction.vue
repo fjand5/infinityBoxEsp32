@@ -111,6 +111,7 @@ export default {
   mounted: function () {
     this.gian = parseInt(this.getData.micGain_sld);
     this.beat = parseInt(this.getData.takeBeat_sld);
+    this.mode = parseInt(this.getData.cur_music_mode);
   },
   methods: {
     sendGainCommand: function () {

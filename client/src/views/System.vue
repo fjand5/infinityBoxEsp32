@@ -1,5 +1,6 @@
 <template>
   <div class="system">
+    <el-tag v-if="getData.sta_ip">{{getData.sta_ip}}</el-tag>
     <el-row :gutter="5">
       <el-col :span="24">
         <el-input placeholder="Router Wifi" v-model="sta_id">
